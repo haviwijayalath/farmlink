@@ -1,0 +1,24 @@
+create a "config.php" file here and add the following.
+
+"""
+
+<?php
+  // database parameters
+  define('DB_HOST', 'localhost');
+  define('DB_USER', '_');
+  define('DB_PASS', '_');
+  define('DB_NAME', '_');
+
+  // app root
+  define('APPROOT', dirname(dirname(__FILE__)));
+
+  // URL root
+  define('URLROOT', 'http://localhost/farmlink/');
+
+  // site name
+  define('SITENAME', 'FarmLink');
+
+
+"""
+
+I have added "config.php" to ".gitignore" beacuse the configurations may different from one to another.
