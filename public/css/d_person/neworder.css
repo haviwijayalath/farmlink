@@ -1,0 +1,51 @@
+.neworder-container {
+  padding: 20px;
+  background-color: #fff;
+  margin-left: 300px;
+}
+
+.neworders-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.neworders-table th, .neworders-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.neworders-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.neworders-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.newbtn {
+  padding: 8px 12px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.newbtn-confirm {
+  background-color: #4CAF50;
+  color: white;
+  border-color: #4CAF50;
+}
+
+.newbtn-delete {
+  background-color: #f44336;
+  color: white;
+  border-color: #f44336;
+}
+
+.newbtn:hover {
+  opacity: 0.8;
+}
