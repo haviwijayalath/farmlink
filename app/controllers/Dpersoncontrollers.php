@@ -23,4 +23,35 @@ class Dpersoncontrollers extends Controller {
       $this->view('d_person/neworders');
   }
 
+  public function vehicleinfo()
+  {
+      // Load the view template
+        $this->view('d_person/vehicles/vehicleinfo');
+  }
+
+  public function addvehicle()
+  {
+      // Load the view template
+      $this->view('d_person/vehicles/addvehicle');
+  }
+
+  public function history()
+  {
+      // Load the view template
+      $this->view('d_person/history');
+  }
+
+  public function ongoing()
+  {
+      // Load the view template
+      $this->view('d_person/ongoing/ongoing');
+  }
+
+  public function deliveryupload()
+  {
+      // Load the view template
+      $this->view('d_person/ongoing/d_upload');
+  }
+
+
 }
