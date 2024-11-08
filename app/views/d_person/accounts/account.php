@@ -13,7 +13,7 @@
                 <p><strong>Email: </p>
                 <p><strong>Address: </p>
                 <p><strong>Delivery Areas: </p>
-                <a href="<?php echo URLROOT?>/accounts/editprofile" class="edit-btn">Edit Profile</a>
+                <a href="<?php echo URLROOT?>/Dpersoncontrollers/editprofile" class="edit-btn">Edit Profile</a>
             </div>
         </div>
     </div>
