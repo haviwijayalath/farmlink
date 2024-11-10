@@ -29,7 +29,7 @@
 
                 <div class="form-footer">
                     <p>OR</p>
-                    <p>Don't have an account? <a href="<?php echo URLROOT; ?>/homecontrollers/home2">Sign Up</a></p>
+                    <p>Don't have an account? <a href="<?php echo URLROOT; ?>/home/home2">Sign Up</a></p>
                 </div>
             </form>
         </div>
