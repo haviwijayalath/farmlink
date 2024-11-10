@@ -260,19 +260,19 @@ class Users extends Controller {
         // Redirect based on role
         switch ($_SESSION['user_role']) {
           case 'consultants':
-              redirect('accounts/account');
+              redirect('pages/index');
               break;
           case 'farmers':
-              redirect('orders/neworder');
+              redirect('pages/index');
               break;
           case 'buyers':
-              redirect('orders/neworder');
+              redirect('pages/index');
               break;
           case 'suppliers':
-              redirect('orders/neworder');
+              redirect('pages/index');
               break;
           case 'delivery_persons':
-              redirect('orders/neworder');
+              redirect('dpersoncontrollers/neworder');
               break;
           default:
               redirect('pages/index');
