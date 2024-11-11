@@ -9,21 +9,35 @@
     <form method="POST" action="">
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" name="name" id="name" value="<? /*= $user['name'] */?>" required>
+            <input type="text" name="name" id="name" value="<? /*= $user['name'] */?>">
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" name="email" id="email" value="<?/*= $user['email']*/ ?>" required>
+            <input type="email" name="email" id="email" value="<?/*= $user['email']*/ ?>">
         </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" name="phone" id="phone" value="<?/*= $user['address'] */?>">
+        </div>
+
         <div class="form-group">
             <label for="address">Address</label>
-            <input type="text" name="address" id="address" value="<?/*= $user['address'] */?>" required>
+            <input type="text" name="address" id="address" value="<?/*= $user['address'] */?>">
+        </div>
+
+        <div class="form-group">
+            <label for="area">Delivery Area</label>
+            <input type="text" name="area" id="area" value="<?/*= $user['address'] */?>">
         </div>
 
         <div class="form-group">
         <label for="image">Upload Image</label>
         <div class="upload-container">
-          <input type="file" id="image" name="image" placeholder="upload profile image">
+          <input type="file" id="image" name="image" placeholder="upload profile image" onchange="previewImage(event)">
+        </div>
+        <div id="image-preview" style="margin-top: 15px;">
+        <img id="output" src="" alt="Image Preview" style="max-width: 200px; display: none;">
         </div>
         </div>
 
@@ -40,6 +54,15 @@
         </div>
     </form>
 </div>
+
+<script>
+function previewImage(event) {
+    const imagePreview = document.getElementById('output');
+    imagePreview.src = URL.createObjectURL(event.target.files[0]);
+    imagePreview.style.display = 'block';
+    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
+}
+</script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
 
