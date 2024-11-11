@@ -84,7 +84,7 @@ class Users extends Controller {
                 // Now handle the image upload (if no errors from above)
                 $image = $_FILES["image"]['name'];
                 $_picuploaded = 0;
-                $upload_dir = $_SERVER['DOCUMENT_ROOT'].'/farmlink/public/uploads/';
+                $upload_dir = $_SERVER['DOCUMENT_ROOT'].'/farmlink/public/uploads/dperson';
 
                 // Ensure the upload directory exists
                 if (!is_dir($upload_dir)) {
@@ -119,40 +119,21 @@ class Users extends Controller {
                   //hash password
                   $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-                  // Based on role, save to the appropriate table
-                  switch ($data['role']) {
-                    case 'Farmer':
-                        $this->userModel->registerFarmer($data);
-                        redirect('users/login');
-                        break;
-                    case 'Supplier':
-                        $this->userModel->registerSupplier($data);
-                        redirect('users/login');
-                        break;
-                    case 'Consultant':
-                        $this->userModel->registerConsultant($data);
-                        redirect('users/login');
-                        break;
-                    case 'WholesaleBuyer':
-                        $this->userModel->registerWholesaleBuyer($data);
-                        redirect('users/login');
-                        break;
-                    case 'DeliveryPerson':
-                        $this->userModel->registerDeliveryPerson($data);
-                        redirect('users/login');
-                        break;
-                    default:
-                        die('Invalid role selected');
-                  }
+                  //register user
+                  if($this->userModel->register($data)){
+                    redirect('users/login');
+                 }else{
+                     die('Something went wrong');
+                 }
 
                 }else {
                       // Load view with errors (if there are validation errors)
-                      $this->view('users/register', $data);
+                      $this->view('users/dpersonregister', $data);
                 }
 
             } else {
                 // Load view with errors (if there are validation errors)
-                $this->view('users/register', $data);
+                $this->view('users/dpersonregister', $data);
             }
 
         } else {
@@ -175,7 +156,7 @@ class Users extends Controller {
             ];
 
             // Load view
-            $this->view('users/register', $data);
+            $this->view('users/dpersonregister', $data);
         }
     }
 
