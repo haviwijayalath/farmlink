@@ -11,7 +11,7 @@
             <h2>Welcome back!</h2>
             <form action="<?php echo URLROOT; ?>/users/login" method="POST">
                 <div class="form-group">
-                    <input type="text" name="user_name" placeholder="Enter your username" <?php echo (!empty($data['user_name_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['user_name']; ?>" required>
+                    <input type="email" name="email" placeholder="Enter your email" <?php echo (!empty($data['email_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['email']; ?>" required>
                 </div>
                 <div class="form-group">
                     <input type="password" name="password" placeholder="Enter your password" <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['password']; ?>" required>

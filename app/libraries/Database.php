@@ -13,7 +13,7 @@
 
     public function __construct() {
       // set DSN
-      $dsn = 'mysql:host=' . $this->host . ';dbname=' . $this->dbname;
+      $dsn = 'mysql:host=' . $this->host . ';port=3307;dbname=' . $this->dbname;
       $options = array(
         PDO::ATTR_PERSISTENT => true,
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION
@@ -74,4 +74,9 @@
     public function rowCount() {
       return $this->stmt->rowCount();
     }
+
+    //method to get the last inserted ID
+    public function lastInsertId() {
+      return $this->dbh->lastInsertId();
+  }
   }
