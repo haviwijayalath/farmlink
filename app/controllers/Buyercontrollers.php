@@ -15,4 +15,13 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/accounts/buyer_editaccount');
     }
 
+    public function cartDetails(){
+        $data = [];
+        $this->view('buyer/cart/cart', $data);
+    }
+
+    public function deliveryOptions(){
+        $this->view('buyer/cart/delivery_details');
+    }
+
 }
