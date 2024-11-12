@@ -10,7 +10,7 @@
       <div class="register-form">
         <h2>Register Now</h2>
 
-        <form action="<?php echo URLROOT; ?>/users/register" method="POST" enctype="multipart/form-data">
+        <form action="<?php echo URLROOT; ?>/users/dpregister" method="POST" enctype="multipart/form-data">
 
           <label for="name">Full Name</label>
           <input type="text" id="name" name="name" placeholder="Enter your name" <?php echo (!empty($data['name_err'])) ? 'is_invalid' : ''; ?> 
@@ -21,14 +21,22 @@
             value="<?php echo $data['email']; ?>" required>
           <span><?php echo $data['email_err']; ?></span>
 
-          <label for="address">Address</label>
-          <textarea name="address" id="address" placeholder="Enter your address" <?php echo (!empty($data['address_err'])) ? 'is_invalid' : ''; ?>
-            value="<?php echo $data['address']; ?>" ></textarea>
-          <span><?php echo $data['address_err']; ?></span>
+          <label for="email">Address</label>
+          <input type="text" id="addr_no" name="addr_no" placeholder="Home No." <?php echo (!empty($data['addr_no_err'])) ? 'is_invalid' : ''; ?> 
+                value="<?php echo $data['addr_no']; ?>" required>
+              <span><?php echo $data['addr_no_err']; ?></span>
+
+          <input type="text" id="street" name="street" placeholder="Home Street" <?php echo (!empty($data['street_err'])) ? 'is_invalid' : ''; ?> 
+                value="<?php echo $data['street']; ?>" required>
+              <span><?php echo $data['street_err']; ?></span>
+
+          <input type="text" id="city" name="city" placeholder="City" <?php echo (!empty($data['city_err'])) ? 'is_invalid' : ''; ?> 
+                value="<?php echo $data['city']; ?>" required>
+              <span><?php echo $data['city_err']; ?></span>
 
           <label for="phone">Phone</label>
-          <input type="text" id="phone" name="phone_number" placeholder="Enter your phone number" <?php echo (!empty($data['phone_number_err'])) ? 'is_invalid' : ''; ?> 
-            value="<?php echo $data['phone_number']; ?>" required>
+          <input type="text" id="phone" name="phone" placeholder="Enter your phone number" <?php echo (!empty($data['phone_err'])) ? 'is_invalid' : ''; ?> 
+            value="<?php echo $data['phone']; ?>" required>
           
           <label for="image">Upload Image</label>
           <div class="upload-container">
@@ -36,13 +44,31 @@
             <span><?php echo $data['image_err']; ?></span>
           </div>
 
-          <label for="vehicle type">Vehicle type:</label>
+          <label for="vehicle">Vehicle type:</label>
           <select id="vehicle" name="vehicle" placeholder="Select a vehicle" <?php echo (!empty($data['vehicle_err'])) ? 'is_invalid' : ''; ?>>
-            <option value="Lorry">Volvo</option>
-            <option value="Bike">Saab</option>
-            <option value="Three wheel">Fiat</option>
+            <option value="Lorry">Loryy</option>
+            <option value="Bike">Bike</option>
+            <option value="Three wheel">Three wheeler</option>
           </select>
           <span><?php echo $data['vehicle_err']; ?></span>
+
+          <label for="area">Delivery Area</label>
+          <input type="text" id="area" name="area" placeholder="Enter possible delivery area" <?php echo (!empty($data['area_err'])) ? 'is_invalid' : ''; ?> 
+            value="<?php echo $data['area']; ?>" required>
+
+            <label for="regno">Register_no</label>
+          <input type="text" id="regno" name="regno" placeholder="Enter register number of the vehicle" <?php echo (!empty($data['regno_err'])) ? 'is_invalid' : ''; ?> 
+            value="<?php echo $data['regno']; ?>" required>
+
+            <label for="capacity">Capacity</label>
+          <input type="text" id="capacity" name="capacity" placeholder="Enter capacity of the vehicle" <?php echo (!empty($data['capacity_err'])) ? 'is_invalid' : ''; ?> 
+            value="<?php echo $data['capacity']; ?>" required>
+
+            <label for="v_image">Vehicle Image</label>
+          <div class="upload-container">
+            <input type="file" id="v_image" name="v_image" <?php echo (!empty($data['v_image_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['v_image']; ?>">
+            <span><?php echo $data['v_image_err']; ?></span>
+          </div>
           
           <label for="password">Password</label>
           <input type="password" id="password" name="password" placeholder="Enter your password" <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> 
@@ -54,7 +80,7 @@
             value="<?php echo $data['confirm_password']; ?>">
           <span><?php echo $data['confirm_password_err']; ?></span>
 
-          <!--get the value for role using the url --> 
+          <!--get the value for role using the url -->
           <input type="hidden" id="role" name="role" value="<?php echo isset($_GET['role']) ? $_GET['role'] : ''; ?>">
           
           <button type="submit" class="register-btn">Register</button>

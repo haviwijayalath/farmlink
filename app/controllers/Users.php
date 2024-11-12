@@ -9,7 +9,7 @@ class Users extends Controller {
         // Your code here
     }
     
-    public function register() {
+    public function dpregister() {
 
         // Check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -21,17 +21,32 @@ class Users extends Controller {
             $data = [
                 'name' => trim($_POST['name']),
                 'email' => trim($_POST['email']),
-                'phone_number' => trim($_POST['phone_number']),
+                'addr_no' => trim($_POST['addr_no']),
+                'street' => trim($_POST['street']),
+                'city' => trim($_POST['city']),
+                'phone' => trim($_POST['phone']),
                 'image' => isset($_POST['saved_image']) ? $_POST['saved_image'] : '', // Keep previously uploaded image,
-                'user_name' => trim($_POST['user_name']),
+                'vehicle' => trim($_POST['vehicle']),
+                'area' => trim($_POST['area']),
+                'regno' => trim($_POST['regno']),
+                'capacity' => trim($_POST['capacity']),
+                'v_image' => isset($_POST['saved_vehicle_image']) ? $_POST['saved_vehicle_image'] : '', // Keep previously uploaded vehicle image
                 'password' => trim($_POST['password']),
                 'confirm_password' => trim($_POST['confirm_password']),
                 'role' => trim($_POST['role']),// Pass role to view
+
                 'name_err' => '',
                 'email_err' => '',
-                'phone_number_err' => '',
+                'addr_no_err' => '',
+                'street_err' => '',
+                'city_err' => '',
+                'phone_err' => '',
                 'image_err' => '',
-                'user_name_err' => '',
+                'vehicle_err' => '',
+                'area_err' => '',
+                'regno_err' => '',
+                'capacity_err' => '',
+                'v_image_err' => '',
                 'password_err' => '',
                 'confirm_password_err' => ''
             ];
@@ -52,14 +67,15 @@ class Users extends Controller {
             }
 
             // Validate phone number
-            if(empty($data['phone_number'])) {
-                $data['phone_number_err'] = 'Please enter phone number';
+            if(empty($data['phone'])) {
+                $data['phone_err'] = 'Please enter phone number';
             }
 
-            // Validate user name
-            if(empty($data['user_name'])) {
-                $data['user_name_err'] = 'Please enter a username';
+            //validate address
+            if (empty($data['addr_no'] && empty($data['city']))) {
+                $data['addr_no_err'] = 'Please enter your address';
             }
+            
 
             // Validate password
             if(empty($data['password'])) {
@@ -78,11 +94,12 @@ class Users extends Controller {
             }
 
             // Make sure there are no errors before uploading the image
-            if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) &&
-                empty($data['user_name_err']) && empty($data['password_err']) && empty($data['confirm_password_err'])) {
+            if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) &&
+                empty($data['password_err']) && empty($data['confirm_password_err'])) {
                 
                 // Now handle the image upload (if no errors from above)
                 $image = $_FILES["image"]['name'];
+                $v_image = $_FILES["v_image"]['name']; // Handle vehicle image upload
                 $_picuploaded = 0;
                 $upload_dir = $_SERVER['DOCUMENT_ROOT'].'/farmlink/public/uploads/dperson';
 
@@ -99,14 +116,14 @@ class Users extends Controller {
                         $photo = time() . basename($_FILES['image']['name']);
 
                         // Validate image extension
-                        if ($imageFileType != "jpg" && $imageFileType != "jpeg" && $imageFileType != "png") {
-                            $data['image_err'] = 'Please upload a photo with extension .jpg, .jpeg, or .png';
-                        } elseif ($_FILES["image"]["size"] > 2000000) { // Check if image exceeds 2MB
-                            $data['image_err'] = 'Your photo exceeds the size limit of 2MB';
-                        } else {
-                            $data['image'] = $image; //save the image name to data
-                            $_picuploaded = 1; // Mark that image was uploaded successfully
-                        }
+                    if ($imageFileType != "jpg" && $imageFileType != "jpeg" && $imageFileType != "png") {
+                        $data['image_err'] = 'Please upload a photo with extension .jpg, .jpeg, or .png';
+                    } elseif ($_FILES["image"]["size"] > 2000000) { // Check if image exceeds 2MB
+                        $data['image_err'] = 'Your photo exceeds the size limit of 2MB';
+                    } else {
+                        $data['image'] = $image; // Save the profile image name to data
+                        $_picuploaded = 1; // Mark that image was uploaded successfully
+                    }
                     } else {
                         $data['image_err'] = 'Failed to upload image';
                     }
@@ -114,13 +131,35 @@ class Users extends Controller {
                     $data['image_err'] = 'Please upload an image';
                 }
 
+                // Validate and move the vehicle image
+            if (!empty($v_image)) {
+                if (move_uploaded_file($_FILES['v_image']['tmp_name'], $upload_dir . $v_image)) {
+                    $_target_file = $upload_dir . $v_image;
+                    $v_imageFileType = strtolower(pathinfo($_target_file, PATHINFO_EXTENSION));
+
+                    // Validate image extension for vehicle image
+                    if ($v_imageFileType != "jpg" && $v_imageFileType != "jpeg" && $v_imageFileType != "png") {
+                        $data['v_image_err'] = 'Please upload a vehicle image with extension .jpg, .jpeg, or .png';
+                    } elseif ($_FILES["v_image"]["size"] > 2000000) { // Check if image exceeds 2MB
+                        $data['v_image_err'] = 'Your vehicle image exceeds the size limit of 2MB';
+                    } else {
+                        $data['v_image'] = $v_image; // Save the vehicle image name to data
+                        $_picuploaded = 1; // Mark that vehicle image was uploaded successfully
+                    }
+                } else {
+                    $data['v_image_err'] = 'Failed to upload vehicle image';
+                }
+            } else {
+                $data['v_image_err'] = 'Please upload a vehicle image';
+            }
+
                 // If the image is uploaded successfully, proceed with registration
                 if($_picuploaded) {
                   //hash password
                   $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
                   //register user
-                  if($this->userModel->register($data)){
+                  if($this->userModel->registerDeliveryPerson($data)){
                     redirect('users/login');
                  }else{
                      die('Something went wrong');
@@ -141,17 +180,34 @@ class Users extends Controller {
             $data = [
                 'name' => '',
                 'email' => '',
-                'phone_number' => '',
+                'addr_no' => '',
+                'street' => '',
+                'city' => '',
+                'phone' => '',
                 'image' => '',
-                'user_name' => '',
+                'vehicle' => '',
+                'area' => '',
+                'regno' => '',
+                'capacity' => '',
+                'v_image' => '',
                 'password' => '',
                 'confirm_password' => '',
+                'role' => '',
+
                 'name_err' => '',
                 'email_err' => '',
-                'phone_number_err' => '',
+                'addr_no_err' => '',
+                'street_err' => '',
+                'city_err' => '',
+                'phone_err' => '',
                 'image_err' => '',
-                'user_name_err' => '',
+                'vehicle_err' => '',
+                'area_err' => '',
+                'regno_err' => '',
+                'capacity_err' => '',
+                'v_image_err' => '',
                 'password_err' => '',
+                'confirm_password_err' => '',
                 'confirm_password_err' => ''
             ];
 
@@ -169,15 +225,15 @@ class Users extends Controller {
 
             // Init data
             $data = [
-                'user_name' => trim($_POST['user_name']),
+                'email' => trim($_POST['email']),
                 'password' => trim($_POST['password']),
-                'user_name_err' => '',
+                'email_err' => '',
                 'password_err' => ''
             ];
 
-            //Validate user name
-            if(empty($data['user_name'])) {
-                $data['user_name_err'] = 'Please enter a username';
+            //Validate email
+            if(empty($data['email'])) {
+                $data['email_err'] = 'Please enter your Email';
             }
 
             // Validate password
@@ -185,19 +241,19 @@ class Users extends Controller {
                 $data['password_err'] = 'Please enter a password';
             } 
 
-            //Check for user/userName
-            if($this->userModel->findUserByUserName($data['user_name'])){
+            //Check for user
+            if($this->userModel->findUserByEmail($data['email'])){
                 //User found
             } else {
                 //User not found
-                $data['user_name_err'] = 'No user found';
+                $data['email_err'] = 'No user found';
             }
 
             //Make sure errors are empty
-            if(empty($data['user_name_err']) && empty($data['password_err'])){
+            if(empty($data['email_err']) && empty($data['password_err'])){
                 //Validated
                 //Check and set logged in user
-                $loggedInUser = $this->userModel->login($data['user_name'], $data['password']);
+                $loggedInUser = $this->userModel->login($data['email'], $data['password']);
 
                 if($loggedInUser){
                     //Create session
@@ -216,9 +272,9 @@ class Users extends Controller {
           }else{
           //init data
           $data =[
-            'user_name' => '',
+            'email' => '',
             'password' => '',
-            'user_name_err' => '',
+            'email_err' => '',
             'password_err' => ''
           ];
   
@@ -229,17 +285,8 @@ class Users extends Controller {
 
     public function createUserSession($user){
 
-        $_SESSION['user_id'] = $user->id;
-        $_SESSION['user_name'] = $user->name;
-        $_SESSION['user_role'] = $user->role; // Store the user's role in session
-        $_SESSION['user_phone_number'] = $user->phone;
-        $_SESSION['user_image'] = $user->image;
-        $_SESSION['user_user_name'] = $user->username;
-        $_SESSION['user_email'] = $user->email;
-        $_SESSION['user_password'] = $user->password;
-
-        // Redirect based on role
-        switch ($_SESSION['user_role']) {
+        //Redirect based on role
+        switch ($user->role) {
           case 'consultants':
               redirect('pages/index');
               break;
@@ -253,25 +300,75 @@ class Users extends Controller {
               redirect('pages/index');
               break;
           case 'delivery_persons':
-              redirect('dpersoncontrollers/neworder');
+                $_SESSION['user_id'] = $user->id;
+                $_SESSION['user_name'] = $user->name;
+                $_SESSION['user_role'] = $user->role; // Store the user's role in session
+                $_SESSION['user_phone'] = $user->phone;
+                $_SESSION['user_image'] = $user->image;
+                $_SESSION['user_email'] = $user->email;
+                $_SESSION['user_addr_no'] = $user->addr_no;
+                $_SESSION['user_street'] = $user->street;
+                $_SESSION['user_city'] = $user->city;
+                $_SESSION['user_vehicle'] = $user->vehicle;
+                $_SESSION['user_delivery_area'] = $user->area;
+                $_SESSION['user_v_regno'] = $user->regno;
+                $_SESSION['user_v_capacity'] = $user->capacity;
+                $_SESSION['user_v_image'] = $user->v_image;
+                $_SESSION['user_password'] = $user->password;
+                redirect('dpersoncontrollers/neworder');
               break;
           default:
               redirect('pages/index');
               break;
-        }   
+        } 
     }
         
     public function logout(){
-      unset($_SESSION['user_id']);
-      unset($_SESSION['user_name']);
-      unset($_SESSION['user_phone_number']);
-      unset($_SESSION['user_image']);
-      unset($_SESSION['user_user_name']);
-      unset($_SESSION['user_email']);
-      unset($_SESSION['user_password']);
-      unset($_SESSION['user_role']);
-      session_destroy();
-      redirect('users/login');
+
+        unset($_SESSION['user_id']);
+        unset($_SESSION['user_name']);
+        unset($_SESSION['user_phone']);
+        unset($_SESSION['user_image']);
+        unset($_SESSION['user_addr_no']);
+        unset($_SESSION['user_street']);
+        unset($_SESSION['user_city']);
+        unset($_SESSION['user_email']);
+        unset($_SESSION['user_password']);
+
+        //Logout based on role
+        switch ($_SESSION['user_role']) {
+            case 'consultants':
+                session_destroy();
+                redirect('users/login');
+                break;
+            case 'farmers':
+                session_destroy();
+                redirect('users/login');
+                break;
+            case 'buyers':
+                session_destroy();
+                redirect('users/login');
+                break;
+            case 'suppliers':
+                session_destroy();
+                redirect('users/login');
+                break;
+            case 'delivery_persons':
+                unset($_SESSION['user_vehicle']);
+                unset($_SESSION['user_delivery_area']);
+                unset($_SESSION['user_v_regno']);
+                unset($_SESSION['user_v_capacity']);
+                unset($_SESSION['user_v_image']);
+                unset($_SESSION['user_role']);
+                session_destroy();
+                redirect('users/login');
+                break;
+            default:
+                session_destroy();
+                redirect('users/login');
+                break;
+          } 
+      
     }
         
 
