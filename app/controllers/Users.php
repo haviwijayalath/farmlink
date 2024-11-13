@@ -101,7 +101,7 @@ class Users extends Controller {
                 $image = $_FILES["image"]['name'];
                 $v_image = $_FILES["v_image"]['name']; // Handle vehicle image upload
                 $_picuploaded = 0;
-                $upload_dir = $_SERVER['DOCUMENT_ROOT'].'/farmlink/public/uploads/dperson';
+                $upload_dir = APPROOT . '/../public/uploads/';
 
                 // Ensure the upload directory exists
                 if (!is_dir($upload_dir)) {
