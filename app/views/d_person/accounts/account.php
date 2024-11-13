@@ -8,13 +8,8 @@
     <div class="account-content">
         <div class="profile-info">
             <!-- Ensure correct image path -->
-            <img src="<?= URLROOT ?>/public/uploads/<?= !empty($data['image']) && file_exists(APPROOT . '/public/uploads/' . $data['image']) ? $data['image'] : 'default.jpg' ?>" alt="Profile Picture" class="profile-pic">
+            <img src="<?= URLROOT ?>/public/uploads/<?= !empty($data['image']) && file_exists(APPROOT . '/../public/uploads/' . $data['image']) ? $data['image'] : 'Farmer-bro.jpg' ?>" alt="Profile Picture" class="profile-pic">
 
-             <!-- Debug the image path -->
-             <?php
-                echo "Image path: " . URLROOT . "/public/uploads/" . $data['image'];
-                echo " File exists: " . (file_exists(APPROOT . '/public/uploads/' . $data['image']) ? 'Yes' : 'No');
-            ?>
 
             <!-- Display user data with htmlspecialchars for safety -->
             <h2><?= htmlspecialchars($data['name']) ?></h2>
