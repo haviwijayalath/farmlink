@@ -14,7 +14,8 @@ class Accountcontrollers extends Controller {
               'name' => $user->name,
               'email' => $user->email,
               'phone' => $user->phone,
-              'address' => $user->address,
+              // Combine address parts into a single string
+              'address' => $user->number . ', ' . $user->street . ', ' . $user->city,
               'area' => $user->area,
               'image' => $user->image
           ];
@@ -31,25 +32,26 @@ class Accountcontrollers extends Controller {
 
           // Initialize data array
           $data = [
-              'id' => $id,
-              'name' => trim($_POST['name']),
-              'email' => trim($_POST['email']),
-              'phone' => trim($_POST['phone']),
-              'address' => trim($_POST['address']),
-              'area' => trim($_POST['area']),
-              'current_password' => trim($_POST['current_password']),
-              'new_password' => trim($_POST['new_password']),
-              'confirm_password' => trim($_POST['confirm_password']),
-              'password' => '',
-              'image' => '',
-              'name_err' => '',
-              'email_err' => '',
-              'phone_err' => '',
-              'address_err' => '',
-              'area_err' => '',
-              'password_err' => '',
-              'image_err' => ''
-          ];
+            'id' => $id,
+            'name' => trim($_POST['name']),
+            'email' => trim($_POST['email']),
+            'phone' => trim($_POST['phone']),
+            'area' => trim($_POST['area']),
+            'addr_no' => trim($_POST['addr_no']),
+            'street' => trim($_POST['street']),
+            'city' => trim($_POST['city']),
+            'address_id' => trim($_POST['address_id']),  // Retrieve address_id for updating
+            'current_password' => isset($_POST['current_password']) ? trim($_POST['current_password']) : '',
+            'new_password' => trim($_POST['new_password']),
+            'confirm_password' => trim($_POST['confirm_password']),
+            'password' => '',
+            'image' => '',
+            'name_err' => '',
+            'email_err' => '',
+            'phone_err' => '',
+            'password_err' => '',
+            'image_err' => ''
+        ];
 
           // Validate data
           if (empty($data['name'])) $data['name_err'] = 'Please enter name';
@@ -59,17 +61,33 @@ class Accountcontrollers extends Controller {
           }
 
           // Handle image upload if exists
-          if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
-              $target_dir = APPROOT . "/public/uploads/";
-              $target_file = $target_dir . basename($_FILES["image"]["name"]);
-              
-              // Move the uploaded file
-              if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
-                  $data['image'] = basename($_FILES["image"]["name"]);
-              } else {
-                  $data['image_err'] = 'Error uploading image';
-              }
-          }
+            if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+                $target_dir = APPROOT . '/../public/uploads/'; // Adjust path relative to APPROOT
+
+                // Ensure the upload directory exists
+                if (!is_dir($target_dir)) {
+                    mkdir($target_dir, 0777, true);
+                }
+
+                // Define the target file
+                $file_name = basename($_FILES["image"]["name"]);
+                $target_file = $target_dir . $file_name;
+
+                // Validate and move the uploaded file
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+                $file_type = $_FILES["image"]["type"];
+
+                if (!in_array($file_type, $allowed_types)) {
+                    $data['image_err'] = 'Invalid file type. Only JPG, PNG, and GIF files are allowed.';
+                } else {
+                    if (move_uploaded_file($_FILES["image"]["tmp_name"], $target_file)) {
+                        $data['image'] = $file_name; // Save only the filename for the database
+                    } else {
+                        $data['image_err'] = 'Error uploading image. Please try again.';
+                    }
+                }
+            }
+
 
           // Check for existing password and hash new password if provided
           $user = $this->userModel->getUserById($id);
@@ -80,32 +98,47 @@ class Accountcontrollers extends Controller {
           }
 
           // If no errors, update the user
-          if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['address_err']) && empty($data['password_err']) && empty($data['image_err'])) {
+          if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['address_err'])  && empty($data['image_err'])) {
               if ($this->userModel->updateUser($data)) {
-                  flash('user_message', 'Profile updated successfully');
-                  redirect('dpersoncontrollers/viewprofile');
+                  redirect('accountcontrollers/account');
               } else {
                   die('Something went wrong');
               }
           } else {
               // Load view with errors
-              $this->view('accountcontrollers/editProfile', $data);
+              $this->view('d_person/accounts/editaccount', $data);
           }
       } else {
           // Get existing user data
-          $data = $this->getUserDataById($id);
+          $user = $this->userModel->getUserById($id);
+
+          $data = [
+            'id' => $user->id,
+            'name' => $user->name,
+            'email' => $user->email,
+            'phone' => $user->phone,
+            'area' => $user->area,
+            'addr_no' => $user->number,
+            'street' => $user->street,
+            'city' => $user->city,
+            'address_id' => $user->address_id
+        ];
 
           // Load view
-          $this->view('accountcontrollers/editProfile', $data);
+          $this->view('d_person/accounts/editaccount', $data);
       }
   }
 
-  public function account($id) {
-      // Get existing user data
-      $data = $this->getUserDataById($id);
+  public function account() {
+    // Get the user ID from session
+    $id = $_SESSION['user_id'];  // Use session to get the logged-in user's ID
 
-      // Load the account view with user data
-      $this->view('d_person/account', $data);
-  }
+    // Get existing user data
+    $data = $this->getUserDataById($id);
+
+    // Load the account view with user data
+    $this->view('d_person/accounts/account', $data);
+}
+
 }
 
