@@ -24,10 +24,9 @@
       <input type="text" id="phone" name="phone_number" placeholder="Enter your phone number" <?php echo (!empty($data['phone_number_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['phone_number']; ?>" required>
 
       <label for="address">Address:</label>
-      <input type="text" id="addr_no" name="addr_no" placeholder="Home No." value="<?php echo $data['phone_number']; ?>" required>
-      <input type="text" id="addr_street" name="addr_street" placeholder="Home Street" value="<?php echo $data['phone_number']; ?>" required>
-      <input type="text" id="addr_City" name="addr_City" placeholder="City" value="<?php echo $data['phone_number']; ?>" required>
-      
+      <input type="text" id="addr_no" name="addr_no" placeholder="Home No." value="<?php echo $data['addr_no']; ?>" required>
+      <input type="text" id="addr_street" name="addr_street" placeholder="Home Street" value="<?php echo $data['addr_street']; ?>" required>
+      <input type="text" id="addr_city" name="addr_city" placeholder="City" value="<?php echo $data['addr_city']; ?>" required>
       
       <label for="image">Upload Image</label>
       <div class="upload-container">

@@ -20,6 +20,9 @@
           'image' => $_FILES['image'],
           'password' => trim($_POST['password']),
           'confirm_password' => trim($_POST['confirm_password']),
+          'addr_no' => trim($_POST['addr_no']),
+          'addr_street' => trim($_POST['addr_street']),
+          'addr_city' => trim($_POST['addr_city']),
           'name_err' => '',
           'email_err' => '',
           'phone_number_err' => '',
@@ -33,7 +36,7 @@
         } else {
           // if email exists
           if ($this->farmerModel->findFarmerByEmail($data['email'])) {
-            $data['email_err'] = 'Email is already taken';
+            $data['email_err'] = 'This email is already taken';
           }
         }
 
@@ -65,11 +68,21 @@
 
         // Make sure errors are empty
         if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['image_err']) && empty($data['user_name_err']) && empty($data['password_err']) && empty($data['confirm_password_err'])) {
-          // Validated
-        }
+          // hashing password
+          $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-        // Load view with eroors
-        $this->view('farmers/register', $data);
+          // user registration
+          if ($this->farmerModel->register($data)) {
+            // flash('register_success', 'You are successfully registered! Log in now');
+            // redirect to login
+            // redirect('farmers/login');
+          } else {
+            die('Something went wrong! Please try again.');
+          }
+        } else {
+          // load view with errors
+          $this->view('farmers/register', $data);
+        }
       } else {
         // Init data
         $data = [
@@ -79,6 +92,9 @@
           'image' => '',
           'password' => '',
           'confirm_password' => '',
+          'addr_no' => '',
+          'addr_street' => '',
+          'addr_city' => '',
           'name_err' => '',
           'email_err' => '',
           'phone_number_err' => '',
@@ -89,5 +105,9 @@
         // Load view
         $this->view('farmers/register', $data);
       }
+    }
+
+    public function index() {
+      $this->view('farmers/index');
     }
   }

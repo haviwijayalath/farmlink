@@ -9,10 +9,10 @@
 
     // Saving the address
     public function saveAddress($no, $street, $city) {
-      $this->db->query('INSERT INTO addresses (number, street, city) VALUES(:number, :street, :city)');
+      $this->db->query('INSERT INTO address (number, Street, City) VALUES(:number, :street, :city)');
       // Bind values
       $this->db->bind(':number', $no);
-      $this->db->bind(':street', $street);
+      $this->db->bind(':street', $street); 
       $this->db->bind(':city', $city);
 
       // Execute
@@ -26,15 +26,16 @@
     // Register farmer
     public function register($data) {
       // Saving the address before saving the farmer
-      $address_id = saveAddress($data);
+      $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
-      $this->db->query('INSERT INTO farmers (name, email, phone_number, password) VALUES(:name, :email, :phone_number, :image, :password)');
+      $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone) VALUES(:name, :password, :email, :address_id, :phone)');
       // Bind values
       $this->db->bind(':name', $data['name']);
       $this->db->bind(':email', $data['email']);
-      $this->db->bind(':phone_number', $data['phone_number']);
-      $this->db->bind(':image', $data['image']);
+      $this->db->bind(':phone', $data['phone_number']);
+      // $this->db->bind(':image', $data['image']);
       $this->db->bind(':password', $data['password']);
+      $this->db->bind(':address_id', $address_id);
 
       // Execute
       if ($this->db->execute()) {
