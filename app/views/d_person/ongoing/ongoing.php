@@ -12,28 +12,32 @@
                 <th>#</th>
                 <th>Pick-Up</th>
                 <th>Drop-Off</th>
-                <th>Customer</th>
-                <th>Route</th>
+                <th>Buyer</th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
-            <?php 
-            // Temporary array of sample ongoing deliveries for testing
-            $deliveries = [
-                ['id' => 1, 'pickup' => 'John', 'dropoff' => 'Doe', 'customer_name' => 'CEO, Founder']
-            ];
-
-            foreach($deliveries as $index => $delivery): ?>
-            <tr>
-                <td><?= $index + 1 ?></td>
-                <td><?= htmlspecialchars($delivery['pickup']) ?></td>
-                <td><?= htmlspecialchars($delivery['dropoff']) ?></td>
-                <td><?= htmlspecialchars($delivery['customer_name']) ?></td>
-                <td>
-                    <a href="<?php echo URLROOT?>/Dpersoncontrollers/deliveryupload" class="ongoingbtn ongoingbtn-route">Proofs ➤</a>
-                </td>
-            </tr>
+        <?php if (!empty($data['orders'])): ?>
+            <?php foreach ($data['orders'] as $index => $order): ?>
+                <tr>
+                    <td>
+                        <a href="<?= URLROOT ?>/orders/orderDetails/<?= htmlspecialchars($order->id) ?>" class="ongoing-idbtn">
+                            <?= htmlspecialchars($order->id) ?>
+                        </a>
+                    </td>
+                    <td><?= htmlspecialchars($order->pickup_address) ?></td>
+                    <td><?= htmlspecialchars($order->dropoff_address) ?></td>
+                    <td><?= htmlspecialchars($order->buyer) ?></td>
+                    <td>
+                        <a href="<?= URLROOT ?>/Ordercontrollers/proof" class="ongoingbtn ongoingbtn-route">Proofs ➤</a>
+                    </td>
+                </tr>
             <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="4">No ongoing orders available.</td>
+            </tr>
+        <?php endif; ?>
         </tbody>
     </table>
 

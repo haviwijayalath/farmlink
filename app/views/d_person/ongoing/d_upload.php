@@ -6,49 +6,61 @@
 
 <div class="delivery-container">
     <h2>Upload Delivery Images</h2>
-    <form action="<?= URLROOT; ?>/delivery/upload" method="POST" enctype="multipart/form-data">
+    <form action="<?= URLROOT; ?>/ordercontrollers/deliveryUploadPickup" method="POST" enctype="multipart/form-data">
+
         <!-- Pickup Image -->
         <div class="form-group">
             <label for="pickup_image">Pickup Image</label>
-            <input type="file" name="pickup_image" id="pickup_image" required>
-        </div>
+            <div class="upload-container">
+                <input type="file" name="pickup_image" id="pickup_image" onchange="previewPickupImage(event)" required>
+            </div>
+            <div id="image-preview" style="margin: 20px;">
+            <img id="output" src="" style="max-width: 800px">
+            </div>
 
         <!-- Submit Button -->
         <div class="form-group">
             <input type="submit" value="Upload Images" class="btn-submit">
         </div>
+        </div>
     </form>
 
 
-    <form action="<?= URLROOT; ?>/delivery/upload" method="POST" enctype="multipart/form-data">
+    <form action="<?= URLROOT; ?>/ordercontrollers/deliveryUploadDropoff" method="POST" enctype="multipart/form-data">
         <!-- Dropoff Image -->
     <div class="form-group">
             <label for="dropoff_image">Dropoff Image</label>
-            <input type="file" name="dropoff_image" id="dropoff_image" required>
-        </div>
+            <div class="upload-container">
+                <input type="file" name="dropoff_image" id="dropoff_image" onchange="previewDropoffImage(event)" required>
+            </div>
+
+            <div id="dropoff-preview" style="margin: 20px;">
+            <img id="dropoff_output" src=""  style="max-width: 800px">
+            </div>
 
         <!-- Submit Button -->
         <div class="form-group">
             <input type="submit" value="Upload Images" class="btn-submit">
         </div>
+    </div>
     </form>
     
 
-    <!-- Display uploaded images if they exist -->
-    <?php if (isset($data['pickup_image']) && isset($data['dropoff_image'])) : ?>
-        <div class="uploaded-images">
-            <h3>Uploaded Images</h3>
+    
+<script>
+function previewPickupImage(event) {
+    const imagePreview = document.getElementById('output');
+    imagePreview.src = URL.createObjectURL(event.target.files[0]);
+    imagePreview.style.display = 'block';
+    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
+}
 
-            <div class="image-display">
-                <h4>Pickup Image: <?= htmlspecialchars(basename($data['pickup_image'])) ?></h4>
-                <img src="<?= htmlspecialchars($data['pickup_image']) ?>" alt="Pickup Image" class="uploaded-img">
-            </div>
+function previewDropoffImage(event) {
+    const dropoffImagePreview = document.getElementById('dropoff_output');
+    dropoffImagePreview.src = URL.createObjectURL(event.target.files[0]);
+    dropoffImagePreview.style.display = 'block';
+    dropoffImagePreview.onload = () => URL.revokeObjectURL(dropoffImagePreview.src); // Free memory
+}
+</script>
 
-            <div class="image-display">
-                <h4>Dropoff Image: <?= htmlspecialchars(basename($data['dropoff_image'])) ?></h4>
-                <img src="<?= htmlspecialchars($data['dropoff_image']) ?>" alt="Dropoff Image" class="uploaded-img">
-            </div>
-        </div>
-    <?php endif; ?>
-</div>
 <?php require APPROOT . '/views/inc/footer.php'; ?>

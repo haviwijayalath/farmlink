@@ -3,7 +3,7 @@ footer {
   color: white; 
   text-align: center; 
   padding: 10px 0;
-  position: fixed;
+  position:fixed;
   bottom: -5px; /*stick to the bottom*/
   width: 100%; 
   font-family: 'Poppins', sans-serif;
