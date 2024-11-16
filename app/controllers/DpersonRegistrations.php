@@ -300,7 +300,7 @@ class DpersonRegistrations extends Controller {
                 $_SESSION['user_v_capacity'] = $user->capacity;
                 $_SESSION['user_v_image'] = $user->v_image;
                 $_SESSION['user_password'] = $user->password;
-                redirect('Ordercontrollers/neworders');
+                redirect('Ordercontrollers/neworder');
         } 
     
         
