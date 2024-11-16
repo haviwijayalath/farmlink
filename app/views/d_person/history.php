@@ -10,49 +10,35 @@
         <table class="order-history-table">
             <thead>
                 <tr>
+                    <th>Order_ID</th>
                     <th>Product</th>
-                    <th>Order ID</th>
-                    <th>Date</th>
                     <th>Customer Name</th>
-                    <th>Status</th>
                     <th>Amount</th>
+                    <th>Date</th>
                 </tr>
             </thead>
             <tbody>
-                <!-- Static Data for demonstration purposes -->
+            <?php if (!empty($data['orders'])): ?>
+                <?php foreach($data['orders'] as $index => $order): ?>
+                    <tr>
+                        <td>
+                            <a href="<?= URLROOT ?>/orders/orderDetails/<?= htmlspecialchars($order->order_id) ?>" class="historybtn" >
+                                <?= htmlspecialchars($order->order_id) ?>
+                            </a>
+                        </td>
+                        <td><?= htmlspecialchars($order->productName) ?></td>
+                        <td><?= htmlspecialchars($order->name) ?></td>
+                        <td><?= htmlspecialchars($order->amount) ?></td>
+                        <td><?= htmlspecialchars($order->date) ?></td>
+                        
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
                 <tr>
-                    <td>Adidas Ultra Boost</td>
-                    <td><a href="#" class="order-link" data-orderid="25421">#25421</a></td>
-                    <td>Jan 8th, 2022</td>
-                    <td>Bessie Cooper</td>
-                    <td><span class="status delivered">Delivered</span></td>
-                    <td>$200.00</td>
+                    <td colspan="5">No delivered orders available for you.</td>
                 </tr>
-                <tr>
-                    <td>Nike Air Max</td>
-                    <td><a href="#" class="order-link" data-orderid="25422">#25422</a></td>
-                    <td>Jan 9th, 2022</td>
-                    <td>John Doe</td>
-                    <td><span class="status canceled">Canceled</span></td>
-                    <td>$180.00</td>
-                </tr>
-                <tr>
-                    <td>Puma RS-X</td>
-                    <td><a href="#" class="order-link" data-orderid="25423">#25423</a></td>
-                    <td>Jan 10th, 2022</td>
-                    <td>Jane Smith</td>
-                    <td><span class="status delivered">Delivered</span></td>
-                    <td>$150.00</td>
-                </tr>
-                <tr>
-                    <td>Converse Chuck Taylor</td>
-                    <td><a href="#" class="order-link" data-orderid="25424">#25424</a></td>
-                    <td>Jan 11th, 2022</td>
-                    <td>Bob Johnson</td>
-                    <td><span class="status delivered">Delivered</span></td>
-                    <td>$120.00</td>
-                </tr>
-            </tbody>
+            <?php endif; ?>
+        </tbody>
         </table>
     </div>
 </div>

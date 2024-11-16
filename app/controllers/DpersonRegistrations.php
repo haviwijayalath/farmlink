@@ -1,6 +1,6 @@
 <?php 
 
-class Users extends Controller {
+class DpersonRegistrations extends Controller {
     public function __construct() {
       $this->userModel = $this->model('User'); 
     }
@@ -9,7 +9,7 @@ class Users extends Controller {
         // Your code here
     }
     
-    public function dpregister() {
+    public function register() {
 
         // Check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -160,7 +160,7 @@ class Users extends Controller {
 
                   //register user
                   if($this->userModel->registerDeliveryPerson($data)){
-                    redirect('users/login');
+                    redirect('DpersonRegistrations/login');
                  }else{
                      die('Something went wrong');
                  }
@@ -285,21 +285,6 @@ class Users extends Controller {
 
     public function createUserSession($user){
 
-        //Redirect based on role
-        switch ($user->role) {
-          case 'consultants':
-              redirect('pages/index');
-              break;
-          case 'farmers':
-              redirect('pages/index');
-              break;
-          case 'buyers':
-              redirect('pages/index');
-              break;
-          case 'suppliers':
-              redirect('pages/index');
-              break;
-          case 'delivery_persons':
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['user_name'] = $user->name;
                 $_SESSION['user_role'] = $user->role; // Store the user's role in session
@@ -315,13 +300,9 @@ class Users extends Controller {
                 $_SESSION['user_v_capacity'] = $user->capacity;
                 $_SESSION['user_v_image'] = $user->v_image;
                 $_SESSION['user_password'] = $user->password;
-                redirect('dpersoncontrollers/neworder');
-              break;
-          default:
-              redirect('pages/index');
-              break;
+                redirect('Ordercontrollers/neworder');
         } 
-    }
+    
         
     public function logout(){
 
@@ -334,40 +315,14 @@ class Users extends Controller {
         unset($_SESSION['user_city']);
         unset($_SESSION['user_email']);
         unset($_SESSION['user_password']);
-
-        //Logout based on role
-        switch ($_SESSION['user_role']) {
-            case 'consultants':
-                session_destroy();
-                redirect('users/login');
-                break;
-            case 'farmers':
-                session_destroy();
-                redirect('users/login');
-                break;
-            case 'buyers':
-                session_destroy();
-                redirect('users/login');
-                break;
-            case 'suppliers':
-                session_destroy();
-                redirect('users/login');
-                break;
-            case 'delivery_persons':
-                unset($_SESSION['user_vehicle']);
-                unset($_SESSION['user_delivery_area']);
-                unset($_SESSION['user_v_regno']);
-                unset($_SESSION['user_v_capacity']);
-                unset($_SESSION['user_v_image']);
-                unset($_SESSION['user_role']);
-                session_destroy();
-                redirect('users/login');
-                break;
-            default:
-                session_destroy();
-                redirect('users/login');
-                break;
-          } 
+        unset($_SESSION['user_vehicle']);
+        unset($_SESSION['user_delivery_area']);
+        unset($_SESSION['user_v_regno']);
+        unset($_SESSION['user_v_capacity']);
+        unset($_SESSION['user_v_image']);
+        unset($_SESSION['user_role']);
+        session_destroy();
+        redirect('DpersonRegistrations/login');
       
     }
         

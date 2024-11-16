@@ -81,3 +81,20 @@ h2 {
   color: black;
   cursor: pointer;
 }
+
+.historybtn {
+  padding: 8px 12px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #f44336;
+  color: white;
+  border-color: #f44336;
+}
+
+.historybtn:hover{
+  opacity: 0.8;
+}
+

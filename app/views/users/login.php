@@ -9,7 +9,7 @@
 
         <div class="login-right">
             <h2>Welcome back!</h2>
-            <form action="<?php echo URLROOT; ?>/users/login" method="POST">
+            <form action="<?php echo URLROOT; ?>/DpersonRegistrations/login" method="POST">
                 <div class="form-group">
                     <input type="email" name="email" placeholder="Enter your email" <?php echo (!empty($data['email_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['email']; ?>" required>
                 </div>

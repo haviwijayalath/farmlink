@@ -10,7 +10,7 @@
       <div class="register-form">
         <h2>Register Now</h2>
 
-        <form action="<?php echo URLROOT; ?>/users/dpregister" method="POST" enctype="multipart/form-data">
+        <form action="<?php echo URLROOT; ?>/DpersonRegistrations/register" method="POST" enctype="multipart/form-data">
 
           <label for="name">Full Name</label>
           <input type="text" id="name" name="name" placeholder="Enter your name" <?php echo (!empty($data['name_err'])) ? 'is_invalid' : ''; ?> 
@@ -40,9 +40,13 @@
           
           <label for="image">Upload Image</label>
           <div class="upload-container">
-            <input type="file" id="image" name="image" <?php echo (!empty($data['image_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['image']; ?>">
-            <span><?php echo $data['image_err']; ?></span>
+            <input type="file" id="image" name="image" <?php echo (!empty($data['image_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['image']; ?>" onchange="previewImage(event)">
           </div>
+            <div id="image-preview" style="margin-top: 15px;">
+            <img id="output" src="" alt="Image Preview" style="max-width: 200px; display: none;">
+            
+            <span><?php echo $data['image_err']; ?></span>
+            </div>
 
           <label for="vehicle">Vehicle type:</label>
           <select id="vehicle" name="vehicle" placeholder="Select a vehicle" <?php echo (!empty($data['vehicle_err'])) ? 'is_invalid' : ''; ?>>
@@ -66,9 +70,13 @@
 
             <label for="v_image">Vehicle Image</label>
           <div class="upload-container">
-            <input type="file" id="v_image" name="v_image" <?php echo (!empty($data['v_image_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['v_image']; ?>">
-            <span><?php echo $data['v_image_err']; ?></span>
-          </div>
+            <input type="file" id="v_image" name="v_image" <?php echo (!empty($data['v_image_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['v_image']; ?>" onchange="previewVehicleImage(event)">
+            </div>
+            
+            <div id="vehicle-image-preview" style="margin-top: 15px;">
+                <img id="outputVehicle" src="" alt="Vehicle Image Preview" style="max-width: 200px; display: none;">
+                <span><?php echo $data['v_image_err']; ?></span>
+            </div>
           
           <label for="password">Password</label>
           <input type="password" id="password" name="password" placeholder="Enter your password" <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> 
@@ -87,5 +95,21 @@
         </form>
       </div>
   </div>
+
+  <script>
+function previewImage(event) {
+    const imagePreview = document.getElementById('output');
+    imagePreview.src = URL.createObjectURL(event.target.files[0]);
+    imagePreview.style.display = 'block';
+    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
+}
+
+function previewVehicleImage(event) {
+    const vehicleImagePreview = document.getElementById('outputVehicle');
+    vehicleImagePreview.src = URL.createObjectURL(event.target.files[0]);
+    vehicleImagePreview.style.display = 'block';
+    vehicleImagePreview.onload = () => URL.revokeObjectURL(vehicleImagePreview.src); // Free memory
+}
+</script>
 
   <?php require APPROOT . '/views/inc/footer.php'; ?>
