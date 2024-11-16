@@ -59,3 +59,70 @@
   border-color: #f44336;
 }
 
+.tracking-container {
+  display: flex;
+  justify-content: center;
+  margin: 20px;
+}
+
+.tracking-status {
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+  position: relative;
+}
+
+.status-item {
+  text-align: center;
+  flex: 1;
+  position: relative;
+}
+
+.status-item .status-icon {
+  display: block;
+  width: 30px;
+  height: 30px;
+  margin: 0 auto 10px;
+  background-color: #ddd;
+  color: white;
+  line-height: 30px;
+  border-radius: 50%;
+  font-weight: bold;
+}
+
+.status-item.completed .status-icon {
+  background-color: green;
+}
+
+.status-item.active .status-icon {
+  background-color: orange;
+}
+
+.status-item p {
+  margin: 0;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+.tracking-btn-container {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.tracking-btn {
+  background-color: #007BFF; /* Bootstrap primary blue */
+  color: white;
+  padding: 10px 20px;
+  text-decoration: none;
+  font-size: 16px;
+  border-radius: 5px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.tracking-btn:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+
+

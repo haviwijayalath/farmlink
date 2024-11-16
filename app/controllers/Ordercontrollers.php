@@ -23,6 +23,7 @@ class Ordercontrollers extends Controller {
 
       $orders = $this->orderModel->getNewOrdersByArea($deliveryArea);
 
+
       $data = [
           'orders' => $orders ?? [] // Default to empty array if null
       ];
@@ -145,6 +146,18 @@ class Ordercontrollers extends Controller {
 
         $this->view('d_person/history', $data);
     }
+
+    public function tracking(){
+        $orderStatus = $this->orderModel->fetchOrderStatus($_SESSION['order_id']);
+
+        // Check if we received any status
+        $status = $orderStatus ? $orderStatus[0]->status : 'new';  // Default to 'PLACED' if no status found
+
+        $this->view('d_person/ongoing/tracking',['status' => $status]);
+
+    }
+
+    
     
 
 }

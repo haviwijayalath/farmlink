@@ -14,6 +14,7 @@
                 <th>Drop-Off</th>
                 <th>Buyer</th>
                 <th></th>
+                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -31,7 +32,12 @@
                     <td>
                         <a href="<?= URLROOT ?>/Ordercontrollers/proof" class="ongoingbtn ongoingbtn-route">Proofs ➤</a>
                     </td>
+                    <td>
+                        <a href="<?= URLROOT ?>/ordercontrollers/tracking" class="tracking-btn">Track Order</a>
+                    </td>
+                    
                 </tr>
+                
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
@@ -41,10 +47,14 @@
         </tbody>
     </table>
 
+    
+
+
 
     <!-- Map container -->
     <div id="map"></div>
 </div>
+
 
 <!-- Google Maps API Script -->
 <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCl4sjIQ6o8QygScVKj4PJuo5H4X44Cfhk&callback=initMap" async defer></script>

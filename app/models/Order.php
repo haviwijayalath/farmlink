@@ -52,7 +52,8 @@ class Order {
                 farmers.location AS pickup_address,
                 buyer_addresses.city AS dropoff_address,
                 farmer_buyer_orders.capacity,
-                buyers.name as buyer
+                buyers.name as buyer,
+                farmer_buyer_orders.status
             FROM 
                 farmer_buyer_orders
             INNER JOIN 
@@ -133,4 +134,14 @@ class Order {
             return $this->db->resultSet();
 
         }
+
+        public function fetchOrderStatus($id){
+            $this->db->query('SELECT status FROM farmer_buyer_orders WHERE id = :orderId');
+            $this->db->bind(':orderId', $id);
+            return $this->db->resultSet();
+
+        }
+
+        
+    
 }
