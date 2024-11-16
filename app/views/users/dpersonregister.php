@@ -10,7 +10,7 @@
       <div class="register-form">
         <h2>Register Now</h2>
 
-        <form action="<?php echo URLROOT; ?>/users/dpregister" method="POST" enctype="multipart/form-data">
+        <form action="<?php echo URLROOT; ?>/DpersonRegistrations/register" method="POST" enctype="multipart/form-data">
 
           <label for="name">Full Name</label>
           <input type="text" id="name" name="name" placeholder="Enter your name" <?php echo (!empty($data['name_err'])) ? 'is_invalid' : ''; ?> 
@@ -46,7 +46,7 @@
             <img id="output" src="" alt="Image Preview" style="max-width: 200px; display: none;">
             
             <span><?php echo $data['image_err']; ?></span>
-          </div>
+            </div>
 
           <label for="vehicle">Vehicle type:</label>
           <select id="vehicle" name="vehicle" placeholder="Select a vehicle" <?php echo (!empty($data['vehicle_err'])) ? 'is_invalid' : ''; ?>>
