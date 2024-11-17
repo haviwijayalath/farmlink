@@ -110,4 +110,12 @@
     public function index() {
       $this->view('farmers/index');
     }
+
+    public function viewprofile() {
+      $this->view('farmers/viewprofile');
+    }
+
+    public function editprofile() {
+      $this->view('farmers/editprofile');
+    }
   }

@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500');
+
+.sidebar {
+  position:absolute;
+  width: 250px;
+  min-height:86vh;
+  background: #042331;
+  transition: all 0.5s ease;
+  display: flex;
+  height: 100%;
+}
+
+.sidebar ul {
+  padding: 0;
+}
+
+.sidebar ul li {
+  border-bottom: 1px solid black;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar ul a {
+  display: block;
+  width: 100%;
+  line-height: 65px;
+  font-size: 20px;
+  color: white;
+  padding-left: 40px;
+  transition: 0.4s;
+}
+
+ul li:hover a {
+  padding-left: 50px;
+}
+
+.sidebar ul a i {
+  margin-right: 16px;
+}
