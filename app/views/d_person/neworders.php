@@ -28,7 +28,7 @@
                         <td><?= htmlspecialchars($order->dropoff_address) ?></td>
                         <td><?= htmlspecialchars($order->capacity) ?></td>
                         <td>
-                            <a href="<?= URLROOT ?>/ordercontrollers/confirm/<?= htmlspecialchars($order->id) ?>" class="newbtn newbtn-confirm">Confirm</a>
+                            <a href="<?= URLROOT ?>/dpersons/confirm/<?= htmlspecialchars($order->id) ?>" class="newbtn newbtn-confirm">Confirm</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

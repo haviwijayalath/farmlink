@@ -4,7 +4,7 @@ class Accountcontrollers extends Controller {
     private $userModel;
     
   public function __construct() {
-      $this->userModel = $this->model('Account');
+      $this->userModel = $this->model('Dperson');
   }
 
   // Method to get user data by ID (reusable function)
@@ -20,11 +20,15 @@ class Accountcontrollers extends Controller {
               // Combine address parts into a single string
               'address' => $user->number . ', ' . $user->street . ', ' . $user->city,
               'area' => $user->area,
-              'image' => $user->image
+              'image' => $user->image,
+              'type' => $user->vehicle,
+              'regno' => $user->regno,
+              'capacity' => $user->capacity,
+              'v_image' => $user->v_image
           ];
       } else {
           flash('user_message', 'User not found');
-          redirect('dpersoncontrollers/neworder'); // Or an appropriate page
+          redirect('dpersons/neworder'); // Or an appropriate page
       }
   }
 
@@ -103,7 +107,7 @@ class Accountcontrollers extends Controller {
           // If no errors, update the user
           if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['address_err'])  && empty($data['image_err'])) {
               if ($this->userModel->updateUser($data)) {
-                  redirect('accountcontrollers/account');
+                  redirect('Dpaccounts/account');
               } else {
                   die('Something went wrong');
               }
@@ -141,7 +145,63 @@ class Accountcontrollers extends Controller {
 
     // Load the account view with user data
     $this->view('d_person/accounts/account', $data);
-}
+    }
 
-}
+    public function vehicleinfo() {
+
+    $id = $_SESSION['user_id'];
+    $data = $this->getUserDataById($id);
+
+    // Load the account view with user data
+    $this->view('d_person/vehicles/vehicleinfo', $data);
+    }
+
+    /*public function deleteVehicle(){
+        // Assume vehicle ID is passed as a query parameter
+        $vehicleId = $_GET['id'] ?? null;
+
+        if ($vehicleId && $this->vehicleModel->deleteVehicle($vehicleId)) {
+            flash('vehicle_message', 'Vehicle deleted successfully');
+            redirect('Accountcontrollers/viewVehicles'); // Redirect to view page
+        } else {
+            flash('vehicle_message', 'Failed to delete vehicle', 'alert alert-danger');
+            redirect('Accountcontrollers/viewVehicles');
+        }
+
+    }*/
+
+    public function addVehicle(){
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process the form
+            $data = [
+                'type' => trim($_POST['type']),
+                'regno' => trim($_POST['regno']),
+                'capacity' => trim($_POST['capacity']),
+                'v_image' => '', // Handle file upload
+            ];
+
+            // Handle file upload
+            if (!empty($_FILES['v_image']['name'])) {
+                $fileName = $_FILES['v_image']['name'];
+                $fileTmp = $_FILES['v_image']['tmp_name'];
+                $destination = APPROOT . '/../public/uploads/' . $fileName;
+
+                if (move_uploaded_file($fileTmp, $destination)) {
+                    $data['v_image'] = $fileName;
+                }
+            }
+
+            if ($this->vehicleModel->addVehicle($data)) {
+                flash('vehicle_message', 'Vehicle added successfully');
+                redirect('Dpaccounts/viewVehicles');
+            } else {
+                flash('vehicle_message', 'Failed to add vehicle', 'alert alert-danger');
+                $this->view('vehicles/addVehicle', $data);
+            }
+        } else {
+            // Load the form
+            $this->view('vehicles/addVehicle');
+        }
+    }
+    }
 

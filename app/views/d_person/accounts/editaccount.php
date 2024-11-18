@@ -6,7 +6,7 @@
 
 <div class="edit-profile-container">
     <h2>Edit Your Profile</h2>
-    <form action="<?php echo URLROOT; ?>/accountcontrollers/editprofile/<?php echo $data['id']; ?>" method="POST" enctype="multipart/form-data">
+    <form action="<?php echo URLROOT; ?>/dpaccounts/editprofile/<?php echo $data['id']; ?>" method="POST" enctype="multipart/form-data">
 
     <input type="hidden" name="address_id" value="<?= htmlspecialchars($data['address_id']) ?>">
 
@@ -56,7 +56,7 @@
         </div>
 
         <div class="form-buttons">
-            <a href="<?= URLROOT ?>/accountcontrollers/account/<?= $data['id'] ?>" class="cancel-btn">cancel</a>
+            <a href="<?= URLROOT ?>/dpaccounts/account/<?= $data['id'] ?>" class="cancel-btn">cancel</a>
             <button type="submit" class="save-btn">save changes</button>
             
             

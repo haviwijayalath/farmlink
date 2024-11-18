@@ -10,7 +10,7 @@
       <div class="register-form">
         <h2>Register Now</h2>
 
-        <form action="<?php echo URLROOT; ?>/DpersonRegistrations/register" method="POST" enctype="multipart/form-data">
+        <form action="<?php echo URLROOT; ?>/dpersons/register" method="POST" enctype="multipart/form-data">
 
           <label for="name">Full Name</label>
           <input type="text" id="name" name="name" placeholder="Enter your name" <?php echo (!empty($data['name_err'])) ? 'is_invalid' : ''; ?> 
