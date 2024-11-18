@@ -1,3 +1,7 @@
+body{
+  font-family: 'Poppins', sans-serif;
+}
+
 .header {
   background-color: #53CF7C;
   color: white;
@@ -25,4 +29,21 @@ a{
 
 .login-btn:hover{
   background-color: #fff;
+}
+
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .register-container {
+      flex-direction: column;
+      width: 100%;
+  }
+  
+  .register-image, .register-form {
+      width: 100%;
+  }
+
+  .register-image img {
+      max-width: 300px;
+  }
 }

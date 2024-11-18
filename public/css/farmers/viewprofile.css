@@ -1,0 +1,56 @@
+.account-container {
+  display: flex;
+  justify-content: center; /* Align container in the center */
+  padding: 20px;
+  margin: 40px;
+}
+
+.account-content {
+  display: flex;
+  align-items: center; /* Align items vertically in the center */
+  background-color: #f7f7f7;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
+  max-width: 800px; /* Limit max width for content */
+  width: 100%; /* Ensure content stretches full width */
+}
+
+.profile-info {
+  flex: 1;
+  margin-left: 20px; /* Adds space between the image and text */
+}
+
+.profile-pic {
+  border-radius: 50%;
+  width: 150px;
+  height: 150px;
+  object-fit: cover; /* Ensure image scales nicely */
+}
+
+h2 {
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.profile-info p {
+  margin: 8px 0;
+  font-size: 16px;
+  color: #555;
+}
+
+.edit-btn {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #60ba62;
+  color: white;
+  text-decoration: none;
+  border-radius: 5px;
+  margin-top: 20px;
+  font-weight: bold;
+  transition: background-color 0.3s ease;
+}
+
+.edit-btn:hover {
+  background-color: #4da44e; /* Darken button color on hover */
+}
