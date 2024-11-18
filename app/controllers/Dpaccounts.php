@@ -1,5 +1,5 @@
 <?php
-class Accountcontrollers extends Controller {
+class Dpaccounts extends Controller {
 
     private $userModel;
     
