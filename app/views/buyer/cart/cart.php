@@ -9,7 +9,7 @@
 
 <?php 
 
-session_start();
+//session_start();
 
 // Sample cart data (In production, this data should come from a database or API)
 $_SESSION['cart'] = $_SESSION['cart'] ?? [

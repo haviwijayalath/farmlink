@@ -24,4 +24,8 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/cart/delivery_details');
     }
 
+    public function paymentDetails(){
+        $this->view('buyer/cart/payment');
+    }
+
 }
