@@ -9,12 +9,12 @@
 
     <?php if(isset($_SESSION['user_id'])) : ?>
 
-        <a href="<?php echo URLROOT; ?>/DpersonRegistrations/logout" class="login-btn"><i class="fa-solid fa-user"></i> Logout</a>
+        <a href="<?php echo URLROOT; ?>/Users/logout" class="login-btn"><i class="fa-solid fa-user"></i> Logout</a>
 
     <?php else : ?>
 
         <span><a href="<?php echo URLROOT; ?>/home/home2"><i class="fa-solid fa-house"></i> Home</a></span> 
-        <span><a href="<?php echo URLROOT; ?>/DpersonRegistrations/login" class="login-btn"><i class="fa-solid fa-user"></i> Login</a></span>
+        <span><a href="<?php echo URLROOT; ?>/Users/login" class="login-btn"><i class="fa-solid fa-user"></i> Login</a></span>
         
     <?php endif; ?>
     </div>

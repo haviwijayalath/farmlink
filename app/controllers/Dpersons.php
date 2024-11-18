@@ -1,13 +1,164 @@
 <?php 
 
-class DpersonRegistrations extends Controller {
+class Dpersons extends Controller {
     public function __construct() {
-      $this->userModel = $this->model('User'); 
+      $this->userModel = $this->model('Dperson'); 
     }
 
     public function index() {
-        // Your code here
+        // Default method content here
+        echo "Welcome to the Orders page!";
     }
+
+    // Show new orders page
+    public function neworder() {
+      $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+      
+
+      if (!$deliveryArea) {
+          // Handle case where delivery area is not set
+          $data = ['orders' => []];
+          $this->view('d_person/neworders', $data);
+          return;
+      }
+
+      $orders = $this->userModel->getNewOrdersByArea($deliveryArea);
+
+
+      $data = [
+          'orders' => $orders ?? [] // Default to empty array if null
+      ];
+
+
+      $this->view('d_person/neworders', $data);
+  }
+
+    // Confirm an order and redirect to new orders page
+    public function confirm($orderId) {
+        if ($this->userModel->confirmOrder($orderId)) {
+            header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
+        } else {
+            die('Something went wrong.');
+        }
+    }
+
+    // Display ongoing deliveries
+    public function ongoingDeliveries() {
+        $deliveryArea = $_SESSION['user_delivery_area'];
+        $orders = $this->userModel->getOrdersByArea($deliveryArea);
+
+        if (!empty($orders)) {
+            $_SESSION['order_id'] = $orders[0]->id;
+            $_SESSION['pickup_address'] = $orders[0]->pickup_address;
+        } else {
+            // Handle case where no ongoing deliveries are found
+            $_SESSION['order_id'] = null;
+            $_SESSION['pickup_address'] = null;
+        }
+
+        $data = [
+            'orders' => $orders ?? []  // If $orders is null, this will set it to an empty array
+        ];
+        
+
+        $this->view('d_person/ongoing/ongoing', $data);
+    }
+
+    public function proof(){
+        $this->view('d_person/ongoing/d_upload');
+    }
+
+    public function deliveryUploadPickup() {
+        // Check if files are uploaded
+        if (isset($_FILES['pickup_image'])) {
+            // Directory to save uploaded images
+            $uploadDir = APPROOT . '/../public/d_uploads/';
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+    
+            // Handle pickup image
+            $pickupImage = $_FILES['pickup_image'];
+            $pickupImageName = $uploadDir . time() . '_pickup_' . basename($pickupImage['name']);
+            move_uploaded_file($pickupImage['tmp_name'], $pickupImageName);
+    
+            $deliveryId = $this->userModel->savePickupImages($_SESSION['order_id'], $_SESSION['user_id'],$_SESSION['pickup_address'], $pickupImageName);
+    
+            // Save image paths in the database
+            if ( $deliveryId) {
+
+                 // Store file paths in session variables
+                $_SESSION['pickup_image'] = 'public/d_uploads/' . basename($pickupImageName);
+
+                $_SESSION['delivery_id'] = $deliveryId;
+
+                // Redirect with success
+                redirect('dpersons/ongoingDeliveries');
+            } else {
+                redirect('dpersons/proof');
+            }
+            } else {
+                redirect('dpersons/proof');
+            }
+    }
+
+    public function deliveryUploadDropoff() {
+        // Check if files are uploaded
+        if (isset($_FILES['dropoff_image'])) {
+            // Directory to save uploaded images
+            $uploadDir = APPROOT . '/../public/d_uploads/';
+
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+    
+            // Handle dropoff image
+            $dropoffImage = $_FILES['dropoff_image'];
+            $dropoffImageName = $uploadDir . time() . '_dropoff_' . basename($dropoffImage['name']);
+            move_uploaded_file($dropoffImage['tmp_name'], $dropoffImageName);
+    
+            // Save image paths in the database
+            if ($this->userModel->saveDropoffImages($_SESSION['delivery_id'],$dropoffImageName)) {
+
+                 // Store file paths in session variables
+                $_SESSION['dropoff_image'] = $dropoffImageName;
+
+                // Redirect with success
+                redirect('dpersons/ongoingDeliveries');
+            } else {
+                redirect('dpersons/proof');
+            }
+            } else {
+                redirect('dpersons/proof');
+            }
+    }
+
+    public function history(){
+
+        $id = $_SESSION['user_id'];
+
+        $history = $this->userModel->history($id);
+
+        $data = [
+            'orders' => $history ?? [] // Default to empty array if null
+        ];
+
+
+        $this->view('d_person/history', $data);
+    }
+
+    public function tracking(){
+        $orderStatus = $this->userModel->fetchOrderStatus($_SESSION['order_id']);
+
+        // Check if we received any status
+        $status = $orderStatus ? $orderStatus[0]->status : 'new';  // Default to 'PLACED' if no status found
+
+        $this->view('d_person/ongoing/tracking',['status' => $status]);
+
+    }
+
+    
     
     public function register() {
 
@@ -160,7 +311,7 @@ class DpersonRegistrations extends Controller {
 
                   //register user
                   if($this->userModel->registerDeliveryPerson($data)){
-                    redirect('DpersonRegistrations/login');
+                    redirect('users/login');
                  }else{
                      die('Something went wrong');
                  }
@@ -216,123 +367,6 @@ class DpersonRegistrations extends Controller {
         }
     }
 
-    public function login() {
-            //check for POST
-            if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            //process form
-            // Sanitize POST data
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-            // Init data
-            $data = [
-                'email' => trim($_POST['email']),
-                'password' => trim($_POST['password']),
-                'email_err' => '',
-                'password_err' => ''
-            ];
-
-            //Validate email
-            if(empty($data['email'])) {
-                $data['email_err'] = 'Please enter your Email';
-            }
-
-            // Validate password
-            if(empty($data['password'])) {
-                $data['password_err'] = 'Please enter a password';
-            } 
-
-            //Check for user
-            if($this->userModel->findUserByEmail($data['email'])){
-                //User found
-            } else {
-                //User not found
-                $data['email_err'] = 'No user found';
-            }
-
-            //Make sure errors are empty
-            if(empty($data['email_err']) && empty($data['password_err'])){
-                //Validated
-                //Check and set logged in user
-                $loggedInUser = $this->userModel->login($data['email'], $data['password']);
-
-                if($loggedInUser){
-                    //Create session
-                   $this->createUserSession($loggedInUser);
-                } else {
-                    $data['password_err'] = 'Password incorrect';
-
-                    $this->view('users/login', $data);
-                }
-
-            } else {
-                //Load the view with errors
-                $this->view('users/login', $data);
-            }
-
-          }else{
-          //init data
-          $data =[
-            'email' => '',
-            'password' => '',
-            'email_err' => '',
-            'password_err' => ''
-          ];
-  
-          //load view
-          $this->view('users/login', $data);
-        }
-    }
-
-    public function createUserSession($user){
-
-                $_SESSION['user_id'] = $user->id;
-                $_SESSION['user_name'] = $user->name;
-                $_SESSION['user_role'] = $user->role; // Store the user's role in session
-                $_SESSION['user_phone'] = $user->phone;
-                $_SESSION['user_image'] = $user->image;
-                $_SESSION['user_email'] = $user->email;
-                $_SESSION['user_addr_no'] = $user->addr_no;
-                $_SESSION['user_street'] = $user->street;
-                $_SESSION['user_city'] = $user->city;
-                $_SESSION['user_vehicle'] = $user->vehicle;
-                $_SESSION['user_delivery_area'] = $user->area;
-                $_SESSION['user_v_regno'] = $user->regno;
-                $_SESSION['user_v_capacity'] = $user->capacity;
-                $_SESSION['user_v_image'] = $user->v_image;
-                $_SESSION['user_password'] = $user->password;
-                redirect('Ordercontrollers/neworder');
-        } 
     
-        
-    public function logout(){
-
-        unset($_SESSION['user_id']);
-        unset($_SESSION['user_name']);
-        unset($_SESSION['user_phone']);
-        unset($_SESSION['user_image']);
-        unset($_SESSION['user_addr_no']);
-        unset($_SESSION['user_street']);
-        unset($_SESSION['user_city']);
-        unset($_SESSION['user_email']);
-        unset($_SESSION['user_password']);
-        unset($_SESSION['user_vehicle']);
-        unset($_SESSION['user_delivery_area']);
-        unset($_SESSION['user_v_regno']);
-        unset($_SESSION['user_v_capacity']);
-        unset($_SESSION['user_v_image']);
-        unset($_SESSION['user_role']);
-        session_destroy();
-        redirect('DpersonRegistrations/login');
-      
-    }
-        
-
-    public function isLoggedIn(){
-        if(isset($_SESSION['user_id'])) {
-            return true;
-        } else {
-            return false;
-        }
-    }
 }
 ?>

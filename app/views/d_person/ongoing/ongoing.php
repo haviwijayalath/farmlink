@@ -30,10 +30,10 @@
                     <td><?= htmlspecialchars($order->dropoff_address) ?></td>
                     <td><?= htmlspecialchars($order->buyer) ?></td>
                     <td>
-                        <a href="<?= URLROOT ?>/Ordercontrollers/proof" class="ongoingbtn ongoingbtn-route">Proofs ➤</a>
+                        <a href="<?= URLROOT ?>/dpersons/proof" class="ongoingbtn ongoingbtn-route">Proofs ➤</a>
                     </td>
                     <td>
-                        <a href="<?= URLROOT ?>/ordercontrollers/tracking" class="tracking-btn">Track Order</a>
+                        <a href="<?= URLROOT ?>/dpersons/tracking" class="tracking-btn">Track Order</a>
                     </td>
                     
                 </tr>

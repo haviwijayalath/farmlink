@@ -6,7 +6,7 @@
 
 <div class="delivery-container">
     <h2>Upload Delivery Images</h2>
-    <form action="<?= URLROOT; ?>/ordercontrollers/deliveryUploadPickup" method="POST" enctype="multipart/form-data">
+    <form action="<?= URLROOT; ?>/dpersons/deliveryUploadPickup" method="POST" enctype="multipart/form-data">
 
         <!-- Pickup Image -->
         <div class="form-group">
@@ -26,7 +26,7 @@
     </form>
 
 
-    <form action="<?= URLROOT; ?>/ordercontrollers/deliveryUploadDropoff" method="POST" enctype="multipart/form-data">
+    <form action="<?= URLROOT; ?>/dpersons/deliveryUploadDropoff" method="POST" enctype="multipart/form-data">
         <!-- Dropoff Image -->
     <div class="form-group">
             <label for="dropoff_image">Dropoff Image</label>
