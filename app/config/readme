@@ -18,6 +18,7 @@ create a "config.php" file here and add the following.
   // site name
   define('SITENAME', 'FarmLink');
 
+?>
 
 """
 
