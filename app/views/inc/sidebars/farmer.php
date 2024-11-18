@@ -3,10 +3,10 @@
 
 <div class="sidebar">
       <ul>
-        <li><a href="<?php echo URLROOT?>/orders/neworder"><i class="fas fa-shopping-cart"></i> New Orders</a></li>
-        <li><a href="<?php echo URLROOT?>/farmers/viewprofile"><i class="fas fa-user"></i> Account</a></li>
-        <li><a href="<?php echo URLROOT?>/vehicles/vehicleinfo"><i class="fas fa-truck"></i> Vehicle</a></li>
-        <li><a href="<?php echo URLROOT?>/orders/orderhistory"><i class="fas fa-history"></i> Delivery History</a></li>
-        <li><a href="<?php echo URLROOT?>/orders/ongoing"><i class="fa-solid fa-truck-fast"></i>Ongoing</a></li>
+        <li><a href="<?php echo URLROOT?>/farmers/managestocks"><i class="fa-solid fa-boxes-stacked"></i>Stocks</a></li>
+        <li><a href="<?php echo URLROOT?>/farmers/manageorders"><i class="fa-solid fa-bars"></i>Orders</a></li>
+        <li><a href="<?php echo URLROOT?>/farmers/viewsales"><i class="fa-solid fa-clipboard-check"></i>Sales</a></li>
+        <li><a href="<?php echo URLROOT?>/users/forum"><i class="fa-solid fa-comment"></i>Forum</a></li>
+        <li><a href="<?php echo URLROOT?>/farmers/bookconsultant"><i class="fa-solid fa-user-tie"></i>Consultant</a></li>
       </ul>
     </div>

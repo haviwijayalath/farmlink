@@ -85,4 +85,13 @@
 
       return $row;
     }
+
+    // list stocks
+    public function getStocks() {
+      $this->db->query('SELECT * FROM fproducts');
+
+      $results = $this->db->resultSet();
+
+      return $results;
+    }
   }

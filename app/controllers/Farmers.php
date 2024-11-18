@@ -118,4 +118,21 @@
     public function editprofile() {
       $this->view('farmers/editprofile');
     }
+
+    public function managestocks() {
+      $data = $this->farmerModel->getStocks();
+      $this->view('farmers/managestocks', $data);
+    }
+
+    public function manageorders() {
+      $this->view('farmers/manageorders');
+    }
+
+    public function viewsales() {
+      $this->view('farmers/viewsales');
+    }
+
+    public function bookconsultant() {
+      $this->view('farmers/bookconsultant');
+    }
   }
