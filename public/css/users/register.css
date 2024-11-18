@@ -1,0 +1,93 @@
+.register-container {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(134, 35, 35, 0.1);
+  border-radius: 10px 10px;
+  overflow: hidden;
+  margin: 20px 10px;
+}
+
+.register-image {
+  background-color: #E9F8ED;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 30px;
+  width: 40%;
+  margin-left: 20px;
+}
+
+.register-image img {
+  width: 80%;
+  border: 4px solid #4CAF50;
+  border-radius: 10px;
+}
+
+.register-form {
+  background-color: #d5e9d7;
+  padding: 20px;
+  width: 50%;
+}
+
+.register-form h2 {
+  margin: 10px;
+  color: #333;
+  font-weight: bolder;
+}
+
+.register-form label {
+  display: block;
+  font-weight:lighter;
+  margin: 10px 10px;
+}
+
+.register-form input[type="text"],
+.register-form input[type="email"],
+.register-form input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  background-color: #f9f9f9;
+}
+
+.upload-container {
+  display: flex;
+  align-items: center;
+}
+
+.upload-btn {
+  padding: 10px;
+  background-color: #07ab2b;
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bolder;
+}
+
+.upload-btn:hover {
+  background-color: #033a06;
+}
+
+.register-btn {
+  width: 50%;
+  padding: 15px;
+  background-color: #4CAF50;
+  color: white;
+  border:#033a06;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  margin: 10px 200px;
+  font-weight: bolder;
+}
+
+.register-btn:hover {
+  background-color: #033a06;
+}
+

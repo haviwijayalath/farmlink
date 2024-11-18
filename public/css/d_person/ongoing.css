@@ -1,0 +1,61 @@
+.ongoingorder-container {
+  padding: 20px;
+  background-color: #fff;
+  margin-left: 300px;
+  margin-right: 300px;
+}
+
+.ongoingorders-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+.ongoingorders-table th, .ongoingorders-table td {
+  padding: 12px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+.ongoingorders-table th {
+  background-color: #f4f4f4;
+  font-weight: bold;
+}
+
+.ongoingorders-table tr:hover {
+  background-color: #f9f9f9;
+}
+
+.ongoingbtn {
+  padding: 8px 14px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.ongoingbtn-route {
+  background-color: #2196F3;
+  color: white;
+  border-color: #2196F3;
+  display: inline-block;
+}
+
+.ongoingbtn-route:hover {
+  background-color: #1E88E5;
+  border-color: #1E88E5;
+}
+
+.ongoing-idbtn {
+  padding: 8px 12px;
+  text-decoration: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 14px;
+  background-color: #f44336;
+  color: white;
+  border-color: #f44336;
+}
+

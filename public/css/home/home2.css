@@ -1,0 +1,77 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing:content-box;
+}
+
+main {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  height: fit-content;
+  max-height: 700px;
+}
+
+.welcome-section {
+  width: 50%;
+  display: block;
+}
+
+.welcome-section .welcome-text {
+  background-color: #b6e7b6;
+  padding: 20px;
+  text-align: center;
+  margin-left: 90px;
+}
+
+.welcome-section h1 {
+  font-size: 30px;
+  color: #333;
+}
+
+.market-image img {
+  width: 57%;
+  margin-left: 200px;
+}
+
+.register-section {
+  width: 30%;
+  background-color: white;
+  border: 1px solid #e0e0e0;
+  padding: 20px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  margin-right: 50px;
+  max-height: 400px;
+}
+
+.register-section h2 {
+  font-size: 24px;
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.role-list {
+  list-style: none;
+}
+
+.role-list li {
+  margin: 10px;
+  font-weight: bold;
+}
+
+.role-list a {
+  text-decoration: none;
+  display: block;
+  padding: 15px;
+  background-color: #b6e7b6;
+  color: #333;
+  text-align: center;
+  font-size: 18px;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+.role-list a:hover {
+  background-color: #3a923a;
+  color: white;
+}

@@ -1,0 +1,96 @@
+/* body {
+    font-family: Arial, sans-serif;
+    background-color: #f9f9f9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    margin: 0;
+} */
+
+.cart-container {
+    align-items: center;
+    margin-top: 40px;
+    margin-left: 400px;
+    width: 80%;
+    max-width: 850px;
+    background-color: #fff;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.cart-container h1 {
+    text-align: center;
+    color: #333;
+}
+
+.cart-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+}
+
+.cart-table th, .cart-table td {
+    padding: 12px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+.cart-table th {
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+.cart-table td input[type="number"] {
+    width: 50px;
+    padding: 5px;
+    text-align: center;
+}
+
+.cart-table td button {
+    padding: 5px 10px;
+    color: #fff;
+    background-color: #ff5f5f;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+
+.cart-table td button:hover {
+    background-color: #e04e4e;
+}
+
+button[type="submit"] {
+    width: 100%;
+    padding: 12px;
+    font-size: 16px;
+    background-color: #28a745;
+    color: #fff;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    margin-top: 20px;
+}
+
+button[type="submit"]:hover {
+    background-color: #218838;
+}
+
+.tot_value {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 1.3em;
+    font-weight: bold;
+    color: #333;
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-top: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.total-amount {
+    color: #28a745;
+}
+
