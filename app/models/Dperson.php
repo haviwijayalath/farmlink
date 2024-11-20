@@ -224,7 +224,7 @@ public function addVehicle($data) {
         return false;
         }
 
-        public function history($id){
+    public function history($id){
             $this->db->query('
                 SELECT delivery_info.order_id,
                     delivery_info.date,
@@ -255,6 +255,17 @@ public function addVehicle($data) {
             return $this->db->resultSet();
 
         }
+
+        public function deleteAccount($userId)
+        {
+        $sql = "DELETE FROM delivery_persons WHERE id = :userId";
+        $this->db->query($sql);
+        $this->db->bind(':userId', $userId);
+
+        // Execute the query and return true if successful, false otherwise
+        return $this->db->execute();
+        }
+
 
         
     

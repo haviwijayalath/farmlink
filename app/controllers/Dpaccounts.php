@@ -7,6 +7,10 @@ class Dpaccounts extends Controller {
       $this->userModel = $this->model('Dperson');
   }
 
+  public function index(){
+    echo("invalid");
+  }
+
   // Method to get user data by ID (reusable function)
   private function getUserDataById($id) {
       $user = $this->userModel->getUserById($id);
@@ -107,7 +111,7 @@ class Dpaccounts extends Controller {
           // If no errors, update the user
           if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['address_err'])  && empty($data['image_err'])) {
               if ($this->userModel->updateUser($data)) {
-                  redirect('Dpaccounts/account');
+                  redirect('dpaccounts/account');
               } else {
                   die('Something went wrong');
               }
@@ -145,7 +149,7 @@ class Dpaccounts extends Controller {
 
     // Load the account view with user data
     $this->view('d_person/accounts/account', $data);
-    }
+}
 
     public function vehicleinfo() {
 
@@ -155,6 +159,8 @@ class Dpaccounts extends Controller {
     // Load the account view with user data
     $this->view('d_person/vehicles/vehicleinfo', $data);
     }
+
+
 
     /*public function deleteVehicle(){
         // Assume vehicle ID is passed as a query parameter
@@ -170,7 +176,7 @@ class Dpaccounts extends Controller {
 
     }*/
 
-    public function addVehicle(){
+    public function addvehicle(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Process the form
             $data = [
@@ -191,17 +197,50 @@ class Dpaccounts extends Controller {
                 }
             }
 
-            if ($this->vehicleModel->addVehicle($data)) {
+           
+
+            if ($this->userModel->addVehicle($data)) {
                 flash('vehicle_message', 'Vehicle added successfully');
-                redirect('Dpaccounts/viewVehicles');
+                redirect('dpaccounts/vehicleinfo');
             } else {
                 flash('vehicle_message', 'Failed to add vehicle', 'alert alert-danger');
-                $this->view('vehicles/addVehicle', $data);
+                $this->view('d_person/vehicles/addvehicle', $data);
             }
         } else {
             // Load the form
-            $this->view('vehicles/addVehicle');
+            $id = $_SESSION['user_id'];
+            $this->view('d_person/vehicles/addvehicle', $id);
         }
     }
+
+
+    public function deactivate($userId)
+    {
+    // Attempt to deactivate the user
+    $result = $this->userModel->deleteAccount($userId);
+
+    if ($result) {
+
+        // Clear the session data to log the user out
+        session_unset(); // Unset all session variables
+        session_destroy(); // Destroy the session
+        
+        $this->view('d_person/accounts/deactivation');
+    } else {
+        // Set an error flash message and redirect to an appropriate page
+        $this->setFlash('error', 'Failed to deactivate the user account. Please try again.');
+        redirect('dpaccounts/account');
+    }
+    }
+
+
+    /*private function setFlash($key, $message)
+    {
+        if (!isset($_SESSION)) {
+            session_start();
+        }
+        $_SESSION['flash'][$key] = $message;
+    }*/
+
     }
 
