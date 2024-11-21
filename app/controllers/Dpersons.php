@@ -33,6 +33,8 @@ class Dpersons extends Controller {
       $this->view('d_person/neworders', $data);
   }
 
+  
+
     // Confirm an order and redirect to new orders page
     public function confirm($orderId) {
         if ($this->userModel->confirmOrder($orderId)) {
@@ -365,6 +367,20 @@ class Dpersons extends Controller {
             // Load view
             $this->view('users/dpersonregister', $data);
         }
+    }
+
+    public function orderdetails($order_id){
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+
+        $orders = $this->userModel->getorder($deliveryArea, $order_id);
+
+
+      $data = [
+          'orders' => $orders ?? [] // Default to empty array if null
+      ];
+
+
+      $this->view('d_person/order_details', $data);
     }
 
     
