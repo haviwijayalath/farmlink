@@ -1,13 +1,14 @@
 footer {
-  background-color: #0c2e3d; 
+  background-color: #042331; 
   color: white; 
   text-align: center; 
-  padding: 10px 0;
+  padding: 10px ;
   position:fixed;
   bottom: -5px; /*stick to the bottom*/
   width: 100%; 
   font-family: 'Poppins', sans-serif;
-  margin-top: 0px;
+  margin-top: 0;
+  margin-left: -7px;
 }
 
 footer p {

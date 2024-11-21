@@ -15,6 +15,7 @@ main {
 .welcome-section {
   width: 50%;
   display: block;
+  margin-top: 110px;
 }
 
 .welcome-section .welcome-text {
@@ -42,9 +43,10 @@ main {
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
   margin-right: 50px;
   max-height: 400px;
+  margin-top: 120px;
 }
 
-.register-section h2 {
+.register-section h1 {
   font-size: 24px;
   text-align: center;
   margin-bottom: 20px;

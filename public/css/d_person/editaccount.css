@@ -1,7 +1,8 @@
 .edit-profile-container {
   max-width: 600px; /* Limit width for the form */
   margin: 20px auto; /* Center the container */
-
+  margin-top: 130px;
+  margin-bottom: 50px;
   padding: 10px;
   background-color: #ffffff; /* Background color */
   border-radius: 8px; /* Rounded corners */
