@@ -33,6 +33,8 @@ class Dpersons extends Controller {
       $this->view('d_person/neworders', $data);
   }
 
+  
+
     // Confirm an order and redirect to new orders page
     public function confirm($orderId) {
         if ($this->userModel->confirmOrder($orderId)) {
@@ -65,6 +67,13 @@ class Dpersons extends Controller {
     }
 
     public function proof(){
+        // Prepare data for the view
+            $data = [
+                'order_id' => $_SESSION['order_id'] ?? null,
+                'pickup_image' => $_SESSION['pickup_image'] ?? null,
+                'dropoff_image' => $_SESSION['dropoff_image'] ?? null, // Ensure dropoff is null initially
+            ];
+
         $this->view('d_person/ongoing/d_upload');
     }
 
@@ -101,8 +110,7 @@ class Dpersons extends Controller {
             } else {
                 redirect('dpersons/proof');
             }
-    }
-
+    }          
     public function deliveryUploadDropoff() {
         // Check if files are uploaded
         if (isset($_FILES['dropoff_image'])) {
@@ -365,6 +373,20 @@ class Dpersons extends Controller {
             // Load view
             $this->view('users/dpersonregister', $data);
         }
+    }
+
+    public function orderdetails($order_id){
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+
+        $orders = $this->userModel->getorder($deliveryArea, $order_id);
+
+
+      $data = [
+          'orders' => $orders ?? [] // Default to empty array if null
+      ];
+
+
+      $this->view('d_person/order_details', $data);
     }
 
     

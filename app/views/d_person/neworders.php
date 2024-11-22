@@ -20,7 +20,7 @@
                 <?php foreach($data['orders'] as $index => $order): ?>
                     <tr>
                         <td>
-                            <a href="<?= URLROOT ?>/orders/orderDetails/<?= htmlspecialchars($order->id) ?>" class="newbtn newbtn-delete" >
+                            <a href="<?= URLROOT ?>/dpersons/orderdetails/<?= htmlspecialchars($order->id) ?>" class="newbtn newbtn-delete" >
                                 <?= htmlspecialchars($order->id) ?>
                             </a>
                         </td>

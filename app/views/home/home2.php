@@ -13,7 +13,7 @@
         </section>
 
         <section class="register-section">
-            <h2>Register Now</h2>
+            <h1>Register Now</h1>
             <ul class="role-list">
                 <li><a href="<?php echo URLROOT; ?>/users/register?role=Farmer">Farmer</a></li>
                 <li><a href="<?php echo URLROOT; ?>/users/register?role=Supplier">Supplier</a></li>

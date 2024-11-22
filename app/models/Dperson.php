@@ -128,7 +128,14 @@ public function addVehicle($data) {
               farmers.location AS pickup_address,
               buyer_addresses.city AS dropoff_address,
               farmer_buyer_orders.capacity,
-              buyers.name as buyer
+              buyers.name as buyer,
+              farmer_buyer_orders.amount,
+              farmer_buyer_orders.date,
+              fproducts.name,
+              farmers.name as farmer,
+              buyers.phone,
+              farmers.phone as fphone
+
           FROM 
               farmer_buyer_orders
           INNER JOIN 
@@ -139,6 +146,8 @@ public function addVehicle($data) {
               buyers ON farmer_buyer_orders.buyer_id = buyers.id
           INNER JOIN 
               address AS buyer_addresses ON buyers.address_id = buyer_addresses.address_id
+          INNER JOIN 
+                fproducts ON fproducts.fproduct_id = farmer_buyer_orders.fproduct_id
           WHERE 
               farmers.location = :deliveryArea 
               AND farmer_buyer_orders.status = "new"
@@ -224,7 +233,7 @@ public function addVehicle($data) {
         return false;
         }
 
-        public function history($id){
+    public function history($id){
             $this->db->query('
                 SELECT delivery_info.order_id,
                     delivery_info.date,
@@ -255,6 +264,57 @@ public function addVehicle($data) {
             return $this->db->resultSet();
 
         }
+
+        public function deleteAccount($userId)
+        {
+        $sql = "DELETE FROM delivery_persons WHERE id = :userId";
+        $this->db->query($sql);
+        $this->db->bind(':userId', $userId);
+
+        // Execute the query and return true if successful, false otherwise
+        return $this->db->execute();
+        }
+
+
+        public function getorder($deliveryArea, $order_id) {
+            $this->db->query('
+                SELECT 
+                    farmer_buyer_orders.id,
+                    farmers.location AS pickup_address,
+                    buyer_addresses.city AS dropoff_address,
+                    farmer_buyer_orders.capacity,
+                    buyers.name as buyer,
+                    farmer_buyer_orders.amount,
+                    farmer_buyer_orders.date,
+                    fproducts.name,
+                    farmers.name as farmer,
+                    buyers.phone,
+                    farmers.phone as fphone
+      
+                FROM 
+                    farmer_buyer_orders
+                INNER JOIN 
+                    farmers ON farmer_buyer_orders.farmer_id = farmers.id
+                INNER JOIN 
+                    address AS farmer_addresses ON farmers.address_id = farmer_addresses.address_id
+                INNER JOIN 
+                    buyers ON farmer_buyer_orders.buyer_id = buyers.id
+                INNER JOIN 
+                    address AS buyer_addresses ON buyers.address_id = buyer_addresses.address_id
+                INNER JOIN 
+                      fproducts ON fproducts.fproduct_id = farmer_buyer_orders.fproduct_id
+                WHERE 
+                    farmers.location = :deliveryArea 
+                    AND farmer_buyer_orders.status = "new"
+                    AND farmer_buyer_orders.id = :order_id
+            ');
+            
+            $this->db->bind(':deliveryArea', $deliveryArea);
+            $this->db->bind(':order_id', $order_id);
+        
+            return $this->db->single();
+        }
+        
 
         
     

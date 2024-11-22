@@ -1,0 +1,119 @@
+/* Body styles */
+body {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+  background: linear-gradient(135deg, #013011, #c2e2c5); /* Subtle gradient background */
+}
+
+/* Container for the delete card */
+.delete-card {
+  text-align: center;
+  background: #ffffff;
+  padding: 30px;
+  border-radius: 12px;
+  box-shadow: 0 8px 20px rgba(113, 5, 5, 0.1); /* Soft shadow */
+  width: 500px;
+  max-width: 100%;
+  box-sizing: border-box;
+  animation: fadeIn 0.5s ease-in-out; /* Fade-in animation */
+  margin-top: 70px;
+}
+
+/* Animation for fade-in */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Title styles */
+.delete-card h2 {
+  font-size: 1.8em;
+  color: #333333;
+  margin-bottom: 15px;
+}
+
+/* Text paragraph styles */
+.delete-card p {
+  font-size: 1em;
+  color: #666666;
+  margin-bottom: 20px;
+  line-height: 1.5;
+}
+
+/* Profile image styling */
+.profile-icon {
+  margin-bottom: 20px;
+}
+
+.profile-pic {
+  width: 150px;
+  height: 150px;
+  object-fit: cover;
+}
+
+/* Action buttons container */
+.action-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 15px;
+  margin-top: 20px;
+  position: relative;
+}
+
+/* Button styling (common for both buttons) */
+.action-buttons a {
+  display: inline-block;
+  text-align: center;
+  font-size: 1em;
+  font-weight: bold;
+  padding: 10px 20px;
+  width: 20px;
+  border-radius: 6px;
+  text-decoration: none; /* Remove underline */
+  cursor: pointer;
+  transition: all 0.3s ease; /* Smooth transitions */
+  flex: 1; /* Buttons should take up equal width */
+}
+
+/* Delete button styling */
+.delete-btn {
+  background-color: #f44336; /* Red background for Delete */
+  color: #ffffff;
+}
+
+.delete-btn:hover {
+  background-color: #d32f2f; /* Darker red on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Cancel button styling */
+.cancel-btn {
+  background-color: #e0e0e0; /* Light gray background for Cancel */
+  color: #333333;
+}
+
+.cancel-btn:hover {
+  background-color: #bdbdbd; /* Darker gray on hover */
+  transform: translateY(-2px); /* Slight lift effect */
+}
+
+/* Responsive adjustments for smaller screens */
+@media (max-width: 480px) {
+  .action-buttons {
+    flex-direction: column; /* Stack buttons vertically on small screens */
+  }
+
+  .action-buttons a {
+    width: 100%; /* Make buttons take full width */
+    margin-bottom: 10px; /* Add space between stacked buttons */
+  }
+}
