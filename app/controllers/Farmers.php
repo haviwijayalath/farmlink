@@ -23,11 +23,14 @@
           'addr_no' => trim($_POST['addr_no']),
           'addr_street' => trim($_POST['addr_street']),
           'addr_city' => trim($_POST['addr_city']),
+          'image' => isset($_POST['saved_image']) ? $_POST['saved_image'] : '', 
+
           'name_err' => '',
           'email_err' => '',
           'phone_number_err' => '',
           'password_err' => '',
-          'confirm_password_err' => ''
+          'confirm_password_err' => '',
+          'image_err' => ''
         ];
 
         // Validate Email
@@ -68,17 +71,52 @@
 
         // Make sure errors are empty
         if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['image_err']) && empty($data['user_name_err']) && empty($data['password_err']) && empty($data['confirm_password_err'])) {
-          // hashing password
-          $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+          $image = $_FILES["image"]['name'];
+          $_picuploaded = false;
+          $upload_dir = APPROOT . '/../public/uploads/farmer/profile';
 
-          // user registration
-          if ($this->farmerModel->register($data)) {
-            // flash('register_success', 'You are successfully registered! Log in now');
-            // redirect to login
-            // redirect('farmers/login');
-          } else {
-            die('Something went wrong! Please try again.');
+          // Ensure the upload directory exists
+          if (!is_dir($upload_dir)) {
+              mkdir($upload_dir, 0777, true);
           }
+
+          // Validate and move the uploaded image
+          if (!empty($image)) {
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir.$image)) {
+                $_target_file = $upload_dir.$image;
+                $imageFileType = strtolower(pathinfo($_target_file, PATHINFO_EXTENSION));
+                $photo = time() . basename($_FILES['image']['name']);
+
+            // Validate image extension
+            if ($imageFileType != "jpg" && $imageFileType != "jpeg" && $imageFileType != "png") {
+                $data['image_err'] = 'Please upload a photo with extension .jpg, .jpeg, or .png';
+            } elseif ($_FILES["image"]["size"] > 2000000) { // Check if image exceeds 2MB
+                $data['image_err'] = 'Your photo exceeds the size limit of 2MB';
+            } else {
+                $data['image'] = $image; // Save the profile image name to data
+                $_picuploaded = true; // Mark that image was uploaded successfully
+            }
+            } else {
+                $data['image_err'] = 'Failed to upload image';
+            }
+          }
+
+          if ($_picuploaded) {
+            // hashing password
+            $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+
+            // user registration
+            if ($this->farmerModel->register($data)) {
+              // flash('register_success', 'You are successfully registered! Log in now');
+              // redirect to login
+              redirect('farmers/login');
+            } else {
+              die('Something went wrong! Please try again.');
+            }
+          } else {
+            $this->view('farmers/register', $data);
+          }
+          
         } else {
           // load view with errors
           $this->view('farmers/register', $data);
@@ -95,11 +133,14 @@
           'addr_no' => '',
           'addr_street' => '',
           'addr_city' => '',
+          'image' => '',
+
           'name_err' => '',
           'email_err' => '',
           'phone_number_err' => '',
           'password_err' => '',
-          'confirm_password_err' => ''
+          'confirm_password_err' => '',
+          'image_err' => ''
         ];
 
         // Load view

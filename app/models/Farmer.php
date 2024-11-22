@@ -28,12 +28,12 @@
       // Saving the address before saving the farmer
       $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
-      $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone) VALUES(:name, :password, :email, :address_id, :phone)');
+      $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image) VALUES(:name, :password, :email, :address_id, :phone, :image)');
       // Bind values
       $this->db->bind(':name', $data['name']);
       $this->db->bind(':email', $data['email']);
       $this->db->bind(':phone', $data['phone_number']);
-      // $this->db->bind(':image', $data['image']);
+      $this->db->bind(':image', $data['image']);
       $this->db->bind(':password', $data['password']);
       $this->db->bind(':address_id', $address_id);
 

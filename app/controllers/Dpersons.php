@@ -227,7 +227,6 @@ class Dpersons extends Controller {
                 $data['addr_no_err'] = 'Please enter your address';
             }
             
-
             // Validate password
             if(empty($data['password'])) {
                 $data['password_err'] = 'Please enter a password';

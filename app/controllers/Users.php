@@ -1,6 +1,8 @@
 <?php 
 
 class Users extends Controller {
+    private $userModel;
+
     public function __construct() {
       $this->userModel = $this->model('User'); 
     }
@@ -80,7 +82,7 @@ public function createUserSession($user){
             redirect('pages/index');
             break;
         case 'farmers':
-            redirect('pages/index');
+            redirect('farmers/index');
             break;
         case 'buyers':
             redirect('pages/index');
@@ -171,7 +173,9 @@ public function logout(){
         }
     }
         
-
+    public function forum() {
+        
+    }
     
 }
 ?>

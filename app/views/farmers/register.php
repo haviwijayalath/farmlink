@@ -30,7 +30,12 @@
       
       <label for="image">Upload Image</label>
       <div class="upload-container">
-        <input type="file" id="image" name="image" value="<?php echo $data['image']; ?>">
+        <input type="file" id="image" name="image" value="<?php echo $data['image']; ?>" onchange="previewImage(event)">
+      </div>
+      <div id="image-preview" style="margin-top: 15px;">
+        <img id="output" src="" alt="Image Preview" style="max-width: 200px; display: none;">
+        
+        <span style="color: red;"><?php echo $data['image_err']; ?></span>
       </div>
       
       <label for="password">Password</label>
