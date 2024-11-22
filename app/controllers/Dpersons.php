@@ -67,6 +67,13 @@ class Dpersons extends Controller {
     }
 
     public function proof(){
+        // Prepare data for the view
+            $data = [
+                'order_id' => $_SESSION['order_id'] ?? null,
+                'pickup_image' => $_SESSION['pickup_image'] ?? null,
+                'dropoff_image' => $_SESSION['dropoff_image'] ?? null, // Ensure dropoff is null initially
+            ];
+
         $this->view('d_person/ongoing/d_upload');
     }
 
@@ -103,8 +110,7 @@ class Dpersons extends Controller {
             } else {
                 redirect('dpersons/proof');
             }
-    }
-
+    }          
     public function deliveryUploadDropoff() {
         // Check if files are uploaded
         if (isset($_FILES['dropoff_image'])) {

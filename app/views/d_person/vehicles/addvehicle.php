@@ -47,7 +47,7 @@
 
             <div class="form-buttons">
             <button type="submit" class="btn-add">Add</button>
-            <a href="<?= URLROOT ?>/dpaccounts/account/<?= $data['id'] ?>" class="delete-btn">Cancel</a>
+            <a href="<?= URLROOT ?>/dpaccounts/vehicleinfo" class="delete-btn">Cancel</a>
             </div>
         </form>
     </div>

@@ -2,7 +2,7 @@
   max-width: 600px; /* Limit width for the form */
   margin: 20px auto; /* Center the container */
   margin-top: 130px;
-  margin-bottom: 50px;
+  margin-bottom: 70px;
   padding: 10px;
   background-color: #ffffff; /* Background color */
   border-radius: 8px; /* Rounded corners */
@@ -25,7 +25,7 @@
 }
 
 .form-group input {
-  width: 100%; /* Full width inputs */
+  width: 95%; /* Full width inputs */
   padding: 10px; /* Padding for inputs */
   border: 1px solid #ccc; /* Border color */
   border-radius: 5px; /* Rounded corners */
@@ -33,15 +33,17 @@
 
 .form-buttons {
   display: flex; /* Flexbox for button alignment */
-  justify-content: space-between; /* Space between buttons */
+  justify-content:space-around; /* Space between buttons */
+  font-family: 'Poppins', sans-serif;
 }
 
 .cancel-btn, .save-btn {
-  padding: 10px 20px; /* Button padding */
+  padding: 20px 20px; /* Button padding */
   border: none; /* Remove border */
   border-radius: 5px; /* Rounded corners */
   cursor: pointer; /* Pointer on hover */
-  font-weight: bold; /* Bold text */
+  font-size:large;
+  /* Bold text */
 }
 
 .cancel-btn {
@@ -52,6 +54,7 @@
 .save-btn {
   background-color: #60ba62; /* Save button color */
   color: white; /* Text color */
+  font-size:large;
 }
 
 .cancel-btn:hover {
@@ -60,4 +63,17 @@
 
 .save-btn:hover {
   background-color: #4da44e; /* Darker shade on hover */
+}
+
+.password-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.toggle-password {
+  position: absolute;
+  right: 10px;
+  cursor: pointer;
+  font-size: 20px;
 }
