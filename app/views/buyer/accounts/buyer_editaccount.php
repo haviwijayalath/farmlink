@@ -15,7 +15,7 @@
             <label for="email">Email</label>
             <input type="email" name="email" id="email" value="<?/*= $user['email']*/ ?>" required>
         </div>
-        <div class="form-group">
+        <!-- <div class="form-group">
             <label for="address">Address</label>
             <input type="text" name="address" id="address" value="<?/*= $user['address'] */?>" required>
         </div>
@@ -25,7 +25,7 @@
         <div class="upload-container">
           <input type="file" id="image" name="image" placeholder="upload profile image">
         </div>
-        </div>
+        </div> -->
 
         <div class="form-group">
         <label for="password">Password</label>
