@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<div></div>
+
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/editaccount.css">
 
 <?php require APPROOT . '/views/inc/sidebars/d_person.php'; ?>
@@ -39,40 +39,86 @@
         </div>
 
         <div class="form-group">
-        <label for="image">Upload Image</label>
+    <label for="image">Upload Image</label>
+    <div class="image-upload-section">
+        <!-- Display the existing image -->
+        <div class="current-image">
+            <img 
+                id="currentImage" 
+                src="<?= URLROOT ?>/public/uploads/<?= !empty($data['image']) && 
+                file_exists(APPROOT . '/../public/uploads/' . $data['image']) ? $data['image'] : 'placeholder.png' ?>" 
+                alt="Current Profile Image" 
+                style="max-width: 150px; border: 1px solid #ddd; border-radius: 5px;">
+        </div>
+        <!-- Upload new image -->
         <div class="upload-container">
-          <input type="file" id="image" name="image" onchange="previewImage(event)">
+            <input type="file" id="image" name="image" onchange="replaceCurrentImage(event)">
         </div>
-        <div id="image-preview" style="margin-top: 15px;">
-        <img id="output" src="" alt="Image Preview" style="max-width: 200px; display: none;">
-        </div>
-        </div>
+    </div>
+</div>
 
         <div class="form-group">
         <label for="password">Password</label>
-            <input type="password" name="current_password" id="current_password" placeholder="current password">
-            <input type="password" name="new_password" id="new_password" placeholder="new password">
-            <input type="password" name="confirm_password" id="confirm_password" placeholder="confirm new password">
+            <div class="password-container">
+                <input type="password" name="current_password" id="current_password" placeholder="current password">
+                <i class="toggle-password" id="toggleCurrentPassword">&#128065;</i>
+            </div>
+            <div class="password-container">
+                <input type="password" name="new_password" id="new_password" placeholder="new password">
+                <i class="toggle-password" id="toggleNewPassword">&#128065;</i>
+            </div>
+            <div class="password-container">
+                <input type="password" name="confirm_password" id="confirm_password" placeholder="confirm new password">
+                <i class="toggle-password" id="toggleConfirmPassword">&#128065;</i>
+            </div>
         </div>
 
         <div class="form-buttons">
-            <a href="<?= URLROOT ?>/dpaccounts/account/<?= $data['id'] ?>" class="cancel-btn">cancel</a>
-            <button type="submit" class="save-btn">save changes</button>
-            
-            
+            <a href="<?= URLROOT ?>/dpaccounts/account/<?= $data['id'] ?>" class="cancel-btn">Cancel</a>
+            <button type="submit" class="save-btn">Save</button>
         </div>
     </form>
 </div>
 
 <script>
-function previewImage(event) {
-    const imagePreview = document.getElementById('output');
-    imagePreview.src = URL.createObjectURL(event.target.files[0]);
-    imagePreview.style.display = 'block';
-    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
+
+function replaceCurrentImage(event) {
+    const file = event.target.files[0]; // Get the uploaded file
+    if (file) {
+        const currentImageDiv = document.querySelector('.current-image img'); // Select the current image
+        const newImageURL = URL.createObjectURL(file); // Create a URL for the uploaded image
+
+        currentImageDiv.src = newImageURL; // Replace the current image source with the new one
+
+        // Free up memory after the image has loaded
+        currentImageDiv.onload = () => URL.revokeObjectURL(newImageURL);
+    }
 }
+
+function togglePasswordVisibility(inputId, iconId) {
+    const passwordField = document.getElementById(inputId);
+    const icon = document.getElementById(iconId);
+
+    if (passwordField.type === 'password') {
+        passwordField.type = 'text';
+        icon.textContent = '🙈'; // Change icon to a closed eye
+    } else {
+        passwordField.type = 'password';
+        icon.textContent = '👁️'; // Change icon to an open eye
+    }
+}
+
+// Attach event listeners for password toggles
+document.getElementById('toggleCurrentPassword').addEventListener('click', function() {
+    togglePasswordVisibility('current_password', 'toggleCurrentPassword');
+});
+document.getElementById('toggleNewPassword').addEventListener('click', function() {
+    togglePasswordVisibility('new_password', 'toggleNewPassword');
+});
+document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
+    togglePasswordVisibility('confirm_password', 'toggleConfirmPassword');
+});
+
 </script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
-
-

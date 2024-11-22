@@ -1,83 +1,121 @@
-/* Container and content area */
-
+/* General Styling */
 .vehicleinfo-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 20px;
-  background-color: #f9f9f9;
-  margin: 27px 50px;
-  margin-bottom: 55px;
-
+    max-width: 900px;
+    
+    padding: 10px;
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    margin-left: 400px;
+    margin-top: 120px;
 }
 
 .vehicleinfo-content-area {
-  width: 70%;
-  background-color: white;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  margin: 5px auto;
-  margin-left: 300px;
+    text-align: center;
+    padding: 20px;
 }
 
 h2 {
-  text-align: left;
-  color: #333;
-  margin-bottom: 20px;
+    font-size: 28px;
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 30px;
+    letter-spacing: 1.2px;
 }
 
-/* Vehicle info section */
+/* Vehicle Info Section */
 .vehicle-info {
   display: flex;
-  justify-content: space-between;
+  gap: 20px;
   align-items: center;
-  margin-bottom: 20px;
+  background-color: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  border: 1px solid #e0e0e0;
+  margin-bottom: 25px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
 .vehicle-image {
-  width: 300px;
+  width: 50%;
   height: auto;
-  border-radius: 10px;
+  border-radius: 8px;
+  border: 2px solid #ddd;
+  object-fit: cover;
+  max-height: 300px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 .vehicle-details {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  background-color: #f2f2f2;
-  padding: 20px;
-  border-radius: 10px;
-  width: 50%;
+  flex-grow: 1;
+  text-align: left;
+  font-size: 18px;
+  color: #555;
 }
-
-.driver-info { display: flex; flex-direction: column; }
 
 .vehicle-details p {
-  font-size: 16px;
   margin: 10px 0;
+  font-size: 18px;
+  line-height: 1.6;
 }
 
-/* Add New Vehicle Button */
-.add-vehicle-btn, .delete-vehicle-btn, .edit-btn {
-  margin-top: 10px;
-    padding: 8px 12px;
-    background-color: #4CAF50;
-    color: white;
-    text-decoration: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-.edit-btn {
-  margin-left: 10px;
-  background-color: #2196F3;
-}
-.delete-vehicle-btn {
-  background-color: #f44336;
-}
-.add-vehicle-btn:hover, .delete-vehicle-btn:hover, .edit-btn:hover {
-  opacity: 0.8;
+.vehicle-details strong {
+  color: #2c3e50;
 }
 
-.edit-field { display: inline; margin-left: 5px; }
-.edit-buttons { margin-top: 15px; }
+/* Button Styling */
+a {
+  text-decoration: none;
+}
+
+.add-vehicle-btn {
+  display: inline-block;
+  font-size: 16px;
+  font-weight: 500;
+  text-transform: uppercase;
+  padding: 12px 25px;
+  border-radius: 8px;
+  background-color: #27ae60;
+  color: #fff;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.add-vehicle-btn:hover {
+  background-color: #218c53;
+  transform: translateY(-2px);
+}
+
+/* Add New Vehicle Section */
+.add-vehicle-container {
+  text-align: center;
+  margin-top: 30px;
+}
+
+/* No Vehicle Message */
+.no-vehicle-message {
+  color: #7f8c8d;
+  font-size: 18px;
+  margin-top: 20px;
+  font-style: italic;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .vehicle-info {
+      flex-direction: column;
+      text-align: center;
+  }
+
+  .vehicle-image {
+      width: 100%;
+      max-height: 250px;
+  }
+
+  .vehicle-details {
+      text-align: center;
+  }
+}
