@@ -15,12 +15,13 @@
                 <input type="file" name="pickup_image" id="pickup_image" onchange="previewPickupImage(event)" required>
             </div>
             <div id="image-preview" style="margin: 20px;">
-            <img id="output" src="" style="max-width: 800px">
+            <img id="output" src="<?= isset($_SESSION['pickup_image']) ? URLROOT . '/' . htmlspecialchars($_SESSION['pickup_image']) 
+                    : ''; ?>" style="max-width: 400px">
             </div>
 
         <!-- Submit Button -->
         <div class="form-group">
-            <input type="submit" value="Upload Images" class="btn-submit">
+            <input type="submit" value="Upload Pickup Image" class="btn-submit">
         </div>
         </div>
     </form>
@@ -35,12 +36,13 @@
             </div>
 
             <div id="dropoff-preview" style="margin: 20px;">
-            <img id="dropoff_output" src=""  style="max-width: 800px">
+            <img id="dropoff_output" src="<?= isset($_SESSION['dropoff_image']) ? URLROOT . '/' . htmlspecialchars($_SESSION['dropoff_image']) 
+                    : ''; ?>" style="max-width: 400px">
             </div>
 
         <!-- Submit Button -->
         <div class="form-group">
-            <input type="submit" value="Upload Images" class="btn-submit">
+            <input type="submit" value="End the Delivery" class="btn-submit">
         </div>
     </div>
     </form>

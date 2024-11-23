@@ -187,14 +187,17 @@ class Dpaccounts extends Controller {
 
     }*/
 
-    public function addvehicle(){
+    public function addvehicle($id){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
             // Process the form
             $data = [
                 'type' => trim($_POST['type']),
                 'regno' => trim($_POST['regno']),
                 'capacity' => trim($_POST['capacity']),
                 'v_image' => '', // Handle file upload
+                'id' => $id,
             ];
 
             // Handle file upload
@@ -208,8 +211,7 @@ class Dpaccounts extends Controller {
                 }
             }
 
-            if ($this->userModel->addVehicle($data)) {
-                flash('vehicle_message', 'Vehicle added successfully');
+            if ($this->userModel->addVehicle($data, $_SESSION['user_id'])) {
                 redirect('dpaccounts/vehicleinfo');
             } else {
                 flash('vehicle_message', 'Failed to add vehicle', 'alert alert-danger');
@@ -223,10 +225,10 @@ class Dpaccounts extends Controller {
     }
 
 
-    public function deactivate($userId)
+    public function deactivate()
     {
     // Attempt to deactivate the user
-    $result = $this->userModel->deleteAccount($userId);
+    $result = $this->userModel->deleteAccount($_SESSION['user_id']);
 
     if ($result) {
 
