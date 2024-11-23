@@ -1,8 +1,8 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/farmers/inc/header.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/farmers/viewprofile.css">
 
-<?php require APPROOT . '/views/inc/sidebars/farmer.php'; ?>
+<?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
     <div class="account-container">
         <div class="account-content">
@@ -18,4 +18,4 @@
         </div>
     </div>
 
-  <?php require APPROOT . '/views/inc/footer.php'; ?>
+  <?php require APPROOT . '/views/farmers/inc/footer.php'; ?>

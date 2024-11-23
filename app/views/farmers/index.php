@@ -1,7 +1,7 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/farmers/inc/header.php'; ?>
 
-<?php require APPROOT . '/views/inc/sidebars/farmer.php'; ?>
+<?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
 <center>This is farmers homepage.</center>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require APPROOT . '/views/farmers/inc/footer.php'; ?>

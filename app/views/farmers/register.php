@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/farmers/inc/header.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/farmers/register.css">
 
@@ -53,4 +53,4 @@
   </div>
 </div>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require APPROOT . '/views/farmers/inc/footer.php'; ?>
