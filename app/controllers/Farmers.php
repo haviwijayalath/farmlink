@@ -7,6 +7,10 @@
     }
 
     public function register() {
+      if (isLoggedIn()) {
+        redirect('farmers/index');
+      }
+
       // Check for POST
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Process form
@@ -153,6 +157,10 @@
     }
 
     public function index() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+
       $farmer = $this->farmerModel->getFarmerbyId($_SESSION['user_id']);
       $data = [
         'name' => $farmer->name,
@@ -164,19 +172,35 @@
     }
 
     public function viewprofile() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+
       $this->view('farmers/viewprofile');
     }
 
     public function editprofile() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
       $this->view('farmers/editprofile');
     }
 
     public function managestocks() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
       $data = $this->farmerModel->getStocks();
       $this->view('farmers/managestocks', $data);
     }
 
     public function addstocks() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
       // Check for POST
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Process form
@@ -294,14 +318,26 @@
     }
 
     public function manageorders() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
       $this->view('farmers/manageorders');
     }
 
     public function viewsales() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
       $this->view('farmers/viewsales');
     }
 
     public function bookconsultant() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
       $this->view('farmers/bookconsultant');
     }
   }
