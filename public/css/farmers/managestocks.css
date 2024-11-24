@@ -84,3 +84,22 @@
   background-color: #c82333;
   border-color: #bd2130;
 }
+
+.mt-4 {
+  float: right;
+  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding-right: 15px;
+}
+
+.btn-success {
+  color: #fff;
+  background-color: #28a745;
+  border-color: #28a745;
+}
+
+.btn-success:hover {
+  color: #fff;
+  background-color: #218838;
+  border-color: #1e7e34;
+}

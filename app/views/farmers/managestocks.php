@@ -1,7 +1,13 @@
 <?php require APPROOT . '/views/farmers/inc/header.php'; ?>
 <?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
-<link rel="stylesheet" href="<?= URLROOT ?>/public/css/farmers/managestocks.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/farmers/managestocks.css?version=1">
+
+
+<div class="mt-4">
+  <a href="<?= URLROOT ?>/farmers/addstocks" class="btn btn-success"> + Add New Stock</a>
+</div>
+<br>
 
 <div class="container">
   <div class="row">
