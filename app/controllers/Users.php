@@ -82,6 +82,12 @@ public function createUserSession($user){
             redirect('pages/index');
             break;
         case 'farmers':
+            // initializing the session variables
+            $_SESSION['user_id'] = $user->id;
+            $_SESSION['user_name'] = $user->name;
+            $_SESSION['user_email'] = $user->email;
+            $_SESSION['user_image'] = $user->image;
+            $_SESSION['user_role'] = 'farmer'; 
             redirect('farmers/index');
             break;
         case 'buyers':
@@ -174,7 +180,7 @@ public function logout(){
     }
         
     public function forum() {
-        
+
     }
     
 }

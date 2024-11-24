@@ -2,6 +2,10 @@
 
 <?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
-<center>This is farmers homepage.</center>
+<center>
+<h1>Welcome Back!</h1>
+<?php require APPROOT . '/views/farmers/viewprofile.php'; ?>
+
+</center>
 
 <?php require APPROOT . '/views/farmers/inc/footer.php'; ?>

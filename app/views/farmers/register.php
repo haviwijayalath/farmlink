@@ -53,4 +53,13 @@
   </div>
 </div>
 
+<script>
+  function previewImage(event) {
+    const imagePreview = document.getElementById('output');
+    imagePreview.src = URL.createObjectURL(event.target.files[0]);
+    imagePreview.style.display = 'block';
+    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
+  }
+</script>
+
 <?php require APPROOT . '/views/farmers/inc/footer.php'; ?>
