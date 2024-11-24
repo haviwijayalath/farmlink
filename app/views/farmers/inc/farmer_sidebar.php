@@ -3,6 +3,7 @@
 
 <div class="sidebar">
       <ul>
+      <li><a href="<?php echo URLROOT?>/farmers"><i class="fa-solid fa-house"></i>Home</a></li>
         <li><a href="<?php echo URLROOT?>/farmers/managestocks"><i class="fa-solid fa-boxes-stacked"></i>Stocks</a></li>
         <li><a href="<?php echo URLROOT?>/farmers/manageorders"><i class="fa-solid fa-bars"></i>Orders</a></li>
         <li><a href="<?php echo URLROOT?>/farmers/viewsales"><i class="fa-solid fa-clipboard-check"></i>Sales</a></li>

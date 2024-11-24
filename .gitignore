@@ -1,2 +1,5 @@
 # ignoring the config file because it may vary from one environment to another
 app/config/config.php
+
+# ignoring the public uploads dir
+public/uploads/
