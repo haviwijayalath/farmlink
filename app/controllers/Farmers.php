@@ -70,7 +70,8 @@
 
         // image saved directory
         $target_dir = APPROOT . '/../public/uploads/farmer/profile/';
-        $target_file = $target_dir . time() . basename($_FILES['image']['name']);
+        $filename = time() . basename($_FILES['image']['name']);
+        $target_file = $target_dir . $filename;
         $_picuploaded = true;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
@@ -101,7 +102,7 @@
         } else {
           // if everything is ok, try to upload file
           if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-            $data['image'] = basename($_FILES['image']['name']);
+            $data['image'] = $filename;
           } else {
             $data['image_err'] = 'Sorry, there was an error uploading your file';
           }
@@ -219,7 +220,8 @@
 
         // image saved directory
         $target_dir = APPROOT . '/../public/uploads/farmer/products/';
-        $target_file = $target_dir . time() . basename($_FILES['image']['name']);
+        $filename = time() . basename($_FILES['image']['name']);
+        $target_file = $target_dir . $filename;
         $_picuploaded = true;
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
@@ -250,7 +252,7 @@
         } else {
           // if everything is ok, try to upload file
           if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-            $data['image'] = basename($_FILES['image']['name']);
+            $data['image'] = $filename;
           } else {
             $data['image_err'] = 'Sorry, there was an error uploading your file';
           }
