@@ -9,6 +9,11 @@
   }
 }
 
+function isAdmin()
+{
+    return isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true;
+}
+
 // flash message helper
   // EXAMPLE - flash('register_success', 'You are successfully registered', 'alert alert-danger')
   // DISPLAY ON VIEW - <?php echo flash(;register_success');

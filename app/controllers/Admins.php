@@ -3,7 +3,10 @@
     private $adminModel;
     
     public function __construct() {
-
+      if (!isAdmin()) {
+        redirect('users/login');
+    }
+    
     }
 
     public function index() { 

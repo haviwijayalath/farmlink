@@ -80,8 +80,9 @@ public function createUserSession($user){
     //Redirect based on role
     switch ($user->role) {
         case 'admins':
-            $_SESSION['user_id'] = $user->id;
-            $_SESSION['user_name'] = $user->name;
+            $_SESSION['admin_logged_in'] = true;
+            $_SESSION['admin_id'] = $user->id;
+            $_SESSION['admin_name'] = $user->name;
             $_SESSION['user_email'] = $user->email;
             redirect('admins/dashboard');
             break;
