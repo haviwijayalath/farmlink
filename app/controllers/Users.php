@@ -78,6 +78,12 @@ public function createUserSession($user){
 
     //Redirect based on role
     switch ($user->role) {
+        case 'admins':
+            $_SESSION['user_id'] = $user->id;
+            $_SESSION['user_name'] = $user->name;
+            $_SESSION['user_email'] = $user->email;
+            redirect('admins/dashboard');
+            break;
         case 'consultants':
             redirect('pages/index');
             break;
@@ -137,6 +143,10 @@ public function logout(){
 
         //Logout based on role
         switch ($_SESSION['user_role']) {
+            case 'admins':
+                session_destroy();
+                redirect('users/login');
+                break;
             case 'consultants':
                 session_destroy();
                 redirect('users/login');

@@ -9,7 +9,7 @@ class User extends Database{
 
   public function login($email, $password){
     // List of tables to check for the login
-    $tables = [ 'suppliers', 'delivery_persons', 'farmers', 'consultants', 'buyers'];
+    $tables = [ 'suppliers', 'delivery_persons', 'farmers', 'consultants', 'buyers', 'admins'];
     
     // Loop through each table and attempt to find a matching record
     foreach ($tables as $table) {
@@ -35,7 +35,7 @@ class User extends Database{
   //Find user by email
 public function findUserByEmail($email) {
   // List of tables to check
-  $tables = ['farmers', 'buyers', 'consultants', 'suppliers', 'delivery_persons'];
+  $tables = ['farmers', 'buyers', 'consultants', 'suppliers', 'delivery_persons', 'admins'];
 
   foreach ($tables as $table) {
       $this->db->query("SELECT * FROM $table WHERE email = :email");
