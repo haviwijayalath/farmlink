@@ -46,7 +46,7 @@
             </div>
 
             <div class="form-buttons">
-            <button type="submit" class="btn-add">Add</button>
+            <button type="submit" class="btn-add">Add New Vehicle</button>
             <a href="<?= URLROOT ?>/dpaccounts/vehicleinfo" class="delete-btn">Cancel</a>
             </div>
         </form>

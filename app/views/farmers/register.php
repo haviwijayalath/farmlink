@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/farmers/inc/header.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/farmers/register.css">
 
@@ -30,7 +30,12 @@
       
       <label for="image">Upload Image</label>
       <div class="upload-container">
-        <input type="file" id="image" name="image" value="<?php echo $data['image']; ?>">
+        <input type="file" id="image" name="image" value="<?php echo $data['image']; ?>" onchange="previewImage(event)">
+      </div>
+      <div id="image-preview" style="margin-top: 15px;">
+        <img id="output" src="" alt="Image Preview" style="max-width: 200px; display: none;">
+        
+        <span style="color: red;"><?php echo $data['image_err']; ?></span>
       </div>
       
       <label for="password">Password</label>
@@ -48,4 +53,13 @@
   </div>
 </div>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<script>
+  function previewImage(event) {
+    const imagePreview = document.getElementById('output');
+    imagePreview.src = URL.createObjectURL(event.target.files[0]);
+    imagePreview.style.display = 'block';
+    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
+  }
+</script>
+
+<?php require APPROOT . '/views/farmers/inc/footer.php'; ?>

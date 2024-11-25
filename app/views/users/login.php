@@ -6,8 +6,9 @@
         <div class="login-left">
             <img src="<?= URLROOT ?>/public/images/Farmer-bro.png" alt="Farmer" class="farmer-image">
         </div>
-
+        
         <div class="login-right">
+            <h4 style="color: green;"> <?php flash('register_success'); ?> </h4>
             <h2>Welcome back!</h2>
             <form action="<?php echo URLROOT; ?>/users/login" method="POST">
                 <div class="form-group">

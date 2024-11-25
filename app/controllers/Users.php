@@ -1,9 +1,9 @@
 <?php 
 
-class Users extends Controller {
+class Users extends Controller { 
 
     private $userModel;
-    
+
     public function __construct() {
       $this->userModel = $this->model('User'); 
     }
@@ -84,7 +84,13 @@ public function createUserSession($user){
             break;
 
         case 'farmers':
-            redirect('pages/index');
+            // initializing the session variables
+            $_SESSION['user_id'] = $user->id;
+            $_SESSION['user_name'] = $user->name;
+            $_SESSION['user_email'] = $user->email;
+            $_SESSION['user_image'] = $user->image;
+            $_SESSION['user_role'] = 'farmer'; 
+            redirect('farmers/index');
             break;
 
         case 'buyers':
@@ -184,7 +190,9 @@ public function logout(){
         }
     }
         
+    public function forum() {
 
+    }
     
 }
 ?>
