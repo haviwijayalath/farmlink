@@ -25,7 +25,7 @@ class Dpaccounts extends Controller {
               'address' => $user->number . ', ' . $user->street . ', ' . $user->city,
               'area' => $user->area,
               'image' => $user->image,
-              'type' => $user->vehicle,
+              'type' => $user->type,
               'regno' => $user->regno,
               'capacity' => $user->capacity,
               'v_image' => $user->v_image
@@ -187,7 +187,7 @@ class Dpaccounts extends Controller {
 
     }*/
 
-    public function addvehicle($id){
+    public function addvehicle(){
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -197,7 +197,7 @@ class Dpaccounts extends Controller {
                 'regno' => trim($_POST['regno']),
                 'capacity' => trim($_POST['capacity']),
                 'v_image' => '', // Handle file upload
-                'id' => $id,
+                'id' => $_SESSION['user_id'],
             ];
 
             // Handle file upload
@@ -211,7 +211,7 @@ class Dpaccounts extends Controller {
                 }
             }
 
-            if ($this->userModel->addVehicle($data, $_SESSION['user_id'])) {
+            if ($this->userModel->addVehicle($data)) {
                 redirect('dpaccounts/vehicleinfo');
             } else {
                 flash('vehicle_message', 'Failed to add vehicle', 'alert alert-danger');

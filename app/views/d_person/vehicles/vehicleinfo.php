@@ -24,12 +24,12 @@
 
                 <!-- Add New Vehicle Button -->
             <div class="add-vehicle-container">
-                <a href="<?= URLROOT ?>/dpaccounts/addvehicle/<?= $data['id'] ?>" class="add-vehicle-btn">Add New Vehicle</a>
+                <a href="<?= URLROOT ?>/dpaccounts/addvehicle/" class="add-vehicle-btn">Add New Vehicle</a>
             </div>
         <?php else: ?>
             <p>No vehicle to display...</p>
             <div class="add-vehicle-container">
-                <a href="<?= URLROOT ?>/dpaccounts/addvehicle/<?= $data['id'] ?>" class="add-vehicle-btn">Add New Vehicle</a>
+                <a href="<?= URLROOT ?>/dpaccounts/addvehicle/" class="add-vehicle-btn">Add New Vehicle</a>
             </div>
         <?php endif; ?>
 

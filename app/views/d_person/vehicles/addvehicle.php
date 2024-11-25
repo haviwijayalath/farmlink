@@ -7,7 +7,7 @@
 <div class="addvehicle-container">
     <div class="addvehicle-content-area">
         <h2>Add Vehicle</h2>
-        <form action="<?php echo URLROOT; ?>/dpaccounts/addvehicle/<?php echo $data['id']; ?>" method="POST" enctype="multipart/form-data">
+        <form action="<?php echo URLROOT; ?>/dpaccounts/addvehicle" method="POST" enctype="multipart/form-data">
             <div class="form-group">
                 <label for="vehicleType">Type:</label>
                 <select name="type" id="vehicleType" required>

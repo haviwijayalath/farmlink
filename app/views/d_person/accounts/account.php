@@ -29,7 +29,7 @@
                     <strong>Delivery Areas:</strong> <?= htmlspecialchars($data['area']) ?>
                 </div>
             </div>
-        </div>
+    </div>
 
         <div class="action-buttons">
             <!-- Edit Profile Button -->
