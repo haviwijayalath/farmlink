@@ -1,0 +1,113 @@
+/* General Reset */
+body {
+  margin: 0;
+  font-family: 'Arial', sans-serif;
+  background-color: #f9f9f9;
+  color: #333;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+/* Warning Box Container */
+.warning-box {
+  background-color: #fff;
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  max-width: 500px;
+  width: 90%;
+  text-align: center;
+  padding: 30px 20px;
+  border: 2px solid #f8d7da;
+}
+
+/* Icon Styling */
+.icon-container {
+  font-size: 60px;
+  color: #d9534f;
+  margin-bottom: 20px;
+}
+
+.warning-box .icon-container i {
+  animation: pulse 1s infinite;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
+
+/* Warning Text */
+.warning-text h2 {
+  font-size: 24px;
+  color: #d9534f;
+  margin-bottom: 10px;
+}
+
+.warning-text p {
+  font-size: 16px;
+  color: #666;
+  line-height: 1.6;
+}
+
+/* Buttons */
+.button-container {
+  margin-top: 20px;
+  display: flex;
+  gap: 15px;
+  justify-content: center;
+}
+
+.delete-button,
+.cancel-button {
+  padding: 12px 20px;
+  font-size: 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  border: none;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+}
+
+.delete-button {
+  background-color: #d9534f;
+  color: #fff;
+  border: 1px solid #d9534f;
+}
+
+.delete-button:hover {
+  background-color: #c9302c;
+}
+
+.cancel-button {
+  background-color: #f0f0f0;
+  color: #333;
+  border: 1px solid #ccc;
+}
+
+.cancel-button:hover {
+  background-color: #e0e0e0;
+  color: #555;
+}
+
+/* Responsive Design */
+@media (max-width: 480px) {
+  .warning-text h2 {
+    font-size: 20px;
+  }
+
+  .warning-text p {
+    font-size: 14px;
+  }
+
+  .delete-button,
+  .cancel-button {
+    font-size: 14px;
+    padding: 10px 15px;
+  }
+}

@@ -3,12 +3,12 @@
     private $adminModel;
     
     public function __construct() {
-      
+
     }
 
     public function index() { 
       
-      $this->view('admin/users');
+      $this->view('admin/home');
 
     }
 
@@ -42,16 +42,38 @@
 
     }
 
-    public function dashboard() { 
-      
-      $this->view('admin/home');
-
-    }
-
     public function viewProducts() { 
       
       $this->view('admin/products');
 
+    }
+
+    public function account() { 
+      
+      $this->view('admin/account');
+
+    }
+
+    public function editAccount() { 
+      
+      $this->view('admin/editAccount');
+
+    }
+
+
+    public function changepwrd() { 
+      
+      $this->view('admin/changePwrd');
+    }
+
+    public function deactivate() { 
+      
+      $this->view('admin/deactivate');
+    }
+
+    public function deactivateConfirmation() { 
+      
+      $this->view('admin/confirmation');
     }
 }
 
