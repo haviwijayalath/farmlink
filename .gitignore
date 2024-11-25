@@ -1,2 +1,13 @@
 # ignoring the config file because it may vary from one environment to another
 app/config/config.php
+public/upload/
+public/uploads/
+app/controllers/Admins.php
+app/views/admin
+app/views/inc/sidebars/admin.php
+public/css/admin/
+public/css/sidebars/admin.css
+public/d_uploads/
+public/images/
+app/models/Admin.php
+app/libraries/Database.php
