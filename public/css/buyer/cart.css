@@ -60,7 +60,7 @@
     background-color: #e04e4e;
 }
 
-button[type="submit"] {
+button {
     width: 100%;
     padding: 12px;
     font-size: 16px;
@@ -72,7 +72,7 @@ button[type="submit"] {
     margin-top: 20px;
 }
 
-button[type="submit"]:hover {
+button:hover {
     background-color: #218838;
 }
 
@@ -93,4 +93,37 @@ button[type="submit"]:hover {
 .total-amount {
     color: #28a745;
 }
+
+.btn-remove, .btn-delivery {
+    display: inline-block;
+    background-color: #ff4d4d; /* Red for Remove button */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.btn-remove {
+    padding: 5px 10px;
+}
+
+.btn-delivery {
+    margin-top: 20px;
+    width: 100%;
+    padding: 10px 15px;
+
+}
+
+.btn-remove:hover, .btn-delivery:hover {
+    background-color: #ff1a1a;
+}
+
+.btn-delivery {
+    background-color: #5cb85c; /* Green for Delivery Options */
+}
+
+.btn-delivery:hover {
+    background-color: #4cae4c;
+}
+
 

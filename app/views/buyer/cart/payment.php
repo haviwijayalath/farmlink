@@ -5,3 +5,5 @@
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
+
+
