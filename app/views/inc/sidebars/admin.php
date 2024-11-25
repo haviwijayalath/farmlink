@@ -2,7 +2,7 @@
 
 <div class="sidebar">
     <ul>
-        <li><a href="<?php echo URLROOT ?>/Admins/dashboard">
+        <li><a href="<?php echo URLROOT ?>/Admins/index">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a></li>
         <li><a href="<?php echo URLROOT ?>/Admins/users">
@@ -19,6 +19,9 @@
         </a></li>
         <li><a href="<?php echo URLROOT ?>/Admins/viewReports">
             <i class="fas fa-chart-line"></i> Reports
+        </a></li>
+        <li><a href="<?php echo URLROOT ?>/Admins/account">
+            <i class="fas fa-cog"></i> Settings
         </a></li>
         <li><a href="<?php echo URLROOT ?>/Users/logout">
             <i class="fas fa-sign-out-alt"></i> Logout
