@@ -11,8 +11,8 @@
                 <h2>Name</h2>
                 <p><strong>Phone Number: </p>
                 <p><strong>Email: </p>
-                <p><strong>Address: </p>
-                <p><strong>Delivery Areas: </p>
+                <!-- <p><strong>Address: </p>
+                <p><strong>Delivery Areas: </p> -->
                 <a href="<?php echo URLROOT?>Buyercontrollers/editprofile" class="edit-btn">Edit Profile</a>
             </div>
         </div>

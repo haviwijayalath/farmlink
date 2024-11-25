@@ -1,6 +1,9 @@
 <?php 
 
-class Users extends Controller {
+class Users extends Controller { 
+
+    private $userModel;
+
     public function __construct() {
       $this->userModel = $this->model('User'); 
     }
@@ -76,18 +79,40 @@ public function createUserSession($user){
 
     //Redirect based on role
     switch ($user->role) {
+        case 'admins':
+            $_SESSION['user_id'] = $user->id;
+            $_SESSION['user_name'] = $user->name;
+            $_SESSION['user_email'] = $user->email;
+            redirect('admins/dashboard');
+            break;
         case 'consultants':
             redirect('pages/index');
             break;
+
         case 'farmers':
-            redirect('pages/index');
+            // initializing the session variables
+            $_SESSION['user_id'] = $user->id;
+            $_SESSION['user_name'] = $user->name;
+            $_SESSION['user_email'] = $user->email;
+            $_SESSION['user_image'] = $user->image;
+            $_SESSION['user_role'] = 'farmer'; 
+            redirect('farmers/index');
             break;
+
         case 'buyers':
-            redirect('pages/index');
+              $_SESSION['user_id'] = $user->id;
+              $_SESSION['user_name'] = $user->name;
+              $_SESSION['user_role'] = $user->role; // Store the user's role in session
+              $_SESSION['user_phone'] = $user->phone;
+              $_SESSION['user_email'] = $user->email;
+              $_SESSION['user_password'] = $user->password;
+            redirect('Buyercontrollers/cartDetails');
             break;
+
         case 'suppliers':
             redirect('pages/index');
             break;
+
         case 'delivery_persons':
               $_SESSION['user_id'] = $user->id;
               $_SESSION['user_name'] = $user->name;
@@ -129,6 +154,10 @@ public function logout(){
 
         //Logout based on role
         switch ($_SESSION['user_role']) {
+            case 'admins':
+                session_destroy();
+                redirect('users/login');
+                break;
             case 'consultants':
                 session_destroy();
                 redirect('users/login');
@@ -171,7 +200,9 @@ public function logout(){
         }
     }
         
+    public function forum() {
 
+    }
     
 }
 ?>
