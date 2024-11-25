@@ -13,10 +13,11 @@
             <form action="<?php echo URLROOT; ?>/users/login" method="POST">
                 <div class="form-group">
                     <input type="email" name="email" placeholder="Enter your email" <?php echo (!empty($data['email_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['email']; ?>" required>
+                    <span class="error"><?php echo $data['email_err']; ?></span>
                 </div>
                 <div class="form-group">
                     <input type="password" name="password" placeholder="Enter your password" <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['password']; ?>" required>
-                    <span><?php echo $data['password_err']; ?></span>
+                    <span class="error"><?php echo $data['password_err']; ?></span>
                 </div>
 
                 <div class="form-options">

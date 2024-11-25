@@ -29,9 +29,15 @@ class Users extends Controller {
         }
 
         // Validate password
-        if(empty($data['password'])) {
+        if (empty($data['password'])) {
             $data['password_err'] = 'Please enter a password';
-        } 
+        } elseif (strlen($data['password']) < 6) {
+            $data['password_err'] = 'Password must be at least 6 characters long';
+        } elseif (!preg_match('/[A-Z]/', $data['password'])) {
+            $data['password_err'] = 'Password must include at least one uppercase letter';
+        } elseif (!preg_match('/[0-9]/', $data['password'])) {
+            $data['password_err'] = 'Password must include at least one number';
+        }
 
         //Check for user
         if($this->userModel->findUserByEmail($data['email'])){

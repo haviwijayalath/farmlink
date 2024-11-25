@@ -2,10 +2,6 @@
 
 class Dpersons extends Controller {
     public function __construct() {
-        // Protect all methods in this controller
-        if (!isLoggedIn()) {
-            redirect('users/login'); // Redirect to login page if not logged in
-        }
       $this->userModel = $this->model('Dperson'); 
     }
 
@@ -256,20 +252,27 @@ class Dpersons extends Controller {
             }
 
             // Validate phone number
-            if(empty($data['phone'])) {
-                $data['phone_err'] = 'Please enter phone number';
+            if (empty($data['phone'])) {
+                $data['phone_err'] = 'Please enter a phone number';
+            } elseif (!preg_match('/^\d{10}$/', $data['phone'])) {
+                $data['phone_err'] = 'Phone number must be exactly 10 digits';
             }
 
+
             //validate address
-            if (empty($data['addr_no'] && empty($data['city']))) {
+            if (empty($data['street'] && empty($data['city']))) {
                 $data['addr_no_err'] = 'Please enter your address';
             }
             
             // Validate password
-            if(empty($data['password'])) {
+            if (empty($data['password'])) {
                 $data['password_err'] = 'Please enter a password';
-            } elseif(strlen($data['password']) < 6) {
-                $data['password_err'] = 'Password must be at least 6 characters';
+            } elseif (strlen($data['password']) < 6) {
+                $data['password_err'] = 'Password must be at least 6 characters long';
+            } elseif (!preg_match('/[A-Z]/', $data['password'])) {
+                $data['password_err'] = 'Password must include at least one uppercase letter';
+            } elseif (!preg_match('/[0-9]/', $data['password'])) {
+                $data['password_err'] = 'Password must include at least one number';
             }
 
             // Validate confirm password
