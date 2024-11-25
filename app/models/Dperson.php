@@ -65,7 +65,7 @@ public function findUserByEmail($email) {
         // Update query to join with the addresses table
         $this->db->query('
             SELECT dp.id, dp.name, dp.email, dp.phone, dp.area, dp.image, dp.address_id, dp.password,
-                   dp.vehicle, dp.regno, dp.capacity, dp.v_image, a.number, a.street, a.city
+                   dp.type, dp.regno, dp.capacity, dp.v_image, a.number, a.street, a.city
             FROM delivery_persons dp
             LEFT JOIN address a ON dp.address_id = a.address_id
             WHERE dp.id = :id
@@ -111,11 +111,12 @@ public function updateUser($data) {
 
 // Add a new vehicle
 public function addVehicle($data) {
-    $this->db->query('INSERT INTO vehicles (type, regno, capacity, v_image) VALUES (:type, :regno, :capacity, :v_image)');
+    $this->db->query('UPDATE delivery_persons SET type = :type, regno = :regno, capacity = :capacity, v_image = :v_image WHERE id = :id');
     $this->db->bind(':type', $data['type']);
     $this->db->bind(':regno', $data['regno']);
     $this->db->bind(':capacity', $data['capacity']);
     $this->db->bind(':v_image', $data['v_image']);
+    $this->db->bind(':id', $data['id']);
 
     return $this->db->execute();
 }
@@ -212,7 +213,7 @@ public function addVehicle($data) {
         return false;
     }
 
-    public function saveDropoffImages($delivery_id, $dropoffImagePath) {
+    public function saveDropoffImage($delivery_id, $dropoffImagePath) {
         // Insert image paths into the delivery_info table
         $this->db->query('UPDATE delivery_info SET pic_after = :pic_after WHERE delivery_id = :delivery_id');
         $this->db->bind(':pic_after', $dropoffImagePath);
@@ -232,6 +233,7 @@ public function addVehicle($data) {
         // If the first update fails, return false
         return false;
         }
+    
 
     public function history($id){
             $this->db->query('
