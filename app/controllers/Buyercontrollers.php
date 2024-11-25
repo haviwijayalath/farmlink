@@ -11,6 +11,7 @@ class Buyercontrollers extends Controller {
     public function register(){
         // check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
+
             // process form
             // sanitize the post data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
@@ -118,8 +119,90 @@ class Buyercontrollers extends Controller {
     }
 
     public function cartDetails(){
-        $data = [];
+
+        // get the cart items from database
+        $cartItems = $this->buyerModel->getCartItems();
+        $total = 0;
+
+        foreach ($cartItems as $item) {
+            $total += $item->price * $item->quantity;
+        }
+    
+        $data = [
+            'cartItems' => $cartItems,
+            'total' => $total
+        ];
+
         $this->view('buyer/cart/cart', $data);
+    }
+
+    public function addToCart(){
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $data = [
+                'buyer_id' => $_POST['user_id'],
+                'product_id' => $_POST['product_id'],
+                'quantity' => $_POST['quantity']
+            ];
+
+            if($this->buyerModel->addCartItem($data)){
+                redirect('Buyercontrollers/cartDetails');
+            } else {
+                die('Something went wrong while adding to the cart.');
+            }
+        } else {
+            redirect('Buyercontrollers/cartDetails');
+        }
+    }
+
+    public function updateCartItem(){
+        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $data = [
+                'cart_id' => $_POST['cart_id'],
+                'quantity' => $_POST['quantity']
+            ];
+
+            // if ($this->buyerModel->updateCartItem($data)){
+            //     redirect('Buyercontrollers/cartDetails');
+            // } else {
+            //     die('Something went wrong while updating the cart.');
+            // }
+
+            if ($this->buyerModel->updateCartItem($data)){
+                echo 
+                // Fetch updated cart items and total value
+                $cartItems = $this->buyerModel->getCartItems();
+                $total = 0;
+    
+                foreach ($cartItems as $item) {
+                    $total += $item->price * $item->quantity;
+                }
+    
+                $response = [
+                    'success' => true,
+                    'cartItems' => $cartItems,
+                    'total' => $total
+                ];
+    
+                echo json_encode($response); // Send response for AJAX
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to update cart item.']);
+            }
+        
+        } else {
+            //redirect('Buyercontrollers/cartDetails');
+        }
+    }
+
+    public function removeCartItem($id){
+        if ($this->buyerModel->removeCartItem($id)){
+            redirect('Buyercontrollers/cartDetails');
+        } else {
+            die('Something went wrong while removing the cart item.');
+        }
     }
 
     public function deliveryOptions(){
