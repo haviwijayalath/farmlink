@@ -1,0 +1,47 @@
+@import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500');
+
+
+.sidebar {
+  position:fixed;
+  width: 250px;
+  
+  background: #042331;
+  transition: all 0.5s ease;
+  display: flex;
+  height: 100vh;
+  top: 0;
+  left: 0;
+  padding-top: 20px;
+  padding-right: 15px;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease;
+  margin-top: 95px;
+  z-index: 1000;
+}
+
+.sidebar ul {
+  padding: 0;
+}
+
+.sidebar ul li {
+  border-bottom: 1px solid black;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.sidebar ul a {
+  display: block;
+  width: 100%;
+  line-height: 65px;
+  font-size: 20px;
+  color: white;
+  padding-left: 40px;
+  transition: 0.4s;
+}
+
+ul li:hover a {
+  padding-left: 50px;
+}
+
+.sidebar ul a i {
+  margin-right: 16px;
+}
