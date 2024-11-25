@@ -9,7 +9,8 @@
   display: flex;
   flex-direction: column;
   gap: 20px;
-  margin: 175px 350px;
+  margin-top: 95px;
+  margin-left: 400px;
 }
 
 /* Profile Info Section */
