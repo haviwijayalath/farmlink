@@ -1,5 +1,5 @@
 <!-- Sidebar -->
-<link rel="stylesheet" href="<?= URLROOT ?>/public/css/sidebars/farmer.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/sidebars/farmer.css?version=1">
 
 <div class="sidebar">
       <ul>

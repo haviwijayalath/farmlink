@@ -1,13 +1,21 @@
 @import url('https://fonts.googleapis.com/css?family=Roboto:300,400,400i,500');
 
+
 .sidebar {
-  position:absolute;
+  position:fixed;
   width: 250px;
   min-height:86vh;
   background: #042331;
   transition: all 0.5s ease;
   display: flex;
   height: 100%;
+  top: 0;
+  left: 0;
+  padding-top: 20px;
+  padding-right: 15px;
+  box-shadow: 2px 0px 5px rgba(0, 0, 0, 0.1);
+  transition: width 0.3s ease;
+  margin-top: 105px;
 }
 
 .sidebar ul {

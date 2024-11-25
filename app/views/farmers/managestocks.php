@@ -3,20 +3,19 @@
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/farmers/managestocks.css?version=1">
 
-
 <div class="mt-4">
   <a href="<?= URLROOT ?>/farmers/addstocks" class="btn btn-success"> + Add New Stock</a>
 </div>
-<br>
-
+<hr>
 <div class="container">
+  
   <div class="row">
     <?php foreach($data as $product): ?>
       <?php if($product->farmer_id != $_SESSION['user_id']) continue; ?>
       <div class="col-md-4">
         <div class="card mb-4">
           <div class="card-body">
-            <img src="<?= URLROOT ?>/public/uploads/farmer/products/<?= !empty(htmlspecialchars($product->image)) && file_exists(APPROOT . '/../public/uploads/farmer/products/' . htmlspecialchars($product->image)) ? htmlspecialchars($product->image) : 'Farmer-bro.jpg' ?>"  alt="<?php echo htmlspecialchars($product->name); ?>" class="product_picture" width="300">
+            <img src="<?= URLROOT ?>/public/uploads/farmer/products/<?= !empty(htmlspecialchars($product->image)) && file_exists(APPROOT . '/../public/uploads/farmer/products/' . htmlspecialchars($product->image)) ? htmlspecialchars($product->image) : 'Farmer-bro.jpg' ?>"  alt="<?php echo htmlspecialchars($product->name); ?>" class="product_picture">
             <h5 class="card-title"><?= htmlspecialchars($product->name); ?></h5>
             <p class="card-text"><?php echo htmlspecialchars($product->description); ?></p>
             <p class="card-text">Price: $<?php echo htmlspecialchars($product->price); ?></p>
