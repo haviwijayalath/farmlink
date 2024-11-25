@@ -4,6 +4,11 @@ class Dpaccounts extends Controller {
     private $userModel;
     
   public function __construct() {
+    // Protect all methods in this controller
+    if (!isLoggedIn()) {
+        redirect('users/login'); // Redirect to login page if not logged in
+    }
+
       $this->userModel = $this->model('Dperson');
   }
 

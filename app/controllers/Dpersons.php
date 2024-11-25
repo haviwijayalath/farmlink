@@ -2,6 +2,10 @@
 
 class Dpersons extends Controller {
     public function __construct() {
+        // Protect all methods in this controller
+        if (!isLoggedIn()) {
+            redirect('users/login'); // Redirect to login page if not logged in
+        }
       $this->userModel = $this->model('Dperson'); 
     }
 
