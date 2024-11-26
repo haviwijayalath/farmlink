@@ -5,10 +5,14 @@ class Buyercontrollers extends Controller {
     private $buyerModel;
 
     public function __construct() {
-        $this->buyerModel = $this->model('Buyer');
+        $this->buyerModel = $this->model('Buyer'); 
     }
 
     public function register(){
+        if (isLoggedIn()) {
+            redirect('buyers/index');
+          }
+
         // check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
 
@@ -110,15 +114,25 @@ class Buyercontrollers extends Controller {
 
     // Function to display account page
     public function viewProfile() {
+        if (!isLoggedIn()) {
+            redirect('users/login'); 
+          }
+          
         $data = [];
         $this->view('buyer/accounts/buyer_account', $data);
     }
 
     public function editProfile() {
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
         $this->view('buyer/accounts/buyer_editaccount');
     }
 
     public function cartDetails(){
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
 
         // get the cart items from database
         $cartItems = $this->buyerModel->getCartItems();
@@ -137,6 +151,10 @@ class Buyercontrollers extends Controller {
     }
 
     public function addToCart(){
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
@@ -156,48 +174,39 @@ class Buyercontrollers extends Controller {
         }
     }
 
-    public function updateCartItem(){
-        if ($_SERVER['REQUEST_METHOD'] == 'POST'){
+    public function updateCartItem() {
+        if (!isLoggedIn()) {
+            redirect('users/login');
+        }
+    
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
+    
             $data = [
                 'cart_id' => $_POST['cart_id'],
                 'quantity' => $_POST['quantity']
             ];
-
-            // if ($this->buyerModel->updateCartItem($data)){
-            //     redirect('Buyercontrollers/cartDetails');
-            // } else {
-            //     die('Something went wrong while updating the cart.');
-            // }
-
-            if ($this->buyerModel->updateCartItem($data)){
-                echo 
-                // Fetch updated cart items and total value
-                $cartItems = $this->buyerModel->getCartItems();
-                $total = 0;
     
-                foreach ($cartItems as $item) {
-                    $total += $item->price * $item->quantity;
-                }
-    
-                $response = [
-                    'success' => true,
-                    'cartItems' => $cartItems,
-                    'total' => $total
-                ];
-    
-                echo json_encode($response); // Send response for AJAX
+            // Update the cart item
+            if ($this->buyerModel->updateCartItem($data)) {
+                // Redirect to cart details page
+                redirect('Buyercontrollers/cartDetails');
             } else {
-                echo json_encode(['success' => false, 'message' => 'Failed to update cart item.']);
+                // Handle error scenario
+                die('Something went wrong while updating the cart.');
             }
-        
         } else {
-            //redirect('Buyercontrollers/cartDetails');
+            // Redirect to cart details page if not a POST request
+            redirect('Buyercontrollers/cartDetails');
         }
     }
-
+    
     public function removeCartItem($id){
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         if ($this->buyerModel->removeCartItem($id)){
             redirect('Buyercontrollers/cartDetails');
         } else {
@@ -206,18 +215,34 @@ class Buyercontrollers extends Controller {
     }
 
     public function deliveryOptions(){
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         $this->view('buyer/cart/delivery_details');
     }
 
     public function paymentDetails(){
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         $this->view('buyer/cart/payment');
     }
 
     public function orderConfirm(){
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         $this->view('buyer/cart/confirmOrder');
     }
 
     public function buyerOrders(){
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         $this->view('buyer/cart/buyerOrders');
     }
 

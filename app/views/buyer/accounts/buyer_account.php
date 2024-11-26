@@ -7,13 +7,26 @@
     <div class="account-container">
         <div class="account-content">
             <div class="profile-info">
-                <img src="<?= URLROOT ?>/public/images/farmer_propic.jpg" alt="Profile Picture" class="profile-pic">
-                <h2>Name</h2>
-                <p><strong>Phone Number: </p>
-                <p><strong>Email: </p>
-                <!-- <p><strong>Address: </p>
-                <p><strong>Delivery Areas: </p> -->
-                <a href="<?php echo URLROOT?>Buyercontrollers/editprofile" class="edit-btn">Edit Profile</a>
+
+                <div class="profile-image">
+                    <img src="<?= URLROOT ?>/public/images/farmer_propic.jpg" alt="Profile Picture" class="profile-pic">
+                </div>
+
+                <div class="user-details">
+                    <div class="detail-item">
+                        <strong>Name: </strong>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Phone Number: </strong>
+                    </div>
+                    <div class="detail-item">
+                        <strong>Email: </strong>
+                    </div>
+                </div>
+            </div>
+            <div class="action-buttons">
+                <a href="<?php echo URLROOT?>Buyercontrollers/editprofile" class="btn edit-btn">Edit Profile</a>
+                <a href="" class="btn delete-btn" onclick=";">Delete Account</a>
             </div>
         </div>
     </div>
