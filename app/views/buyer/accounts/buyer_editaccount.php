@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<div></div>
+
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/editaccount.css">
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
@@ -15,17 +15,6 @@
             <label for="email">Email</label>
             <input type="email" name="email" id="email" value="<?/*= $user['email']*/ ?>" required>
         </div>
-        <!-- <div class="form-group">
-            <label for="address">Address</label>
-            <input type="text" name="address" id="address" value="<?/*= $user['address'] */?>" required>
-        </div>
-
-        <div class="form-group">
-        <label for="image">Upload Image</label>
-        <div class="upload-container">
-          <input type="file" id="image" name="image" placeholder="upload profile image">
-        </div>
-        </div> -->
 
         <div class="form-group">
         <label for="password">Password</label>

@@ -29,9 +29,15 @@ class Users extends Controller {
         }
 
         // Validate password
-        if(empty($data['password'])) {
+        if (empty($data['password'])) {
             $data['password_err'] = 'Please enter a password';
-        } 
+        } elseif (strlen($data['password']) < 6) {
+            $data['password_err'] = 'Password must be at least 6 characters long';
+        } elseif (!preg_match('/[A-Z]/', $data['password'])) {
+            $data['password_err'] = 'Password must include at least one uppercase letter';
+        } elseif (!preg_match('/[0-9]/', $data['password'])) {
+            $data['password_err'] = 'Password must include at least one number';
+        }
 
         //Check for user
         if($this->userModel->findUserByEmail($data['email'])){
@@ -80,8 +86,9 @@ public function createUserSession($user){
     //Redirect based on role
     switch ($user->role) {
         case 'admins':
-            $_SESSION['user_id'] = $user->id;
-            $_SESSION['user_name'] = $user->name;
+            $_SESSION['admin_logged_in'] = true;
+            $_SESSION['admin_id'] = $user->id;
+            $_SESSION['admin_name'] = $user->name;
             $_SESSION['user_email'] = $user->email;
             redirect('admins/dashboard');
             break;
@@ -123,7 +130,7 @@ public function createUserSession($user){
               $_SESSION['user_addr_no'] = $user->addr_no;
               $_SESSION['user_street'] = $user->street;
               $_SESSION['user_city'] = $user->city;
-              $_SESSION['user_vehicle'] = $user->vehicle;
+              $_SESSION['user_vehicle'] = $user->type;
               $_SESSION['user_delivery_area'] = $user->area;
               $_SESSION['user_v_regno'] = $user->regno;
               $_SESSION['user_v_capacity'] = $user->capacity;

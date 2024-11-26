@@ -42,7 +42,7 @@ label {
 }
 
 input[type="text"], select, input[type="file"] {
-  width: 100%;
+  width: 98%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -61,8 +61,8 @@ input[type="text"], select, input[type="file"] {
 }
 
 .btn-add {
-  width: 100px; /* Adjust width for larger buttons */
-  height: 50px; /* Adjust height for larger buttons */
+  width: 120px; /* Adjust width for larger buttons */
+  height: 60px; /* Adjust height for larger buttons */
   font-size: 18px; /* Larger font size */
   padding: 10px;
   border-radius: 10px; /* Slightly larger border radius */

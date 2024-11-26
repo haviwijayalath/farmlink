@@ -103,6 +103,17 @@ class Farmer
     return $results;
   }
 
+  // Get stock by id
+  public function getStockById($id)
+  {
+    $this->db->query('SELECT * FROM fproducts WHERE fproduct_id = :id');
+    $this->db->bind(':id', $id);
+
+    $row = $this->db->single();
+
+    return $row;
+  }
+  
   // Add stock
   public function addStock($data)
   {
@@ -121,6 +132,25 @@ class Farmer
       return true;
     } else {
       return false;
+    }
+  }
+
+  public function updateStock($id, $data) {
+    $this->db->query('UPDATE fproducts SET name = :name, description = :description, price = :price, stock = :stock, exp_date = :exp_date, image = :image WHERE fproduct_id = :id');
+    // Bind values
+    $this->db->bind(':id', $id);
+    $this->db->bind(':name', $data['name']);
+    $this->db->bind(':description', $data['description']);
+    $this->db->bind(':price', $data['price']);
+    $this->db->bind(':stock', $data['stock']);
+    $this->db->bind(':exp_date', $data['exp_date']);
+    $this->db->bind(':image', $data['image']);
+
+    // Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+        return false;
     }
   }
 }

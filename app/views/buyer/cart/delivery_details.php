@@ -4,7 +4,6 @@
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
 
 <div class="delivery-options">
     <h2>Delivery options</h2>
@@ -58,3 +57,5 @@
     }
 
 </script>
+
+<?php require APPROOT . '/views/inc/footer.php'; ?>

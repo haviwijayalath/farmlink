@@ -1,0 +1,60 @@
+/* style.css */
+
+/* Basic styling */
+
+main {
+  display: flex;
+}
+
+.content {
+  padding: 20px;
+  flex: 1;
+  margin-left: 300px;
+  margin-top: 90px;
+  margin-bottom: 70px;
+}
+
+.order-summary {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+
+.order-info, .order-totals {
+  display: flex;
+  flex-direction: column;
+}
+
+.order-info div, .order-totals div {
+  margin-bottom: 5px;
+}
+
+.order-totals .status {
+  padding: 5px 10px;
+  border-radius: 5px;
+}
+
+.order-totals .pending {
+  background-color: #ffcccb; /* Light red */
+}
+
+.order-totals .actions {
+  text-align: right;
+}
+
+.order-items {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.order-items th, .order-items td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+.order-items tfoot td {
+  text-align: center;
+}
+
+/* Add more specific styling as needed */
