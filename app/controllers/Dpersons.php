@@ -2,16 +2,25 @@
 
 class Dpersons extends Controller {
     public function __construct() {
-      $this->userModel = $this->model('Dperson'); 
+        $this->userModel = $this->model('Dperson'); 
     }
 
     public function index() {
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
         // Default method content here
         echo "Welcome to the Orders page!";
     }
 
     // Show new orders page
     public function neworder() {
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
       $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
       
 
@@ -37,6 +46,11 @@ class Dpersons extends Controller {
 
     // Confirm an order and redirect to new orders page
     public function confirm($orderId) {
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         if ($this->userModel->confirmOrder($orderId)) {
             header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
         } else {
@@ -46,6 +60,11 @@ class Dpersons extends Controller {
 
     // Display ongoing deliveries
     public function ongoingDeliveries() {
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         $deliveryArea = $_SESSION['user_delivery_area'];
         $orders = $this->userModel->getOrdersByArea($deliveryArea);
 
@@ -67,6 +86,11 @@ class Dpersons extends Controller {
     }
 
     public function proof(){
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         // Prepare data for the view
             $data = [
                 'order_id' => $_SESSION['order_id'] ?? null,
@@ -78,6 +102,11 @@ class Dpersons extends Controller {
     }
 
     public function endDelivery() {
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         // Clear session variables related to delivery images
         unset($_SESSION['pickup_image']);
         unset($_SESSION['dropoff_image']);
@@ -89,6 +118,11 @@ class Dpersons extends Controller {
     
 
         public function deliveryUploadPickup() {
+
+            if (!isLoggedIn()) {
+                redirect('users/login');
+              }
+
             if (isset($_FILES['pickup_image'])) {
                 $uploadDir = APPROOT . '/../public/d_uploads/';
         
@@ -121,6 +155,11 @@ class Dpersons extends Controller {
 
         
         public function deliveryUploadDropoff() {
+
+            if (!isLoggedIn()) {
+                redirect('users/login');
+              }
+
             // Check if files are uploaded
             if (isset($_FILES['dropoff_image'])) {
                 // Directory to save uploaded images
@@ -170,6 +209,11 @@ class Dpersons extends Controller {
 
     public function history(){
 
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
+
         $id = $_SESSION['user_id'];
 
         $history = $this->userModel->history($id);
@@ -183,6 +227,11 @@ class Dpersons extends Controller {
     }
 
     public function tracking(){
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         $orderStatus = $this->userModel->fetchOrderStatus($_SESSION['order_id']);
 
         // Check if we received any status
@@ -408,6 +457,11 @@ class Dpersons extends Controller {
     }
 
     public function orderdetails($order_id){
+
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
         $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
 
         $orders = $this->userModel->getorder($deliveryArea, $order_id);
