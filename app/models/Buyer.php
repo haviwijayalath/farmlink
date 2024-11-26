@@ -98,8 +98,8 @@ public function addCartItem($data){
 public function updateCartItem($data){
     $this->db->query('
         UPDATE buyer_carts 
-        SET quantity = :$quantity
-        WHERE id = :cart_id
+        SET quantity = :quantity 
+        WHERE cart_id = :cart_id
     ');
     $this->db->bind(':cart_id', $data['cart_id']);
     $this->db->bind(':quantity', $data['quantity']);

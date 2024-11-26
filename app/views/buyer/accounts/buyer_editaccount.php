@@ -1,6 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
-<link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/editaccount.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/editaccount.css">
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
@@ -9,11 +9,11 @@
     <form method="POST" action="">
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" name="name" id="name" value="<? /*= $user['name'] */?>" required>
+            <input type="text" name="name" id="name" value="" required>
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" name="email" id="email" value="<?/*= $user['email']*/ ?>" required>
+            <input type="email" name="email" id="email" value="" required>
         </div>
 
         <div class="form-group">
@@ -24,7 +24,7 @@
         </div>
 
         <div class="form-buttons">
-            <button type="button" class="cancel-btn" onclick="window.location.href='profile.php';">Cancel</button>
+            <a href="<?= URLROOT ?>/Buyercontrollers/viewProfile" class="cancel-btn">Cancel</a>
             <button type="submit" class="save-btn">Save Changes</button>
         </div>
     </form>
