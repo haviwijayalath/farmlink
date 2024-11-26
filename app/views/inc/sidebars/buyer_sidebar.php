@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?= URLROOT ?>/public/css/sidebars/buyer_sidebar.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/sidebars/d_person.css">
 
 
 <div class="sidebar">

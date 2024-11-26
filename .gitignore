@@ -4,3 +4,4 @@ app/config/config.php
 # ignoring the public uploads dir
 public/uploads/
 public/upload/
+public/d_uploads/
