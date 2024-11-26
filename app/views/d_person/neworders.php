@@ -20,7 +20,7 @@
                 <?php foreach($data['orders'] as $index => $order): ?>
                     <tr>
                         <td>
-                            <a href="<?= URLROOT ?>/dpersons/orderdetails/<?= htmlspecialchars($order->id) ?>" class="newbtn newbtn-delete" >
+                            <a href="<?= URLROOT ?>/dpersons/orderdetails/<?= htmlspecialchars($order->id) ?>" class="newbtn newbtn-delete">
                                 <?= htmlspecialchars($order->id) ?>
                             </a>
                         </td>
@@ -28,7 +28,10 @@
                         <td><?= htmlspecialchars($order->dropoff_address) ?></td>
                         <td><?= htmlspecialchars($order->capacity) ?></td>
                         <td>
-                            <a href="<?= URLROOT ?>/dpersons/confirm/<?= htmlspecialchars($order->id) ?>" class="newbtn newbtn-confirm">Confirm</a>
+                            <a href="#" 
+                               class="newbtn newbtn-confirm" 
+                               data-url="<?= URLROOT ?>/dpersons/confirm/<?= htmlspecialchars($order->id) ?>" 
+                               onclick="showPopup2(this)">Confirm</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -40,5 +43,46 @@
         </tbody>
     </table>
 </div>
+
+<div class="popup-container" id="popupContainer" style="display: none;">
+    <div class="popup-content">
+        <span class="close" onclick="closePopup2()">&times;</span>
+        <div class="popup-header">
+            <h2>Confirm Delivery</h2>
+        </div>
+        <div class="popup-body">
+            <p>Are you sure you want to confirm this order for delivery?</p>
+        </div>
+        <div class="popup-footer">
+            <button class="btn-primary" id="confirmBtn">Confirm</button>
+            <button class="btn-danger" onclick="closePopup2()">Cancel</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    let confirmUrl = "";
+
+    // Show the popup when the confirm button is clicked
+    function showPopup2(element) {
+        confirmUrl = element.getAttribute('data-url'); // Get the URL from the clicked element
+        const popupContainer = document.getElementById('popupContainer');
+        popupContainer.style.display = 'block'; // Show the popup
+        document.body.classList.add('blurred'); // Add blur class to body
+
+        // Attach the confirm button action dynamically
+        const confirmBtn = document.getElementById('confirmBtn');
+        confirmBtn.onclick = () => {
+            window.location.href = confirmUrl; // Redirect to the confirmation URL
+        };
+    }
+
+    // Close the popup
+    function closePopup2() {
+        const popupContainer = document.getElementById('popupContainer');
+        popupContainer.style.display = 'none'; // Hide the popup
+        document.body.classList.remove('blurred'); // Remove blur class
+    }
+</script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

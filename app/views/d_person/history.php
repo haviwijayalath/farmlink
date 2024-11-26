@@ -7,6 +7,21 @@
 <div class="history-container">
     <div class="history-content-area">
         <h2>Delivery History</h2>
+
+        <div class="search-filter-container">
+            <div class="search-bar">
+                <!-- Search by Customer -->
+                <input type="text" id="search-customer" placeholder="Search by Customer..." onkeyup="filterTable()" />
+
+                <!-- Search by Date -->
+                <input type="date" id="search-date" onchange="filterTable()" />
+
+                <button class="search-icon-btn">
+                    <i class="fas fa-search"></i>
+                </button>
+            </div>
+        </div>
+
         <table class="order-history-table">
             <thead>
                 <tr>
@@ -18,41 +33,30 @@
                 </tr>
             </thead>
             <tbody>
-            <?php if (!empty($data['orders'])): ?>
-                <?php foreach($data['orders'] as $index => $order): ?>
+                <?php if (!empty($data['orders'])): ?>
+                    <?php foreach($data['orders'] as $index => $order): ?>
+                        <tr>
+                            <td>
+                                <a href="<?= URLROOT ?>/orders/orderDetails/<?= htmlspecialchars($order->order_id) ?>" class="historybtn">
+                                    <?= htmlspecialchars($order->order_id) ?>
+                                </a>
+                            </td>
+                            <td><?= htmlspecialchars($order->productName) ?></td>
+                            <td class="customer-name"><?= htmlspecialchars($order->name) ?></td>
+                            <td><?= htmlspecialchars($order->amount) ?></td>
+                            <td class="order-date"><?= htmlspecialchars($order->date) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
                     <tr>
-                        <td>
-                            <a href="<?= URLROOT ?>/orders/orderDetails/<?= htmlspecialchars($order->order_id) ?>" class="historybtn" >
-                                <?= htmlspecialchars($order->order_id) ?>
-                            </a>
-                        </td>
-                        <td><?= htmlspecialchars($order->productName) ?></td>
-                        <td><?= htmlspecialchars($order->name) ?></td>
-                        <td><?= htmlspecialchars($order->amount) ?></td>
-                        <td><?= htmlspecialchars($order->date) ?></td>
-                        
+                        <td colspan="5">No delivered orders available for you.</td>
                     </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="5">No delivered orders available for you.</td>
-                </tr>
-            <?php endif; ?>
-        </tbody>
+                <?php endif; ?>
+            </tbody>
         </table>
     </div>
 </div>
 
-<!-- Modal to show order details -->
-<div id="orderModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h3>Order Details</h3>
-        <div id="order-details">
-            <!-- Order details will be loaded here via AJAX -->
-        </div>
-    </div>
-</div>
 
 <script>
     $(document).ready(function () {
@@ -111,6 +115,28 @@
             $('#orderModal').hide();
         });
     });
+
+    function filterTable() {
+    const customerInput = document.getElementById('search-customer').value.toLowerCase();
+    const dateInput = document.getElementById('search-date').value;
+
+    const tableRows = document.querySelectorAll('.order-history-table tbody tr');
+
+    tableRows.forEach(row => {
+        const customerName = row.querySelector('.customer-name').textContent.toLowerCase();
+        const orderDate = row.querySelector('.order-date').textContent;
+
+        const matchesCustomer = customerInput === "" || customerName.includes(customerInput);
+        const matchesDate = dateInput === "" || orderDate === dateInput;
+
+        if (matchesCustomer && matchesDate) {
+            row.style.display = ""; // Show row
+        } else {
+            row.style.display = "none"; // Hide row
+        }
+    });
+}
+
 </script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

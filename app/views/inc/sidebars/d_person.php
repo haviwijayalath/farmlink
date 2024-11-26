@@ -3,15 +3,15 @@
 
 <div class="sidebar">
   <ul>
-    <li><a href="<?php echo URLROOT?>/dpersons/neworder"><i class="fas fa-shopping-cart"></i><span>New Orders</span></a></li>
-    <li><a href="<?php echo URLROOT?>/dpaccounts/account"><i class="fas fa-user"></i><span>Account</span></a></li>
-    <li><a href="<?php echo URLROOT?>/dpaccounts/vehicleinfo"><i class="fas fa-truck"></i><span>Vehicle</span></a></li>
-    <li><a href="<?php echo URLROOT?>/dpersons/history"><i class="fas fa-history"></i><span>Delivery History</span></a></li>
-    <li><a href="<?php echo URLROOT?>/dpersons/ongoingDeliveries"><i class="fa-solid fa-truck-fast"></i><span>Ongoing</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpersons/neworder"><i class="fas fa-shopping-cart"></i><span>New Orders</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpaccounts/account"><i class="fas fa-user"></i><span>Account</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpaccounts/vehicleinfo"><i class="fas fa-truck"></i><span>Vehicle</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpersons/history"><i class="fas fa-history"></i><span>Delivery History</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpersons/ongoingDeliveries"><i class="fa-solid fa-truck-fast"></i><span>Ongoing</span></a></li>
     <!-- Logout -->
     <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
   </ul>
-  
+
   <!-- Logout Confirmation Popup -->
   <div class="popup-container" id="logout-popup" style="display: none;">
     <div class="popup-content">
@@ -32,7 +32,10 @@
 <script>
   // Show the popup
   function showPopup() {
-    document.getElementById('logout-popup').style.display = 'flex';
+    const popup = document.getElementById('logout-popup');
+    popup.style.display = 'flex';
+    popup.style.alignItems = 'center'; // Ensure popup is centered
+    popup.style.justifyContent = 'center';
   }
 
   // Hide the popup
@@ -42,7 +45,7 @@
 
   // Handle logout confirmation
   function confirmLogout() {
-    window.location.href = "<?= URLROOT ?>/Users/logout";
+    window.location.href = "<?= URLROOT ?>/users/logout";
   }
 
   // Toggle sidebar visibility
