@@ -1,7 +1,7 @@
 .login-container {
   display: flex;
   height:34.6em;
-  margin-top: 95px;
+  margin-top: 90px;
   width: 100%;
   padding: 0;
 
@@ -74,6 +74,7 @@
 .login-btn{
   display: block;
   margin: 0 auto;
+  font-size: 24px;
 
 }
 
@@ -236,7 +237,7 @@
 
   .login-btn {
     width: 100%; /* Make login button full width */
-    font-size: 14px; /* Reduce button font size */
+    font-size: 18px; /* Reduce button font size */
   }
 
   .form-footer {
@@ -328,4 +329,28 @@
     font-size: 12px;
     margin-top: 10px;
   }
+}
+
+/* Style for the password container */
+.password-container {
+  position: relative;
+  width: 100%;
+}
+
+/* Style for the password input */
+.password-container input {
+  width: 100%;
+  padding-right: 40px; /* Create space for the eye icon */
+  padding: 10px;
+}
+
+/* Style for the toggle eye icon */
+.password-container .toggle-password {
+  position: absolute;
+  right: 10px; /* Position the icon on the right */
+  top: 50%; /* Vertically center the icon */
+  transform: translateY(-50%); /* Adjust for exact vertical centering */
+  cursor: pointer;
+  font-size: 20px; /* Adjust icon size */
+  color: #333; /* Icon color */
 }
