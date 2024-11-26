@@ -1,0 +1,114 @@
+.content{
+    display: flex;
+    justify-content: space-between;
+    align-items: center ;
+    margin-left: 300px;
+    margin-top: 150px;
+}
+
+.order-summery{
+    align-items: center;
+    margin: 0;
+    background-color: #f9f9f9;
+    border: 1px solid #000;
+    padding: 20px;
+    width: 350px;
+}
+
+.order-summery h2{
+    font-size: 20px;
+    margin: 0 0 20px 0;
+}
+
+.order-summery .item{
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+}
+
+.order-summery .item:last-child{
+    margin-bottom: 0;
+}
+
+.order-summery .divider{
+    border-top: 1px solid #ddd;
+    margin: 15px 0;
+}
+
+.payment-option{
+    align-items: center;
+    background-color: #f9f9f9;
+    border: 1px solid #000;
+    padding: 20px;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
+.payment-option h2{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.payment-method{
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.payment-method img{
+    height: 20px;
+    margin-left: 5px;
+    border-radius: 50%;
+}
+
+.payment-method input{
+    margin-right: 10px;
+}
+
+.payment-method label{
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+.payment-details{
+    display: flex;
+    flex-direction: column;
+    margin-top: 20px;
+}
+
+.payment-details input{
+    width: 90%;
+    padding: 10px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+.review-order{
+    margin-top: 20px;
+}
+
+.review-order p {
+    font-size: 14px;
+    color: #666;
+}
+
+span{
+    font-size: 14px;
+    color: #666; 
+    margin-top: 0;  
+}
+
+.place-order-btn{
+    display: block;
+    width: 40%;
+    padding: 10px;
+    background-color: #03e360;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+    text-align: center;
+}
