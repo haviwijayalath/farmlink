@@ -52,7 +52,7 @@
 
           <label for="vehicle">Vehicle type:</label>
           <select id="vehicle" name="vehicle" placeholder="Select a vehicle" <?php echo (!empty($data['vehicle_err'])) ? 'is_invalid' : ''; ?>>
-            <option value="Lorry">Loryy</option>
+            <option value="Lorry">Lorry</option>
             <option value="Bike">Bike</option>
             <option value="Three wheel">Three wheeler</option>
           </select>
@@ -68,33 +68,40 @@
             value="<?php echo $data['regno']; ?>" required>
           <span class="error"><?php echo $data['regno_err']; ?></span>
 
-
-            <label for="capacity">Capacity</label>
+          <label for="capacity">Capacity</label>
           <input type="text" id="capacity" name="capacity" placeholder="Enter capacity of the vehicle" <?php echo (!empty($data['capacity_err'])) ? 'is_invalid' : ''; ?> 
             value="<?php echo $data['capacity']; ?>" required>
           <span class="error"><?php echo $data['capacity_err']; ?></span>
 
-            <label for="v_image">Vehicle Image</label>
+          <label for="v_image">Vehicle Image</label>
           <div class="upload-container">
             <input type="file" id="v_image" name="v_image" <?php echo (!empty($data['v_image_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['v_image']; ?>" onchange="previewVehicleImage(event)">
-            </div>
+          </div>
             
             <div id="vehicle-image-preview" style="margin-top: 15px;">
                 <img id="outputVehicle" src="" alt="Vehicle Image Preview" style="max-width: 200px; display: none;">
                 <span class="error"><?php echo $data['v_image_err']; ?></span>
             </div>
           
-          <label for="password">Password</label>
-          <input type="password" id="password" name="password" placeholder="Enter your password" <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> 
-            value="<?php echo $data['password']; ?>">
-          <span class="error"><?php echo $data['password_err']; ?></span>
+              <label for="password">Password</label>
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="Enter your password" 
+                      <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> 
+                      value="<?php echo $data['password']; ?>" required>
+                <i class="fa fa-eye-slash toggle-password" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+            </div>
+            <span class="error"><?php echo $data['password_err']; ?></span>
 
-          <label for="confirm_password">Confirm Password</label>
-          <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" <?php echo (!empty($data['confirm_password_err'])) ? 'is_invalid' : ''; ?> 
-            value="<?php echo $data['confirm_password']; ?>">
-          <span class="error"><?php echo $data['confirm_password_err']; ?></span>
+            <label for="confirm_password">Confirm Password</label>
+            <div class="password-container">
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" 
+                      <?php echo (!empty($data['confirm_password_err'])) ? 'is_invalid' : ''; ?> 
+                      value="<?php echo $data['confirm_password']; ?>" required>
+                <i class="fa fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="toggleConfirmPasswordVisibility()"></i>
+            </div>
+            <span class="error"><?php echo $data['confirm_password_err']; ?></span>
 
-          <!--get the value for role using the url -->
+
           <input type="hidden" id="role" name="role" value="<?php echo isset($_GET['role']) ? $_GET['role'] : ''; ?>">
           
           <button type="submit" class="register-btn">Register</button>
@@ -103,19 +110,49 @@
   </div>
 
   <script>
-function previewImage(event) {
-    const imagePreview = document.getElementById('output');
-    imagePreview.src = URL.createObjectURL(event.target.files[0]);
-    imagePreview.style.display = 'block';
-    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
-}
+    function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('togglePassword');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text'; // Show password
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye'); // Change icon to eye-open
+        } else {
+            passwordInput.type = 'password'; // Hide password
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash'); // Change icon to eye-slash
+        }
+    }
 
-function previewVehicleImage(event) {
-    const vehicleImagePreview = document.getElementById('outputVehicle');
-    vehicleImagePreview.src = URL.createObjectURL(event.target.files[0]);
-    vehicleImagePreview.style.display = 'block';
-    vehicleImagePreview.onload = () => URL.revokeObjectURL(vehicleImagePreview.src); // Free memory
-}
-</script>
+    function toggleConfirmPasswordVisibility() {
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const toggleIcon = document.getElementById('toggleConfirmPassword');
+        
+        if (confirmPasswordInput.type === 'password') {
+            confirmPasswordInput.type = 'text'; // Show password
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye'); // Change icon to eye-open
+        } else {
+            confirmPasswordInput.type = 'password'; // Hide password
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash'); // Change icon to eye-slash
+        }
+    }
 
-  <?php require APPROOT . '/views/inc/footer.php'; ?>
+    function previewImage(event) {
+        const imagePreview = document.getElementById('output');
+        imagePreview.src = URL.createObjectURL(event.target.files[0]);
+        imagePreview.style.display = 'block';
+        imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
+    }
+
+    function previewVehicleImage(event) {
+        const vehicleImagePreview = document.getElementById('outputVehicle');
+        vehicleImagePreview.src = URL.createObjectURL(event.target.files[0]);
+        vehicleImagePreview.style.display = 'block';
+        vehicleImagePreview.onload = () => URL.revokeObjectURL(vehicleImagePreview.src); // Free memory
+    }
+  </script>
+
+<?php require APPROOT . '/views/inc/footer.php'; ?>
