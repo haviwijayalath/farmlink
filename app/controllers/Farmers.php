@@ -317,6 +317,138 @@
       }
     }
 
+    public function editstocks($id) {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+
+      // Check for POST
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Process form
+        // Sanitize POST data
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+        $data = [
+          'name' => trim($_POST['product_name']),
+          'description' => trim($_POST['description']),
+          'price' => trim($_POST['price']),
+          'stock' => trim($_POST['quantity']),
+          'exp_date' => trim($_POST['exp_date']),
+          'image' => isset($_POST['image']) ? $_POST['image'] : '',
+
+          'name_err' => '',
+          'price_err' => '',
+          'stock_err' => '',
+          'exp_date_err' => '',
+          'image_err' => ''
+        ];
+
+        // Validate Name
+        if (empty($data['name'])) {
+          $data['name_err'] = 'Please enter name';
+        }
+
+        // Validate Price
+        if (empty($data['price']) && $data['price'] <= 0) {
+          $data['price_err'] = 'Please enter a valid price';
+        }
+
+        // Validate Stock
+        if (empty($data['stock']) && $data['stock'] <= 0) {
+          $data['stock_err'] = 'Please enter a valid stock';
+        }
+
+        // Validate Expiry Date
+        if (empty($data['exp_date'])) {
+          $data['exp_date_err'] = 'Please enter expiry date';
+        }
+
+        // Check if image is changed
+        if (!empty($_FILES['image']['name'])) {
+          // image saved directory
+          $target_dir = APPROOT . '/../public/uploads/farmer/products/';
+          $filename = time() . basename($_FILES['image']['name']);
+          $target_file = $target_dir . $filename;
+          $_picuploaded = true;
+          $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
+
+          // Check if image file is a actual image or fake image
+          $check = getimagesize($_FILES['image']['tmp_name']);
+          if ($check !== false) {
+            $_picuploaded = true;
+          } else {
+            $data['image_err'] = 'File is not an image';
+            $_picuploaded = false;
+          }
+
+          // Check file size
+          if ($_FILES['image']['size'] > 2000000) {
+            $data['image_err'] = 'Your photo exceeds the size limit of 2MB';
+            $_picuploaded = false;
+          }
+
+          // Allow certain file formats
+          if ($imageFileType != 'jpg' && $imageFileType != 'png' && $imageFileType != 'jpeg') {
+            $data['image_err'] = 'Please upload a photo with extension .jpg, .jpeg, or .png';
+            $_picuploaded = false;
+          }
+
+          // Check if $_picuploaded is set to false
+          if ($_picuploaded == false) {
+            $data['image_err'] = 'Sorry, your file was not uploaded';
+          } else {
+            // if everything is ok, try to upload file
+            if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+              $data['image'] = $filename;
+            } else {
+              $data['image_err'] = 'Sorry, there was an error uploading your file';
+            }
+          }
+        } else {
+          // If image is not changed, keep the old image
+          $data['image'] = $this->farmerModel->getStockById($id)->image;
+        }
+
+        // Make sure no other errors before uploading the picture
+        if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
+          // Add stock to the database
+          if ($this->farmerModel->updateStock($id, $data)) {
+            flash('stock_message', 'Stock Updated');
+            redirect('farmers/managestocks');
+          } else {
+            die('Something went wrong');
+          }
+        } else {
+          // Load view with errors
+          $this->view('farmers/register', $data);
+        }
+      } else {
+        // Init data
+        $product = $this->farmerModel->getStockById($id);
+
+        if ($product->farmer_id != $_SESSION['user_id']) {
+          redirect('farmers/managestocks');
+        }
+
+        $data = [
+          'id' => $id,
+          'product_name' => $product->name,
+          'description' => $product->description,
+          'price' => $product->price,
+          'quantity' => $product->stock,
+          'exp_date' => $product->exp_date,
+          'image' => $product->image,
+
+          'price_err' => '',
+          'quantity_err' => '',
+          'exp_date_err' => '',
+          'image_err' => ''
+        ];
+        
+        $this->view('farmers/editstocks', $data);
+      }
+    }
+
     public function manageorders() {
       if (!isLoggedIn()) {
         redirect('users/login');
