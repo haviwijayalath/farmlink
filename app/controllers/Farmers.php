@@ -448,7 +448,7 @@
         $this->view('farmers/editstocks', $data);
       }
     }
-
+    
     public function manageorders() {
       if (!isLoggedIn()) {
         redirect('users/login');

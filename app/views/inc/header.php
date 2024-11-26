@@ -6,7 +6,6 @@
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/navbar.css">
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/footer.css">
 
-  
   <!-- Add Google Fonts link -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
   <!-- Add Font Awesome for icons -->

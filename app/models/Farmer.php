@@ -113,7 +113,7 @@ class Farmer
 
     return $row;
   }
-
+  
   // Add stock
   public function addStock($data)
   {
@@ -150,7 +150,7 @@ class Farmer
     if ($this->db->execute()) {
       return true;
     } else {
-      return false;
+        return false;
     }
   }
 }

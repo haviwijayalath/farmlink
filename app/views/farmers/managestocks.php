@@ -18,7 +18,9 @@
       <div class="col-md-4">
         <div class="card mb-4">
           <div class="card-body">
+
             <img src="<?= URLROOT ?>/public/uploads/farmer/products/<?= !empty(htmlspecialchars($product->image)) && file_exists(APPROOT . '/../public/uploads/farmer/products/' . htmlspecialchars($product->image)) ? htmlspecialchars($product->image) : 'Farmer-bro.jpg' ?>"  alt="<?php echo htmlspecialchars($product->name); ?>" class="product_picture">
+
             <h5 class="card-title"><?= htmlspecialchars($product->name); ?></h5>
             <p class="card-text"><?php echo htmlspecialchars($product->description); ?></p>
             <p class="card-text">Price: $<?php echo htmlspecialchars($product->price); ?></p>
