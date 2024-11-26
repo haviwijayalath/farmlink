@@ -6,6 +6,9 @@
 <div class="mt-4">
   <a href="<?= URLROOT ?>/farmers/addstocks" class="btn btn-success"> + Add New Stock</a>
 </div>
+
+<h4 style="color: green;"> <?php flash('register_success'); ?> </h4>
+
 <hr>
 <div class="container">
   
@@ -21,8 +24,8 @@
             <p class="card-text">Price: $<?php echo htmlspecialchars($product->price); ?></p>
             <p class="card-text">Stock: <?php echo htmlspecialchars($product->stock); ?></p>
             <p class="card-text">Expiry Date: <?php echo htmlspecialchars($product->exp_date); ?></p>
-            <a href="<?= URLROOT ?>/farmers/edit/<?= $product->id ?>" class="btn btn-primary">Edit</a>
-            <a href="<?= URLROOT ?>/farmers/delete/<?= $product->id ?>" class="btn btn-danger">Remove</a>
+            <a href="<?= URLROOT ?>/farmers/editstocks/<?= $product->fproduct_id ?>" class="btn btn-primary">Edit</a>
+            <a href="<?= URLROOT ?>/farmers/deletestock/<?= $product->fproduct_id ?>" class="btn btn-danger">Remove</a>
           </div>
         </div>
       </div>
