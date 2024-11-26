@@ -217,4 +217,8 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/cart/confirmOrder');
     }
 
+    public function buyerOrders(){
+        $this->view('buyer/cart/buyerOrders');
+    }
+
 }
