@@ -115,3 +115,10 @@
   }
 }
 
+.error {
+  color: red;
+  font-size: 18px;
+  margin-top: 5px;
+  display: block;
+  font-weight:lighter;
+}

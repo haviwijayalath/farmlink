@@ -1,28 +1,29 @@
 * {
   margin: 0;
   padding: 0;
-  box-sizing:content-box;
+  box-sizing: border-box; /* Fixes any padding and margin issues */
 }
 
 main {
   display: flex;
   justify-content: space-between;
+  flex-wrap: wrap; /* Allows content to wrap on smaller screens */
   padding: 20px;
   height: fit-content;
-  max-height: 700px;
 }
 
 .welcome-section {
-  width: 50%;
-  display: block;
+  width: 50%; /* Default width on larger screens */
   margin-top: 110px;
+  padding-right: 20px; /* Prevents content from touching the side */
 }
 
 .welcome-section .welcome-text {
   background-color: #b6e7b6;
   padding: 20px;
   text-align: center;
-  margin-left: 90px;
+  margin-left: auto;
+  margin-right: auto; /* Center the text */
 }
 
 .welcome-section h1 {
@@ -31,18 +32,18 @@ main {
 }
 
 .market-image img {
-  width: 57%;
-  margin-left: 200px;
+  width: 100%; /* Full width on small screens */
+  max-width: 500px; /* Limits width for larger screens */
+  margin: 20px auto;
+  display: block; /* Centers the image */
 }
 
 .register-section {
-  width: 30%;
-  background-color: white;
+  width: 30%; /* Default width on larger screens */
+  background-color: rgb(255, 255, 255);
   border: 1px solid #e0e0e0;
   padding: 20px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  margin-right: 50px;
-  max-height: 400px;
   margin-top: 120px;
 }
 
@@ -76,4 +77,52 @@ main {
 .role-list a:hover {
   background-color: #3a923a;
   color: white;
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .welcome-section {
+    width: 100%; /* Full width for welcome section on medium screens */
+    margin-top: 60px; /* Adjust top margin for better spacing */
+  }
+
+  .market-image img {
+    width: 80%; /* Adjust image width */
+  }
+
+  .register-section {
+    width: 100%; /* Full width for register section on smaller screens */
+    margin-top: 20px; /* Reduce space between sections */
+  }
+}
+
+@media (max-width: 768px) {
+  .welcome-section {
+    width: 100%; /* Full width for welcome section on small screens */
+    margin-top: 20px; /* Reduce margin for better spacing */
+  }
+
+  .market-image img {
+    width: 100%; /* Full width for market image */
+  }
+
+  .register-section {
+    width: 100%; /* Full width for register section */
+    margin-top: 20px; /* Adjust top margin for spacing */
+  }
+}
+
+@media (max-width: 480px) {
+  .welcome-section .welcome-text {
+    font-size: 18px; /* Reduce font size on small screens */
+  }
+
+  .welcome-section h1 {
+    font-size: 24px; /* Adjust heading size */
+  }
+
+  .role-list a {
+    font-size: 16px; /* Reduce font size for smaller screens */
+    padding: 12px; /* Reduce padding for smaller screens */
+  }
 }
