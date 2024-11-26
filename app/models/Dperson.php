@@ -20,7 +20,7 @@ class Dperson extends Database{
           $addressId = $this->db->lastInsertId();
     
           // Now, insert the delivery person data along with the address ID as a foreign key
-          $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, vehicle, area, regno, capacity, v_image, address_id) 
+          $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, type, area, regno, capacity, v_image, address_id) 
                             VALUES (:name, :password, :email, :phone, :image, :vehicle, :area, :regno, :capacity, :v_image, :address_id)');
     
           $this->db->bind(':name', $data['name']);
