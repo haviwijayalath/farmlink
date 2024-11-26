@@ -4,12 +4,9 @@
   align-items: center;
   background-color: white;
   box-shadow: 0 4px 8px rgba(134, 35, 35, 0.1);
-  border-radius: 10px 10px;
+  border-radius: 10px;
   overflow: hidden;
-  margin-top: 120px;
-  width: 90%;
-  margin-bottom: 50px;
-  flex-wrap: wrap;
+  margin: 90px;
 }
 
 .register-image {
@@ -50,7 +47,7 @@
 .register-form input[type="text"],
 .register-form input[type="email"],
 .register-form input[type="password"] {
-  width: 100%;
+  width: 97%;
   padding: 10px;
   border: 1px solid #ccc;
   border-radius: 5px;
@@ -94,114 +91,97 @@
   background-color: #033a06;
 }
 
-.error {
-  color: red;
-  font-size: 18px;
-  margin-top: 5px;
-  display: block;
-  font-weight: lighter;
-}
-
 /* Responsive Design */
 @media (max-width: 1024px) {
   .register-container {
-    flex-direction: column;
+    flex-direction: column; /* Stack the register image and form on smaller screens */
     align-items: center;
   }
 
   .register-image {
-    width: 80%;
+    width: 80%; /* Increase width on smaller screens */
     margin-left: 0;
-    margin-bottom: 20px;
+    margin-bottom: 20px; /* Add space between image and form */
   }
 
   .register-form {
-    width: 80%;
+    width: 80%; /* Increase width for the form on smaller screens */
   }
 
-  .register-btn {
-    width: 100%;
-    margin: 10px 0;
-  }
-
-  .upload-btn {
-    width: 100%;
-    margin-top: 10px;
-  }
-
-  /* Adjust input field sizes */
   .register-form input[type="text"],
   .register-form input[type="email"],
   .register-form input[type="password"] {
-    font-size: 15px; /* Slightly smaller font */
+    font-size: 14px; /* Adjust font size for smaller screens */
+  }
+
+  .register-btn {
+    width: 100%; /* Button takes full width on smaller screens */
+    margin: 10px 0; /* Adjust margin */
+  }
+
+  .upload-btn {
+    width: 100%; /* Full width for upload button */
+    margin-top: 10px; /* Add space on top of the upload button */
   }
 }
 
 @media (max-width: 768px) {
   .register-container {
-    flex-direction: column;
+    flex-direction: column; /* Stack content vertically */
     align-items: center;
   }
 
   .register-image {
-    width: 90%;
+    width: 90%; /* Allow image container to take more space */
     margin-left: 0;
     margin-bottom: 20px;
   }
 
   .register-form {
-    width: 90%;
+    width: 90%; /* Form takes more space on smaller screens */
   }
 
   .register-btn {
-    width: 100%;
-    margin: 10px 0;
+    width: 100%; /* Full width for button */
+    margin: 10px 0; /* Margin for button */
   }
 
   .upload-btn {
-    width: 100%;
+    width: 100%; /* Full width for upload button */
     margin-top: 10px;
-  }
-
-  /* Adjust input field sizes */
-  .register-form input[type="text"],
-  .register-form input[type="email"],
-  .register-form input[type="password"] {
-    font-size: 14px; /* Adjust font size for better fit on smaller screens */
   }
 }
 
 @media (max-width: 480px) {
   .register-container {
-    flex-direction: column;
+    flex-direction: column; /* Stack content for small screens */
     align-items: center;
-    width: 95%;
+    width: 95%; /* Reduce width for very small screens */
   }
 
   .register-image {
-    width: 100%;
+    width: 100%; /* Full width for the image container */
     margin-bottom: 20px;
   }
 
   .register-form {
-    width: 100%;
+    width: 100%; /* Full width for the form */
   }
 
   .register-btn {
-    width: 100%;
-    margin: 10px 0;
+    width: 100%; /* Full width for button */
+    margin: 10px 0; /* Margin for spacing */
   }
 
   .upload-btn {
-    width: 100%;
+    width: 100%; /* Full width for upload button */
     margin-top: 10px;
   }
-  
-  /* Adjust input field sizes */
+
   .register-form input[type="text"],
   .register-form input[type="email"],
   .register-form input[type="password"] {
-    font-size: 14px; /* Adjust font size for very small screens */
-    padding: 8px; /* Reduce padding to fit better */
+    font-size: 14px; /* Adjust font size for small screens */
+    width: 80%;
   }
 }

@@ -1,7 +1,7 @@
 .login-container {
   display: flex;
   height:34.6em;
-  margin-top: 105px;
+  margin-top: 95px;
   width: 100%;
   padding: 0;
 
@@ -121,4 +121,211 @@
   margin-top: 5px;
   display: block;
   font-weight:lighter;
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column; /* Stack login sections vertically */
+    height: auto;
+    margin-top: 30px;
+  }
+
+  .login-left {
+    background-color: #e5f5e3;
+    padding: 0;
+    width: 100%;
+  }
+
+  .login-left img {
+    width: 100%; /* Ensure image fills the container */
+  }
+
+  .login-right {
+    background-color: #d4f0d1;
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .login-right h2 {
+    font-size: 28px; /* Reduce font size */
+    margin-bottom: 15px;
+  }
+
+  .form-group input {
+    font-size: 14px; /* Smaller input fields on small screens */
+  }
+
+  .form-btn {
+    width: 100%; /* Full-width button */
+    font-size: 14px;
+  }
+
+  .form-footer p {
+    font-size: 14px; /* Smaller footer text */
+  }
+
+  .form-footer a {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  .login-left,
+  .login-right {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .login-left img {
+    width: 80%;
+    margin-top: 20px;
+  }
+
+  .login-right h2 {
+    font-size: 24px; /* Further reduce font size for small screens */
+    margin-bottom: 10px;
+  }
+
+  .form-group input {
+    font-size: 14px; /* Adjust font size for input fields */
+  }
+
+  .login-btn {
+    width: 100%; /* Make button full-width on small screens */
+    font-size: 14px;
+  }
+
+  .form-footer {
+    font-size: 12px;
+    margin-top: 10px;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+  .login-container {
+    flex-direction: column; /* Stack login sections vertically on smaller screens */
+    height: auto;
+    margin-top: 50px;
+  }
+
+  .login-left,
+  .login-right {
+    flex: none;
+    width: 100%;
+    padding: 20px;
+  }
+
+  .login-left img {
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  .login-right h2 {
+    font-size: 30px; /* Reduce heading size on smaller screens */
+  }
+
+  .form-group input {
+    font-size: 14px; /* Adjust font size for smaller screens */
+  }
+
+  .login-btn {
+    width: 100%; /* Make login button full width */
+    font-size: 14px; /* Reduce button font size */
+  }
+
+  .form-footer {
+    margin-top: 15px; /* Adjust footer margin */
+  }
+}
+
+@media (max-width: 768px) {
+  .login-container {
+    flex-direction: column; /* Stack login sections vertically */
+    height: auto;
+    margin-top: 130px; /* Top margin for smaller screens */
+    margin-bottom: 70px; /* Add bottom margin for smaller screens */
+  }
+
+  .login-left {
+    background-color: #e5f5e3;
+    padding: 0;
+    width: 100%;
+  }
+
+  .login-left img {
+    width: 100%; /* Ensure image fills the container */
+  }
+
+  .login-right {
+    background-color: #d4f0d1;
+    width: 100%;
+    padding: 10px 0;
+  }
+
+  .login-right h2 {
+    font-size: 28px; /* Reduce font size */
+    margin-bottom: 15px;
+  }
+
+  .form-group input {
+    font-size: 14px; /* Smaller input fields on small screens */
+  }
+
+  .form-btn {
+    width: 100%; /* Full-width button */
+    font-size: 14px;
+  }
+
+  .form-footer p {
+    font-size: 14px; /* Smaller footer text */
+  }
+
+  .form-footer a {
+    font-size: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .login-container {
+    flex-direction: column;
+    padding: 10px;
+    margin-top: 500px; /* Top margin for smaller screens */
+    margin-bottom: 15px; /* Bottom margin for smaller screens */
+  }
+
+  .login-left,
+  .login-right {
+    width: 100%;
+    padding: 20px;
+  }
+
+  .login-left img {
+    width: 80%;
+    margin-top: 20px;
+  }
+
+  .login-right h2 {
+    font-size: 24px; /* Further reduce font size for small screens */
+    margin-bottom: 10px;
+  }
+
+  .form-group input {
+    font-size: 14px; /* Adjust font size for input fields */
+  }
+
+  .login-btn {
+    width: 100%; /* Make button full-width on small screens */
+    font-size: 14px;
+  }
+
+  .form-footer {
+    font-size: 12px;
+    margin-top: 10px;
+  }
 }
