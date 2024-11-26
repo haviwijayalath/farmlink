@@ -9,6 +9,7 @@ footer {
   font-family: 'Poppins', sans-serif;
   margin-top: 0;
   margin-left: -7px;
+  z-index: 999;
 }
 
 footer p {
