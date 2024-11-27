@@ -153,4 +153,20 @@ class Farmer
         return false;
     }
   }
+
+  // Delete stock
+  public function deleteStock($id)
+  {
+    $this->db->query('DELETE FROM fproducts WHERE fproduct_id = :id');
+    // Bind values
+    $this->db->bind(':id', $id);
+
+    // Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+  
 }

@@ -448,6 +448,25 @@
         $this->view('farmers/editstocks', $data);
       }
     }
+
+    public function deletestock($id) {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+
+      $product = $this->farmerModel->getStockById($id);
+
+      if ($product->farmer_id != $_SESSION['user_id']) {
+        redirect('farmers/managestocks');
+      }
+
+      if ($this->farmerModel->deleteStock($id)) {
+        flash('stock_message', 'Stock Removed');
+        redirect('farmers/managestocks');
+      } else {
+        die('Something went wrong');
+      }
+    }
     
     public function manageorders() {
       if (!isLoggedIn()) {
