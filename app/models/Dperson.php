@@ -127,7 +127,7 @@ public function addVehicle($data) {
           SELECT 
               farmer_buyer_orders.id,
               farmers.location AS pickup_address,
-              buyer_addresses.city AS dropoff_address,
+              farmer_buyer_orders.address AS dropoff_address,
               farmer_buyer_orders.capacity,
               buyers.name as buyer,
               farmer_buyer_orders.amount,
@@ -145,8 +145,6 @@ public function addVehicle($data) {
               address AS farmer_addresses ON farmers.address_id = farmer_addresses.address_id
           INNER JOIN 
               buyers ON farmer_buyer_orders.buyer_id = buyers.id
-          INNER JOIN 
-              address AS buyer_addresses ON buyers.address_id = buyer_addresses.address_id
           INNER JOIN 
                 fproducts ON fproducts.fproduct_id = farmer_buyer_orders.fproduct_id
           WHERE 
@@ -174,7 +172,7 @@ public function addVehicle($data) {
             SELECT 
                 farmer_buyer_orders.id,
                 farmers.location AS pickup_address,
-                buyer_addresses.city AS dropoff_address,
+                farmer_buyer_orders.address AS dropoff_address,
                 farmer_buyer_orders.capacity,
                 buyers.name as buyer,
                 farmer_buyer_orders.status
@@ -186,8 +184,6 @@ public function addVehicle($data) {
                 address AS farmer_addresses ON farmers.address_id = farmer_addresses.address_id
             INNER JOIN 
                 buyers ON farmer_buyer_orders.buyer_id = buyers.id
-            INNER JOIN 
-                address AS buyer_addresses ON buyers.address_id = buyer_addresses.address_id
             WHERE 
                 farmers.location = :deliveryArea 
                 AND farmer_buyer_orders.status = "ongoing"

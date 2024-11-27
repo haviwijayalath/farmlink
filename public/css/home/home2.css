@@ -22,7 +22,7 @@ main {
   background-color: #b6e7b6;
   padding: 20px;
   text-align: center;
-  margin-left: auto;
+  margin-left: 100px;
   margin-right: auto; /* Center the text */
 }
 
@@ -44,7 +44,9 @@ main {
   border: 1px solid #e0e0e0;
   padding: 20px;
   box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-  margin-top: 120px;
+  margin-top: 90px;
+  margin-bottom: 200px;
+  margin-right: 100px;
 }
 
 .register-section h1 {
