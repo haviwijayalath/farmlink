@@ -30,7 +30,7 @@
                     <td>100 kg</td>
                     <td>456-A, Green Street, Matara</td>
                     <td>2024-11-20</td>
-                    <td>In Transit</td>
+                    <td>On Going</td>
                 </tr>
             </tbody>
         </table>
