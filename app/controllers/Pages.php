@@ -7,10 +7,7 @@
     }
 
     public function index() { 
-      $data = [
-        'title' => 'Welcome'
-      ];
-      $this->view('pages/index', $data);
+      $this->view('home/home');
     }
 
     public function about() {
