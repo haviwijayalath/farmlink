@@ -62,86 +62,83 @@ class Users extends Controller {
         }
 
       }else{
-      //init data
-      $data =[
-        'email' => '',
-        'password' => '',
-        'email_err' => '',
-        'password_err' => ''
-      ];
+        //init data
+        $data =[
+            'email' => '',
+            'password' => '',
+            'email_err' => '',
+            'password_err' => ''
+        ];
 
-      //load view
-      $this->view('users/login', $data);
+        //load view
+        $this->view('users/login', $data);
+        }
     }
-}
 
-public function createUserSession($user){
+    public function createUserSession($user){
 
-    //Redirect based on role
-    switch ($user->role) {
-        case 'admins':
-            $_SESSION['admin_logged_in'] = true;
-            $_SESSION['admin_id'] = $user->id;
-            $_SESSION['admin_name'] = $user->name;
-            $_SESSION['user_email'] = $user->email;
-            redirect('admins/dashboard');
-            break;
-        case 'consultants':
-            redirect('pages/index');
-            break;
+        //Redirect based on role
+        switch ($user->role) {
+            case 'admins':
+                $_SESSION['admin_logged_in'] = true;
+                $_SESSION['admin_id'] = $user->id;
+                $_SESSION['admin_name'] = $user->name;
+                $_SESSION['user_email'] = $user->email;
+                redirect('admins/dashboard');
+                break;
+            case 'consultants':
+                redirect('pages/index');
+                break;
 
-        case 'farmers':
-            // initializing the session variables
-            $_SESSION['user_id'] = $user->id;
-            $_SESSION['user_name'] = $user->name;
-            $_SESSION['user_email'] = $user->email;
-            $_SESSION['user_image'] = $user->image;
-            $_SESSION['user_role'] = 'farmer'; 
-            redirect('farmers/index');
-            break;
+            case 'farmers':
+                // initializing the session variables
+                $_SESSION['user_id'] = $user->id;
+                $_SESSION['user_name'] = $user->name;
+                $_SESSION['user_email'] = $user->email;
+                $_SESSION['user_image'] = $user->image;
+                $_SESSION['user_role'] = 'farmer'; 
+                redirect('farmers/index');
+                break;
 
-        case 'buyers':
-              $_SESSION['user_id'] = $user->id;
-              $_SESSION['user_name'] = $user->name;
-              $_SESSION['user_role'] = $user->role; // Store the user's role in session
-              $_SESSION['user_phone'] = $user->phone;
-              $_SESSION['user_email'] = $user->email;
-              $_SESSION['user_password'] = $user->password;
-            redirect('Buyercontrollers/cartDetails');
-            break;
+            case 'buyers':
+                $_SESSION['user_id'] = $user->id;
+                $_SESSION['user_name'] = $user->name;
+                $_SESSION['user_role'] = $user->role; // Store the user's role in session
+                $_SESSION['user_phone'] = $user->phone;
+                $_SESSION['user_email'] = $user->email;
+                $_SESSION['user_password'] = $user->password;
+                redirect('Buyercontrollers/cartDetails');
+                break;
 
-        case 'suppliers':
-            redirect('pages/index');
-            break;
+            case 'suppliers':
+                redirect('pages/index');
+                break;
 
-        case 'delivery_persons':
-              $_SESSION['user_id'] = $user->id;
-              $_SESSION['user_name'] = $user->name;
-              $_SESSION['user_role'] = $user->role; // Store the user's role in session
-              $_SESSION['user_phone'] = $user->phone;
-              $_SESSION['user_image'] = $user->image;
-              $_SESSION['user_email'] = $user->email;
-              $_SESSION['user_addr_no'] = $user->addr_no;
-              $_SESSION['user_street'] = $user->street;
-              $_SESSION['user_city'] = $user->city;
-              $_SESSION['user_vehicle'] = $user->type;
-              $_SESSION['user_delivery_area'] = $user->area;
-              $_SESSION['user_v_regno'] = $user->regno;
-              $_SESSION['user_v_capacity'] = $user->capacity;
-              $_SESSION['user_v_image'] = $user->v_image;
-              $_SESSION['user_password'] = $user->password;
-              redirect('dpersons/neworder');
-            break;
-        default:
-            redirect('pages/index');
-            break;
-      } 
-    } 
+            case 'delivery_persons':
+                $_SESSION['user_id'] = $user->id;
+                $_SESSION['user_name'] = $user->name;
+                $_SESSION['user_role'] = $user->role; // Store the user's role in session
+                $_SESSION['user_phone'] = $user->phone;
+                $_SESSION['user_image'] = $user->image;
+                $_SESSION['user_email'] = $user->email;
+                $_SESSION['user_addr_no'] = $user->addr_no;
+                $_SESSION['user_street'] = $user->street;
+                $_SESSION['user_city'] = $user->city;
+                $_SESSION['user_vehicle'] = $user->type;
+                $_SESSION['user_delivery_area'] = $user->area;
+                $_SESSION['user_v_regno'] = $user->regno;
+                $_SESSION['user_v_capacity'] = $user->capacity;
+                $_SESSION['user_v_image'] = $user->v_image;
+                $_SESSION['user_password'] = $user->password;
+                redirect('dpersons/neworder');
+                break;
+            default:
+                redirect('pages/index');
+                break;
+        }
+    }
 
-
-
-
-public function logout(){
+    public function logout(){
 
         unset($_SESSION['user_id']);
         unset($_SESSION['user_name']);
@@ -193,17 +190,5 @@ public function logout(){
       
     }
 
-    public function isLoggedIn(){
-        if(isset($_SESSION['user_id'])) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-        
-    public function forum() {
-
-    }
-    
 }
 ?>
