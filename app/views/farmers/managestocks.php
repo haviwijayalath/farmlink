@@ -27,12 +27,46 @@
             <p class="card-text">Stock: <?php echo htmlspecialchars($product->stock); ?></p>
             <p class="card-text">Expiry Date: <?php echo htmlspecialchars($product->exp_date); ?></p>
             <a href="<?= URLROOT ?>/farmers/editstocks/<?= $product->fproduct_id ?>" class="btn btn-primary">Edit</a>
-            <a href="<?= URLROOT ?>/farmers/deletestock/<?= $product->fproduct_id ?>" class="btn btn-danger">Remove</a>
+            <a href="javascript:void(0)" onclick="showRemovePopup()" class="btn btn-danger">Remove</a>
+            <!-- 
+            <a href="<?= URLROOT ?>/farmers/deletestock/<?= $product->fproduct_id ?>" class="btn btn-danger">Remove</a> -->
           </div>
         </div>
       </div>
     <?php endforeach; ?>
   </div>
 </div>
+
+<!-- Remove Confirmation Popup -->
+<div class="popup-container" id="remove-popup" style="display: none;">
+  <div class="popup-content">
+    <h2>Are you sure you want to remove this item from the market?</h2>
+    <div class="button-container">
+      <button class="remove-button" onclick="confirmRemove()">Remove</button>
+      <button class="cancel-button" onclick="closeRemovePopup()">Cancel</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Show the popup
+  function showRemovePopup() {
+    const popup = document.getElementById('remove-popup');
+    popup.style.display = 'flex';
+    popup.style.alignItems = 'center'; // Ensure popup is centered
+    popup.style.justifyContent = 'center';
+  }
+
+  // Hide the popup
+  function closeRemovePopup() {
+    document.getElementById('remove-popup').style.display = 'none';
+  }
+
+  // Handle logout confirmation
+  function confirmRemove() {
+    window.location.href = "<?= URLROOT ?>/farmers/deletestock/<?= $product->fproduct_id ?>";
+  }
+
+</script>
 
 <?php require APPROOT . '/views/farmers/inc/footer.php'; ?>
