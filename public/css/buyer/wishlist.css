@@ -15,7 +15,7 @@ h1 {
     color: #333;
     margin-bottom: 30px;
 }
-
+ 
 table {
     width: 100%;
     border-collapse: collapse;
@@ -39,7 +39,7 @@ td{
 }
 
 th {
-    background-color: #f1f1f1;
+    background-color: #2ed70d;
     font-weight: 700;
     text-transform: uppercase;
     color: #333;
