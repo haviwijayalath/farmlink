@@ -190,7 +190,7 @@ class Buyercontrollers extends Controller {
     
             // Update the cart item
             if ($this->buyerModel->updateCartItem($data)) {
-                // Redirect to cart details page
+                // Redirect to cart details page after updating
                 redirect('Buyercontrollers/cartDetails');
             } else {
                 // Handle error scenario
@@ -201,6 +201,7 @@ class Buyercontrollers extends Controller {
             redirect('Buyercontrollers/cartDetails');
         }
     }
+    
     
     public function removeCartItem($id){
         if (!isLoggedIn()) {
@@ -244,6 +245,14 @@ class Buyercontrollers extends Controller {
           }
 
         $this->view('buyer/cart/buyerOrders');
+    }
+
+    public function wishlist(){
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
+        $this->view('buyer/wishlist');
     }
 
 }
