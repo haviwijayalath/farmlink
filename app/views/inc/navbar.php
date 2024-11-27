@@ -9,7 +9,8 @@
 
     <?php if(isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])) : ?>
 
-        <a href="<?php echo URLROOT; ?>/Users/logout" class="login-btn"><i class="fa-solid fa-user"></i> Logout</a>
+        <!-- <a href="<?php echo URLROOT; ?>/Users/logout" class="login-btn"><i class="fa-solid fa-user"></i> Logout</a> -->
+        <i class="fa-solid fa-bell"></i>
 
     <?php else : ?>
 
