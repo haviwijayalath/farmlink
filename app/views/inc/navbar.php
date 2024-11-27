@@ -13,7 +13,7 @@
 
     <?php else : ?>
 
-        <span><a href="<?php echo URLROOT; ?>/home/home2"><i class="fa-solid fa-house"></i> Home</a></span> 
+        <span><a href="<?php echo URLROOT; ?>/home/home"><i class="fa-solid fa-house"></i> Home</a></span> 
         <span><a href="<?php echo URLROOT; ?>/Users/login" class="login-btn"><i class="fa-solid fa-user"></i> Login</a></span>
         
     <?php endif; ?>

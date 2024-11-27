@@ -12,6 +12,7 @@
     <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
   </ul>
 
+  
   <!-- Logout Confirmation Popup -->
   <div class="popup-container" id="logout-popup" style="display: none;">
     <div class="popup-content">
