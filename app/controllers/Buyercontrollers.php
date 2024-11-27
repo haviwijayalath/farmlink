@@ -255,4 +255,10 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/wishlist');
     }
 
+    // Function to display all products
+    public function browseproducts() {
+        $data = $this->buyerModel->getProducts();
+        $this->view('buyer/products/browse_products', $data);
+    }
+
 }
