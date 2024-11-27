@@ -9,7 +9,7 @@
 
 .option {
     margin-left: 200px;
-    display: flex;
+    display: flex; 
     align-items: center;
     justify-content: space-between;
     padding: 20px;
@@ -24,11 +24,11 @@
 
 
 .option:hover {
-    border-color: #3ba57b;
+    border-color: #28a745;
 }
 
 .option.selected {
-    border-color: #3ba57b;
+    border-color: #28a745;
     background-color: #e6f7ec;
 }
 
@@ -46,9 +46,21 @@
 
 .option-icon {
     font-size: 1.5em;
-    color: #3ba57b;
+    color: #28a745;
     display: none;
+    position: relative;
+    bottom: 10px;
 }
+
+#inStorePickupRadio .option-icon {
+    font-size: 1.5em;
+    color: #28a745;
+    display: none;
+    position: relative;
+    bottom: 40px;
+}
+
+
 
 .option.selected .option-icon {
     display: inline;
@@ -57,7 +69,7 @@
 }
 
 button {
-    background-color: #3ba57b;
+    background-color: #28a745;
     color: white;
     padding: 10px 20px;
     border: none;
@@ -69,5 +81,5 @@ button {
 }
 
 button:hover {
-    background-color: #2d805b;
+    background-color: #218838;
 }
