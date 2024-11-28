@@ -49,7 +49,7 @@
         if (selectedOption && selectedOption.value === "In-Store Pickup") {
             console.log("correct");
             // Redirect to payment.php if "In-Store Pickup" is selected
-            window.location.href = "<?= URLROOT ?>buyercontrollers/paymentDetails";
+            window.location.href = "<?= URLROOT ?>/buyercontrollers/paymentDetails";
             return false; // Prevent form submission to avoid refresh
         }
         // Submit the form for other options (if needed)

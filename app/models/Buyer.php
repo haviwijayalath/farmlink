@@ -85,12 +85,14 @@ class Buyer extends Database{
     public function addCartItem($data){
         $this->db->query('
             INSERT INTO buyer_carts (buyer_id,product_id,quantity) 
-            VALUES (:buyer_id,product_id,quantity)
+            VALUES (:buyer_id,:product_id,:quantity)
         '); 
         
         $this->db->bind(':buyer_id',$data['buyer_id']);
         $this->db->bind(':product_id',$data['product_id']);
         $this->db->bind(':quantity',$data['quantity']);
+
+        print_r($data);
 
         return $this->db->execute();
     }
