@@ -261,4 +261,22 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/products/browse_products', $data);
     }
 
+    // Function to display a single product
+    public function viewproduct($id) {
+        $product = $this->buyerModel->getProductById($id);
+        $data = [
+            'pName' => $product->productName,
+            'description' => $product->description,
+            'price' => $product->price,
+            'stock' => $product->stock,
+            'pImage' => $product->productImage,
+            'exp_date' => $product->exp_date,
+            'fId' => $product->id,
+            'fName' => $product->farmerName,
+            'fImage' => $product->farmerImage,
+            'fEmail' => $product->email
+        ];
+        $this->view('buyer/products/view_product', $data);
+    }
+
 }

@@ -23,20 +23,24 @@
 <div class="container">
   <div class="row">
     <?php foreach($data as $product): ?>
-      <div class="col-md-4">
-        <div class="card mb-4">
-          <div class="card-body">
+      <a href="<?= URLROOT ?>/buyercontrollers/viewproduct/<?= $product->fproduct_id ?>" >
+        <div class="col-md-4">
+          <div class="card mb-4">
+            <div class="card-body">
+            
+              <img src="<?= URLROOT ?>/public/uploads/farmer/products/<?= !empty(htmlspecialchars($product->image)) && file_exists(APPROOT . '/../public/uploads/farmer/products/' . htmlspecialchars($product->image)) ? htmlspecialchars($product->image) : 'Farmer-bro.jpg' ?>"  alt="<?php echo htmlspecialchars($product->name); ?>" class="product_picture">
 
-            <img src="<?= URLROOT ?>/public/uploads/farmer/products/<?= !empty(htmlspecialchars($product->image)) && file_exists(APPROOT . '/../public/uploads/farmer/products/' . htmlspecialchars($product->image)) ? htmlspecialchars($product->image) : 'Farmer-bro.jpg' ?>"  alt="<?php echo htmlspecialchars($product->name); ?>" class="product_picture">
-
-            <h5 class="card-title"><?= htmlspecialchars($product->name); ?></h5>
-            <p class="card-text"><?php echo htmlspecialchars($product->description); ?></p>
-            <p class="card-text">Price: Rs.<?php echo htmlspecialchars($product->price); ?></p>
-            <p class="card-text">Stock: <?php echo htmlspecialchars($product->stock); ?></p>
-            <p class="card-text">Expiry Date: <?php echo htmlspecialchars($product->exp_date); ?></p>
+              <h5 class="card-title"><?= htmlspecialchars($product->name); ?></h5>
+              <p class="card-text"><?php echo htmlspecialchars($product->description); ?></p>
+              <p class="card-text">Price: Rs.<?php echo htmlspecialchars($product->price); ?></p>
+              <p class="card-text">Stock: <?php echo htmlspecialchars($product->stock); ?></p>
+              <p class="card-text">Expiry Date: <?php echo htmlspecialchars($product->exp_date); ?></p>
+            
+            
+            </div>
           </div>
         </div>
-      </div>
+      </a>
     <?php endforeach; ?>
   </div>
 </div>

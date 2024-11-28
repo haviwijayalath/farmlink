@@ -143,3 +143,23 @@
   background-color: #5a6268;
   border-color: #545b62;
 }
+
+a.card {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+a.card:hover {
+  text-decoration: none;
+  color: inherit;
+}
+
+.card-body {
+  padding: 20px;
+}
+
+.card img {
+  width: 100%;
+  height: auto;
+}
