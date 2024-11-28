@@ -17,11 +17,10 @@
       <p>Farmer: <?= htmlspecialchars($data['fName']); ?></p>
       <p>Email: <?= htmlspecialchars($data['fEmail']); ?></p>
       <hr>
-      <form action="<?= URLROOT ?>/buyercontrollers/addtocart" method="POST">
+      <form action="<?= URLROOT ?>/buyercontrollers/addToCart" method="POST">
         <input type="hidden" name="product_id" value="<?= $data['fId'] ?>">
-        <input type="hidden" name="buyer_id" value="<?= $_SESSION['user_id'] ?>">
         <input type="number" name="quantity" value="1" min="1" max="<?= $data['stock'] ?>">
-        <a class="btn btn-primary" href="<?= URLROOT ?>/Buyercontrollers/cartDetails" >Add to Cart</a>
+        <button type="submit" class="btn btn-primary">Add to Cart</button>
       </form>
     </div>
   </div>

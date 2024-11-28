@@ -54,7 +54,7 @@
             </p>
         </div>
 
-        <a class="place-order-btn" href="<?php echo URLROOT?>Buyercontrollers/orderConfirm">
+        <a class="place-order-btn" href="<?php echo URLROOT?>/Buyercontrollers/orderConfirm">
             Place Order
         </a>
     </div>
