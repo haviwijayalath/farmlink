@@ -1,5 +1,12 @@
+body {
+  background-color: #f9f9f9;
+  margin: 0;
+  padding: 0;
+  margin-top: 85px;
+}
+
 .container {
-  width: 80%;
+  width: 60%;
   margin: 50px auto;
   padding: 20px;
   display: flex;
