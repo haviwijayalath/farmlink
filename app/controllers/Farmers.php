@@ -157,7 +157,7 @@
     }
 
     public function index() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
 
@@ -172,7 +172,7 @@
     }
 
     public function viewprofile() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
 
@@ -180,7 +180,7 @@
     }
 
     public function editprofile() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       
@@ -188,7 +188,7 @@
     }
 
     public function managestocks() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       
@@ -318,7 +318,7 @@
     }
 
     public function editstocks($id) {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
 
@@ -450,7 +450,7 @@
     }
 
     public function deletestock($id) {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
 
@@ -469,7 +469,7 @@
     }
     
     public function manageorders() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       
@@ -477,7 +477,7 @@
     }
 
     public function viewsales() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       
@@ -485,7 +485,7 @@
     }
 
     public function bookconsultant() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       

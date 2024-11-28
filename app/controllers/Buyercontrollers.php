@@ -11,7 +11,7 @@ class Buyercontrollers extends Controller {
     public function register(){
         if (isLoggedIn()) {
             redirect('buyers/index');
-          }
+        }
 
         // check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -115,7 +115,7 @@ class Buyercontrollers extends Controller {
 
     // Function to display account page
     public function viewProfile() {
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login'); 
           }
           
@@ -124,14 +124,14 @@ class Buyercontrollers extends Controller {
     }
 
     public function editProfile() {
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
         $this->view('buyer/accounts/buyer_editaccount');
     }
 
     public function cartDetails(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -152,7 +152,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function addToCart(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -180,7 +180,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function updateCartItem() {
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
         }
     
@@ -207,9 +207,8 @@ class Buyercontrollers extends Controller {
         }
     }
     
-    
     public function removeCartItem($id){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -221,7 +220,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function deliveryOptions(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -229,7 +228,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function paymentDetails(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -237,7 +236,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function orderConfirm(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -245,7 +244,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function buyerOrders(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -253,7 +252,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function wishlist(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -262,7 +261,7 @@ class Buyercontrollers extends Controller {
 
     // Function to display all products
     public function browseproducts() {
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
