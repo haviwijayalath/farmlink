@@ -5,7 +5,7 @@ class Dpaccounts extends Controller {
     
   public function __construct() {
     // Protect all methods in this controller
-    if (!isLoggedIn()) {
+    if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
         redirect('users/login'); // Redirect to login page if not logged in
     }
 
