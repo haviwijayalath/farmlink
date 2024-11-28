@@ -8,7 +8,7 @@
     <div class="order-summery">
         <h2>CART TOTAL</h2>
         <div class="item">
-            <div class="lable">SUB TOTAL</div>
+            <div class="lable">SUB TOTAL</div> 
             <div class="value">Rs.1750</div>
         </div>
         <div class="divider"></div>
@@ -54,7 +54,7 @@
             </p>
         </div>
 
-        <a class="place-order-btn" href="<?php echo URLROOT?>Buyercontrollers/orderConfirm">
+        <a class="place-order-btn" href="<?php echo URLROOT?>/Buyercontrollers/orderConfirm">
             Place Order
         </a>
     </div>

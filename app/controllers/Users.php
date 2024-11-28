@@ -107,7 +107,7 @@ class Users extends Controller {
                 $_SESSION['user_phone'] = $user->phone;
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_password'] = $user->password;
-                redirect('Buyercontrollers/cartDetails');
+                redirect('Buyercontrollers/browseproducts');
                 break;
 
             case 'suppliers':

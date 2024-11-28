@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/navbar1.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/navbar.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/footer.css">
 
   <!-- Add Google Fonts link -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500&display=swap" rel="stylesheet">
@@ -11,9 +12,8 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <title><?php echo SITENAME; ?></title>
 </head>
-<?php require APPROOT . '/views/inc/navbar1.php'; ?> 
 <body>
-
+<?php require APPROOT . '/views/inc/navbar.php'; ?>
   
 
 

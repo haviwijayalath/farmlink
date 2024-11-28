@@ -136,7 +136,7 @@ class Buyercontrollers extends Controller {
           }
 
         // get the cart items from database
-        $cartItems = $this->buyerModel->getCartItems();
+        $cartItems = $this->buyerModel->getCartItems(); 
         $total = 0;
 
         foreach ($cartItems as $item) {
@@ -160,10 +160,14 @@ class Buyercontrollers extends Controller {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             $data = [
-                'buyer_id' => $_POST['user_id'],
+                'buyer_id' => $_SESSION['user_id'],
                 'product_id' => $_POST['product_id'],
                 'quantity' => $_POST['quantity']
             ];
+
+            if(empty($data['product_id'])){
+                echo ("not working");
+            }
 
             if($this->buyerModel->addCartItem($data)){
                 redirect('Buyercontrollers/cartDetails');
@@ -254,6 +258,34 @@ class Buyercontrollers extends Controller {
           }
 
         $this->view('buyer/wishlist');
+    }
+
+    // Function to display all products
+    public function browseproducts() {
+        if (!isLoggedIn()) {
+            redirect('users/login');
+          }
+
+        $data = $this->buyerModel->getProducts();
+        $this->view('buyer/products/browse_products', $data);
+    }
+
+    // Function to display a single product
+    public function viewproduct($id) {
+        $product = $this->buyerModel->getProductById($id);
+        $data = [
+            'pName' => $product->productName,
+            'description' => $product->description,
+            'price' => $product->price,
+            'stock' => $product->stock,
+            'pImage' => $product->productImage,
+            'exp_date' => $product->exp_date,
+            'fId' => $id,
+            'fName' => $product->farmerName,
+            'fImage' => $product->farmerImage,
+            'fEmail' => $product->email
+        ];
+        $this->view('buyer/products/view_product', $data);
     }
 
 }

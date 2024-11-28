@@ -1,4 +1,4 @@
-<link rel="stylesheet" href="<?= URLROOT ?>/public/css/sidebars/d_person.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/sidebars/buyer_sidebar.css">
 
 
 <div class="sidebar">
@@ -20,7 +20,7 @@
       <div class="button-container">
         <button class="logout-button" onclick="confirmLogout()">Log out</button>
         <button class="cancel-button" onclick="closePopup()">Cancel</button>
-      </div>
+      </div> 
     </div>
   </div>
 </div>

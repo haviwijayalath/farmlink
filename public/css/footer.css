@@ -1,13 +1,14 @@
 footer {
-  background-color: #042331;
-  color: white;
-  text-align: center;
-  padding: 10px;
   position: fixed;
-  bottom: 0; /* Stick to the bottom */
+  bottom: 0;
   width: 100%;
   font-family: 'Poppins', sans-serif;
-  box-sizing: border-box; /* Ensures padding and border are included in the width/height */
+  box-sizing: border-box; 
+  background-color: #042331;
+  color: #fff;
+  text-align: center;
+  padding: 10px 0;
+  margin-top: 2;
 }
 
 footer p {

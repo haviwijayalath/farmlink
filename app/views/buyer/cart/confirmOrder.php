@@ -11,7 +11,7 @@
     <div class="message">
         Your order is successfully place
     </div>
-    <a class="track-order-btn" href="<?php echo URLROOT?>Buyercontrollers/buyerOrders">
+    <a class="track-order-btn" href="<?php echo URLROOT?>/Buyercontrollers/buyerOrders">
         Track Order
     </a>
 </div>
