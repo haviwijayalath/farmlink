@@ -81,6 +81,7 @@ class Buyercontrollers extends Controller {
                 
                 //register user
                 if($this->buyerModel->registerBuyer($data)){
+                    flash('register_success', 'You are successfully registered! Log in now');
                     redirect('users/login');
                  }else{
                      die('Something went wrong');
