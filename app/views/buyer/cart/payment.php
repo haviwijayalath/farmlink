@@ -34,9 +34,10 @@
             <img alt="American Express logo" height="20" width="20" src="<?= URLROOT ?>/public/images/2.jpg"/>
             <img alt="Maestro logo" height="20" width="20" src="<?= URLROOT ?>/public/images/3.jpg"/>
         </div>
-        <span>
+        <span class="payment-method-info">
             Pay with your Visa, American Express or Mastercard.
         </span>
+
 
         <div class="payment-details">
         <input placeholder="Card holder name" type="text"/>

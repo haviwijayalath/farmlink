@@ -118,4 +118,42 @@ button:hover {
     background-color: #4cae4c;
 }
 
+/* Button container for the popup */
+.button-container {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 0px;  /* Add some space above the buttons */
+}
+
+/* Remove button (Yes) */
+.remove-button {
+    position: relative;
+    top: 18px;
+    background-color: #dc3545;
+    padding: 8px 20px;
+    border-radius: 5px;
+    color: #fff;
+    text-decoration: none;
+    text-align: center;
+    width: 80px; /* Ensure buttons have same width */
+    height: 25px;
+}
+
+.remove-button:hover {
+    background-color: #c82333;
+}
+
+/* Cancel button */
+.cancel-button {
+    background-color: #6c757d;
+    padding: 10px 20px;
+    border-radius: 5px;
+    color: #fff;
+    width: 120px; /* Ensure buttons have same width */
+}
+
+.cancel-button:hover {
+    background-color: #5a6268;
+}
 
