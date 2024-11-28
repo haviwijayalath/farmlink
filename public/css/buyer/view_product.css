@@ -6,22 +6,26 @@ body {
 }
 
 .container {
-  width: 60%;
-  margin: 50px auto;
+  width: 80%;
+  margin: 0 auto;
   padding: 20px;
   display: flex;
   gap: 30px;
-  margin-top: 150px;
+  margin-top: 30px;
+  justify-content: center;
 }
 
 .row {
   display: flex;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   justify-content: space-between;
+  gap: 30px;
+  width: 100%;
 }
 
 .col-md-6 {
   flex: 1;
+  max-width: 500px; /* Ensure proper width for each column */
   padding: 10px;
 }
 
@@ -36,9 +40,10 @@ h2 {
   font-size: 2rem;
   color: #28a745;
   margin-bottom: 15px;
+  font-weight: bold;
 }
 
-p {
+.col-md-6 p {
   font-size: 1.1rem;
   color: #555;
   margin-bottom: 10px;
@@ -54,15 +59,27 @@ hr {
 form {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 15px;
   margin-top: 20px;
 }
 
+form .input-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
 input[type="number"] {
-  width: 60px;
-  padding: 5px;
+  width: 80px;
+  padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
+  font-size: 1rem;
+}
+
+input[type="number"]:focus {
+  outline: none;
+  border-color: #28a745;
 }
 
 .btn-primary {
@@ -74,6 +91,7 @@ input[type="number"] {
   cursor: pointer;
   border-radius: 5px;
   transition: background-color 0.3s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary:hover {
@@ -108,4 +126,41 @@ input[type="number"] {
 
 .share-icons a:hover {
   color: #007bff;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .container {
+    width: 90%;
+  }
+
+  .row {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .col-md-6 {
+    max-width: 100%;
+  }
+
+  .product_picture {
+    width: 80%;
+  }
+
+  h2 {
+    font-size: 1.8rem;
+  }
+
+  p {
+    font-size: 1rem;
+  }
+
+  form {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  input[type="number"] {
+    width: 100px;
+  }
 }
