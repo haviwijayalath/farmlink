@@ -1,6 +1,8 @@
 <?php 
 
 class Dpersons extends Controller {
+    private $userModel;
+    
     public function __construct() {
         $this->userModel = $this->model('Dperson'); 
     }
@@ -400,6 +402,7 @@ class Dpersons extends Controller {
 
                   //register user
                   if($this->userModel->registerDeliveryPerson($data)){
+                    flash('register_success', 'You are successfully registered! Log in now');
                     redirect('users/login');
                  }else{
                      die('Something went wrong');
