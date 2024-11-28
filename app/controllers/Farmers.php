@@ -293,7 +293,7 @@
           }
         } else {
           // Load view with errors
-          $this->view('farmers/register', $data);
+          $this->view('farmers/addstocks', $data);
         }
       } else {
         // Init data
@@ -420,7 +420,7 @@
           }
         } else {
           // Load view with errors
-          $this->view('farmers/register', $data);
+          $this->view('farmers/editstocks', $data);
         }
       } else {
         // Init data
