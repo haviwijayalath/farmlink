@@ -2,7 +2,7 @@
     <div class="navbar">
         <!-- Logo Section -->
         <div class="logo">
-            <img src="<?php echo URLROOT; ?>/public/images/logo.png" alt="FarmLink Logo" class="logo-img">
+            <img src="<?php echo URLROOT; ?>/public/images/FarmLink-logo.png" alt="FarmLink Logo" class="logo-img">
             
         </div>
         

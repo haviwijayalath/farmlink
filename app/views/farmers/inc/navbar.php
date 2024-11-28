@@ -3,7 +3,7 @@
 <header class="header">
     <div class="logo">
         <a href="/farmers">
-            <img src="<?= URLROOT ?>/public/images/logo.png" alt="FarmLink Logo" style="width:200px;">
+            <img src="<?= URLROOT ?>/public/images/FarmLink-logo.png" alt="FarmLink Logo" style="width:200px;">
         </a>
     </div>
 

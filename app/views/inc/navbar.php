@@ -2,7 +2,7 @@
 <!-- navbar.php -->
 <header class="header">
     <div class="logo">
-        <img src="<?= URLROOT ?>/public/images/logo.png" alt="FarmLink Logo" style="width:200px;"> <!-- Replace with your logo -->
+        <img src="<?= URLROOT ?>/public/images/FarmLink-logo.png" alt="FarmLink Logo" style="width:200px;"> <!-- Replace with your logo -->
     </div>
 
     <div style="display: flex; gap: 30px; font-size: 20px; font-family: 'Poppins', sans-serif;">
