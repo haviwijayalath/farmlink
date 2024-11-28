@@ -1,0 +1,58 @@
+.container {
+  width: auto;
+  margin: 10px 150px auto;
+  padding: 20px;
+  padding-top: 10px; 
+}
+
+.row {
+  display: flex;
+  flex-wrap: wrap;
+  margin: 40px;
+}
+
+.col-md-6 {
+  flex: 0 0 33.3333%;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+.product_picture {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+h2 {
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+p {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+}
+
+hr {
+  margin: 20px 0;
+}
+
+form {
+  margin-top: 20px;
+}
+
+input[type="number"] {
+  width: 60px;
+  margin-right: 10px;
+}
+
+.btn-primary {
+  background-color: #007bff;
+  border-color: #007bff;
+  color: white;
+}
+
+.btn-primary:hover {
+  background-color: #0056b3;
+  border-color: #004085;
+}
