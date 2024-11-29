@@ -168,5 +168,39 @@ class Farmer
       return false;
     }
   }
+
+
+  // Fetch question ids from farmerid
+  public function fetchQidFromFid ($id){
+    $this->db->query('SELECT q_id FROM forum_questions WHERE farmer_id = :id');
+    $this->db->bind(':id', $id);
+    return $this->db->resultSet(); 
+  }
+
+
+  // Fetch all questions from the questions table
+  public function fetchAnswers($id) {
+    $this->db->query('SELECT description FROM forum_answers WHERE q_id = :id');
+
+    // Bind the question ID to the query
+    $this->db->bind(':id', $id);
+
+    // Return the result set as an array of objects
+    return $this->db->resultSet();
+  }
+
+  // Store an answer in the answers table
+   public function storeQuestions($data) {
+    $this->db->query('INSERT INTO forum_questions ( q_id, farmer_id, description) VALUES (:q_id, farmer_id, :description)');
+
+    // Bind parameters
+    $this->db->bind(':q_id', $data['q_id']);
+    $this->db->bind(':farmer_id', $data['farmer_id']);
+    $this->db->bind(':description', $data['question']);
+
+    // Execute and return the result
+    return $this->db->execute();
+  }
+
   
 }
