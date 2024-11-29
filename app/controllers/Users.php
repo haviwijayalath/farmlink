@@ -88,6 +88,7 @@ class Users extends Controller {
                 redirect('admins/dashboard');
                 break;
             case 'consultants':
+                
                 redirect('pages/index');
                 break;
 
