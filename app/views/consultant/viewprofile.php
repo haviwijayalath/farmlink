@@ -1,8 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
-
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/viewprofile.css">
-
-<?php require APPROOT . '/views/inc/sidebars/consultant.php'; ?>
 
 <div class="account-container">
   <div class="account-content">
@@ -13,9 +9,9 @@
       <p><strong>Experience: </strong> <?php echo $data['experience']; ?> years</p>
       <p><strong>Phone Number: </strong> <?php echo $data['phone']; ?></p>
       <p><strong>Email:</strong> <?php echo $data['email']; ?></p>
-      <a href="<?php echo URLROOT?>/consultant/editprofile" class="edit-btn">Edit Profile</a>
+      <a href="<?php echo URLROOT?>/consultants/editprofile" class="edit-btn">Edit Profile</a>
     </div>
   </div>
 </div>
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+<?php require APPROOT . '/views/consultants/inc/footer.php'; ?>
