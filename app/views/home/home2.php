@@ -16,7 +16,7 @@
             <h1>Register Now</h1>
             <ul class="role-list">
                 <li><a href="<?php echo URLROOT; ?>/farmers/register">Farmer</a></li>
-                <li><a href="<?php echo URLROOT; ?>/users/register?role=Consultant">Consultant</a></li>
+                <li><a href="<?php echo URLROOT; ?>/consultant/register">Consultant</a></li>
                 <li><a href="<?php echo URLROOT; ?>/Buyercontrollers/register?role=WholesaleBuyer">Wholesale Buyer</a></li>
                 <li><a href="<?php echo URLROOT; ?>/dpersons/register?role=DeliveryPerson">Delivery Person</a></li>
             </ul>

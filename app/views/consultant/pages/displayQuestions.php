@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Questions List</title>
-    <link rel="stylesheet" href="path/to/your/css/style.css"> <!-- Include any CSS -->
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/pages.css"> <!-- Include any CSS -->
 </head>
 <body>
     <div class="container">
