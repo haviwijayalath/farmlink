@@ -1,0 +1,113 @@
+.login-container {
+    display: flex;
+    height:34.6em;
+  }
+  
+  .login-left {
+    background-color: #e5f5e3;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .login-left img {
+    width: 70%;
+    height: auto;
+    margin-top: 20px;
+  }
+  
+  .login-right {
+    flex: 1;
+    background-color: #d4f0d1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px 0px;
+  }
+  
+  .login-right h2 {
+    font-size: 40px;
+    color: #333;
+    margin-bottom: 20px;
+  }
+  
+  .form-group {
+    margin-bottom: 15px;
+    width: 100%;
+  }
+  
+  .form-group input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box;
+  }
+  
+  .form-options {
+    align-items: center;
+    margin-bottom: 20px;
+    width: 100%;
+  }
+  
+  .form-options label {
+    font-size: 14px;
+    display: block;
+  }
+  
+  .form-options a {
+    display:inline-flex;
+    font-size: 14px;
+    text-decoration: none;
+    color: #555;
+  }
+  
+  .login-btn{
+    display: block;
+    margin: 0 auto;
+  
+  }
+  
+  .login-btn:hover {
+    background-color: #033a06;
+  }
+  
+  .form-footer {
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  .form-footer p {
+    margin: 5px 0;
+  }
+  
+  .form-footer a {
+    color: #2c612b;
+    text-decoration: none;
+  }
+  
+  .form-footer a:hover {
+    text-decoration: underline;
+  }
+  
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .register-container {
+        flex-direction: column;
+        width: 100%;
+    }
+    
+    .register-image, .register-form {
+        width: 100%;
+    }
+  
+    .register-image img {
+        max-width: 300px;
+    }
+  }
+  
+  

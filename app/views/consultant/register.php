@@ -1,17 +1,17 @@
-<?php require APPROOT . '/views/consultants/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/header.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/register.css">
 
 <div class="register-container">
 
   <div class="register-image">
-    <img src="<?= URLROOT ?>/public/images/Consultant-bro.png" alt="Consultant Illustration">
+    <img src="<?= URLROOT ?>/public/images/Farmer-bro.png" alt="Farmer Illustration">
   </div>
   
   <div class="register-form">
     <h2>Register Now</h2>
 
-    <form action="<?php echo URLROOT; ?>/consultants/register" method="POST" enctype="multipart/form-data">
+    <form action="<?php echo URLROOT; ?>/consultant/register" method="POST" enctype="multipart/form-data">
 
       <label for="name">Full Name</label>
       <input type="text" id="name" name="name" placeholder="Enter your name" <?php echo (!empty($data['name_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['name']; ?>" required>
@@ -68,4 +68,4 @@
   }
 </script>
 
-<?php require APPROOT . '/views/consultants/inc/footer.php'; ?>
+<?php require APPROOT . '/views/inc/footer.php'; ?>

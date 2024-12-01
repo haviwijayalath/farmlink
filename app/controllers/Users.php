@@ -75,6 +75,7 @@ class Users extends Controller {
         }
     }
 
+
     public function createUserSession($user){
 
         //Redirect based on role
@@ -86,10 +87,6 @@ class Users extends Controller {
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_role'] = 'admin';
                 redirect('admins/dashboard');
-                break;
-            case 'consultants':
-                
-                redirect('pages/index');
                 break;
 
             case 'farmers':
@@ -131,6 +128,17 @@ class Users extends Controller {
                 $_SESSION['user_password'] = $user->password;
                 redirect('dpersons/neworder');
                 break;
+
+            case 'consultants':
+                    // initializing the session variables
+                $_SESSION['user_id'] = $user->id;
+                $_SESSION['user_name'] = $user->name;
+                $_SESSION['user_email'] = $user->email;
+                $_SESSION['user_image'] = $user->image;
+                $_SESSION['user_role'] = $user->role; 
+                redirect('consultant/index');
+                break;
+
             default:
                 redirect('pages/index');
                 break;

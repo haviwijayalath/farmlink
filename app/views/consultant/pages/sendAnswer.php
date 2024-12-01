@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Send an Answer</title>
-    <link rel="stylesheet" href="path/to/your/css/styles.css">
+    <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/pages.css">
 </head>
 <body>
     <div class="container">
