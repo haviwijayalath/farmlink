@@ -88,9 +88,6 @@ class Users extends Controller {
                 $_SESSION['user_role'] = 'admin';
                 redirect('admins/dashboard');
                 break;
-            case 'consultants':
-                redirect('pages/index');
-                break;
 
             case 'farmers':
                 // initializing the session variables
@@ -139,7 +136,7 @@ class Users extends Controller {
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_image'] = $user->image;
                 $_SESSION['user_role'] = $user->role; 
-                redirect('consultants/viewprofile');
+                redirect('consultant/index');
                 break;
 
             default:
