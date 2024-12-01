@@ -136,7 +136,7 @@ class Users extends Controller {
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_image'] = $user->image;
                 $_SESSION['user_role'] = $user->role; 
-                redirect('consultant/index');
+                redirect('consultants/viewprofile');
                 break;
 
             default:

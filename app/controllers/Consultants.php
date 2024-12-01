@@ -1,5 +1,5 @@
 <?php
-  class Consultant extends Controller {
+  class Consultants extends Controller {
     private $consultantModel;
 
     public function __construct() {
@@ -7,10 +7,7 @@
     }
 
     public function register() {
-      if (isLoggedIn()) {
-        redirect('consultant/index');
-      }
-
+    
       // Check for POST
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Process form
@@ -28,6 +25,7 @@
           'addr_city' => trim($_POST['addr_city']),
           'image' => isset($_POST['image']) ? $_POST['image'] : '', 
           'specialization' => trim($_POST['specialization']),
+          'experience'=> trim($_POST['experience']),
 
           'name_err' => '',
           'email_err' => '',
@@ -36,6 +34,7 @@
           'confirm_password_err' => '',
           'image_err' => '',
           'specialization_err' => '',
+          'experience_err'=>''
         ];
 
         // Validate Email
@@ -43,7 +42,7 @@
           $data['email_err'] = 'Please enter email';
         } else {
           // if email exists
-          if ($this->consultantModel->findConsultantByEmail($data['email'])) {
+          if ($this->consultantModel->findUserByEmail($data['email'])) {
             $data['email_err'] = 'This email is already taken';
           }
         }
@@ -150,14 +149,16 @@
           'addr_city' => '',
           'image' => '',
           'specialization' => '',
+          'experience'=>'',
 
           'name_err' => '',
           'email_err' => '',
           'phone_number_err' => '',
           'password_err' => '',
           'confirm_password_err' => '',
-          'image_err' => ''
+          'image_err' => '',
           'specialization_err' => '',
+          'experience_err'=>''
         ];
 
         // Load view
