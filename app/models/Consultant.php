@@ -32,7 +32,7 @@ class Consultant
     // Saving the address before saving the consultant
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
-    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image,specialization) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization)');
+    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image,specialization,experience) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience)');
     // Bind values
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
@@ -41,6 +41,7 @@ class Consultant
     $this->db->bind(':password', $data['password']);
     $this->db->bind(':address_id', $address_id);
     $this->db->bind(':specialization', $data['specialization']);
+    $this->db->bind(':experience', $data['experience']);
 
     // Execute
     if ($this->db->execute()) {
@@ -50,22 +51,23 @@ class Consultant
     }
   }
 
-  // Find consultant by email
-  public function findConsultantByEmail($email)
-  {
-    $this->db->query('SELECT * FROM consultants WHERE email = :email');
-    // Bind value
-    $this->db->bind(':email', $email);
+  //Find user by email
+public function findUserByEmail($email) {
+  // List of tables to check
+  $tables = ['farmers', 'buyers', 'consultants', 'suppliers', 'delivery_persons'];
 
-    $row = $this->db->single();
+  foreach ($tables as $table) {
+      $this->db->query("SELECT * FROM $table WHERE email = :email");
+      $this->db->bind(':email', $email);
+      $row = $this->db->single();
 
-    // Check row
-    if ($this->db->rowCount() > 0) {
-      return true;
-    } else {
-      return false;
-    }
+      // Check if a match is found
+      if ($this->db->rowCount() > 0) {
+          return true;  // Stop iteration and return true immediately if a match is found
+      }
   }
+  return false;  // Return false if no match is found in any table
+}
 
   // Login consultant
   public function login($email, $password)
