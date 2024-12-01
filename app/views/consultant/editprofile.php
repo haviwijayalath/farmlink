@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<div></div>
+
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/editprofile.css">
 
 <?php require APPROOT . '/views/inc/sidebars/consultant.php'; ?>

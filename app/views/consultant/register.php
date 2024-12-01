@@ -11,7 +11,7 @@
   <div class="register-form">
     <h2>Register Now</h2>
 
-    <form action="<?php echo URLROOT; ?>/consultant/register" method="POST" enctype="multipart/form-data">
+    <form action="<?php echo URLROOT; ?>/consultants/register" method="POST" enctype="multipart/form-data">
 
       <label for="name">Full Name</label>
       <input type="text" id="name" name="name" placeholder="Enter your name" <?php echo (!empty($data['name_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['name']; ?>" required>
@@ -45,14 +45,23 @@
       </div>
       
       <label for="password">Password</label>
-      <input type="password" id="password" name="password" placeholder="Enter your password" <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> 
-        value="<?php echo $data['password']; ?>">
-      <span style="color: red;"><?php echo $data['password_err']; ?></span>
+            <div class="password-container">
+                <input type="password" id="password" name="password" placeholder="Enter your password" 
+                      <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> 
+                      value="<?php echo $data['password']; ?>" required>
+                <i class="fa fa-eye-slash toggle-password" id="togglePassword" onclick="togglePasswordVisibility()"></i>
+            </div>
+            <span class="error"><?php echo $data['password_err']; ?></span>
 
-      <label for="confirm_password">Confirm Password</label>
-      <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm 1  your password" <?php echo (!empty($data['confirm_password_err'])) ? 'is_invalid' : ''; ?> 
-        value="<?php echo $data['confirm_password']; ?>">
-      <span style="color: red;"><?php echo $data['confirm_password_err']; ?></span>
+            <label for="confirm_password">Confirm Password</label>
+            <div class="password-container">
+                <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" 
+                      <?php echo (!empty($data['confirm_password_err'])) ? 'is_invalid' : ''; ?> 
+                      value="<?php echo $data['confirm_password']; ?>" required>
+                <i class="fa fa-eye-slash toggle-password" id="toggleConfirmPassword" onclick="toggleConfirmPasswordVisibility()"></i>
+            </div>
+            <span class="error"><?php echo $data['confirm_password_err']; ?></span>
+
       
       <button type="submit" class="register-btn">Register</button>
     </form>
@@ -66,6 +75,39 @@
     imagePreview.style.display = 'block';
     imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
   }
+
+  function togglePasswordVisibility() {
+        const passwordInput = document.getElementById('password');
+        const toggleIcon = document.getElementById('togglePassword');
+        
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text'; // Show password
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye'); // Change icon to eye-open
+        } else {
+            passwordInput.type = 'password'; // Hide password
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash'); // Change icon to eye-slash
+        }
+    }
+
+    function toggleConfirmPasswordVisibility() {
+        const confirmPasswordInput = document.getElementById('confirm_password');
+        const toggleIcon = document.getElementById('toggleConfirmPassword');
+        
+        if (confirmPasswordInput.type === 'password') {
+            confirmPasswordInput.type = 'text'; // Show password
+            toggleIcon.classList.remove('fa-eye-slash');
+            toggleIcon.classList.add('fa-eye'); // Change icon to eye-open
+        } else {
+            confirmPasswordInput.type = 'password'; // Hide password
+            toggleIcon.classList.remove('fa-eye');
+            toggleIcon.classList.add('fa-eye-slash'); // Change icon to eye-slash
+        }
+    }
+
+
+
 </script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

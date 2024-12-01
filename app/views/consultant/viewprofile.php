@@ -1,4 +1,8 @@
+<?php require APPROOT . '/views/inc/header.php'; ?>
+
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/viewprofile.css">
+
+<?php require APPROOT . '/views/inc/sidebars/consultant.php'; ?>
 
 <div class="account-container">
   <div class="account-content">
@@ -14,4 +18,4 @@
   </div>
 </div>
 
-<?php require APPROOT . '/views/consultant/inc/footer.php'; ?>
+<?php require APPROOT . '/views/inc/footer.php'; ?>
