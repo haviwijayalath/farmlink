@@ -3,11 +3,11 @@
 
 <div class="sidebar">
   <ul>
-    <li><a href="<?= URLROOT ?>/consultant/index"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
-    <li><a href="<?= URLROOT ?>/consultant/viewprofile"><i class="fas fa-user"></i><span>View Profile</span></a></li>
-    <li><a href="<?= URLROOT ?>/consultant/editprofile"><i class="fas fa-edit"></i><span>Edit Profile</span></a></li>
-    <li><a href="<?= URLROOT ?>/consultant/getQuestions"><i class="fas fa-question-circle"></i><span>View Questions</span></a></li>
-    <li><a href="<?= URLROOT ?>/consultant/sendAnswer"><i class="fas fa-reply"></i><span>Send Answer</span></a></li>
+    <li><a href="<?= URLROOT ?>/consultants/index"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
+    <li><a href="<?= URLROOT ?>/consultants/viewprofile"><i class="fas fa-user"></i><span>View Profile</span></a></li>
+    <li><a href="<?= URLROOT ?>/consultants/editprofile"><i class="fas fa-edit"></i><span>Edit Profile</span></a></li>
+    <li><a href="<?= URLROOT ?>/consultants/getQuestions"><i class="fas fa-question-circle"></i><span>View Questions</span></a></li>
+    <li><a href="<?= URLROOT ?>/consultants/sendAnswer"><i class="fas fa-reply"></i><span>Send Answer</span></a></li>
     <!-- Logout -->
     <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
   </ul>

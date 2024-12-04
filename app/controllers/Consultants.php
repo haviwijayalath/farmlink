@@ -199,16 +199,16 @@
 
     public function getQuestions() {
         // Retrieve data using the model
-        $questions = $this->dataModel->fetchQuestions();
+        $questions = $this->consultantModel->fetchQuestions();
     
         // Check if data exists
         if ($questions) {
             // Send data to the view
-            $this->view('pages/displayQuestions', ['questions' => $questions]);
+            $this->view('consultant/pages/displayQuestions', ['questions' => $questions]);
         } else {
             // If no data found, handle appropriately
             flash('data_message', 'No questions found', 'alert alert-warning');
-            $this->view('pages/displayQuestions', ['questions' => []]);
+            $this->view('consultant/pages/displayQuestions', ['questions' => []]);
         }
     }
     
@@ -242,11 +242,11 @@
                 } else {
                     // Error storing data
                     flash('Unsuccesfull', 'Error submitting answer', 'alert alert-danger');
-                    $this->view('pages/sendAnswer', $data);
+                    $this->view('consultant/pages/sendAnswer', $data);
                 }
             } else {
                 // Load the view with errors
-                $this->view('pages/sendAnswer', $data);
+                $this->view('consultant/pages/sendAnswer', $data);
             }
         } else {
             // Initialize empty data for GET request
@@ -258,7 +258,7 @@
             ];
     
             // Load the form view
-            $this->view('pages/sendAnswer', $data);
+            $this->view('consultant/pages/sendAnswer', $data);
         }
     }
     
