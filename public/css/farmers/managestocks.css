@@ -34,6 +34,7 @@
   width: 260px; /* Set the desired width */
   height: 150px; /* Set the desired height */
   overflow: hidden;
+  height: 150px;
 }
 
 .card-title {
