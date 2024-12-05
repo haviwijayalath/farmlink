@@ -10,8 +10,8 @@
     <div class="col-md-6">
       <h2><?= htmlspecialchars($data['pName']); ?></h2>
       <p><?= htmlspecialchars($data['description']); ?></p>
-      <p>Price: Rs.<?= htmlspecialchars($data['price']); ?></p>
-      <p>Stock: <?= htmlspecialchars($data['stock']); ?></p>
+      <p style="color: #28a745; font-weight:bold;">Price: Rs.<?= htmlspecialchars($data['price']); ?></p>
+      <p>Stock: <?= htmlspecialchars($data['stock']); ?>KG</p>
       <p>Expiry Date: <?= htmlspecialchars($data['exp_date']); ?></p>
       <hr>
       <p>Farmer: <?= htmlspecialchars($data['fName']); ?></p>

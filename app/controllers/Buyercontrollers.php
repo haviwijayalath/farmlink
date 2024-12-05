@@ -118,9 +118,8 @@ class Buyercontrollers extends Controller {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login'); 
           }
-          
-        $data = [];
-        $this->view('buyer/accounts/buyer_account', $data);
+
+        $this->view('buyer/accounts/buyer_account');
     }
 
     public function editProfile() {
