@@ -229,32 +229,6 @@ public function addVehicle($data) {
         // If the first update fails, return false
         return false;
         }
-    
-
-    public function history($id){
-            $this->db->query('
-                SELECT delivery_info.order_id,
-                    delivery_info.date,
-                    delivery_info.amount,
-                    buyers.name,
-                    fproducts.name as productName
-                FROM
-                    delivery_info
-                INNER JOIN
-                    farmer_buyer_orders on farmer_buyer_orders.id = delivery_info.order_id
-                INNER JOIN 
-                    buyers on farmer_buyer_orders.buyer_id = buyers.id
-                INNER JOIN
-                    fproducts on farmer_buyer_orders.fproduct_id = fproducts.fproduct_id
-                WHERE
-                    delivery_info.delivery_person_id = :id
-                ');
-
-            $this->db->bind(':id', $id);
-    
-            return $this->db->resultSet();
-
-        }
 
         public function fetchOrderStatus($id){
             $this->db->query('SELECT status FROM farmer_buyer_orders WHERE id = :orderId');
@@ -279,7 +253,7 @@ public function addVehicle($data) {
                 SELECT 
                     farmer_buyer_orders.id,
                     farmers.location AS pickup_address,
-                    buyer_addresses.city AS dropoff_address,
+                    farmer_buyer_orders.address,
                     farmer_buyer_orders.capacity,
                     buyers.name as buyer,
                     farmer_buyer_orders.amount,
@@ -298,8 +272,6 @@ public function addVehicle($data) {
                 INNER JOIN 
                     buyers ON farmer_buyer_orders.buyer_id = buyers.id
                 INNER JOIN 
-                    address AS buyer_addresses ON buyers.address_id = buyer_addresses.address_id
-                INNER JOIN 
                       fproducts ON fproducts.fproduct_id = farmer_buyer_orders.fproduct_id
                 WHERE 
                     farmers.location = :deliveryArea 
@@ -312,6 +284,105 @@ public function addVehicle($data) {
         
             return $this->db->single();
         }
+
+        // Get order details by ID
+        public function getOrderById($orderId) {
+            $this->db->query('SELECT 
+                orders.id, 
+                farmers.name AS farmer, 
+                farmers.phone AS fphone, 
+                buyers.name AS buyer, 
+                buyers.phone, 
+                orders.pickup_address, 
+                orders.dropoff_address, 
+                orders.capacity, 
+                orders.amount, 
+                orders.delivered_date, 
+                orders.pic_before, 
+                orders.pic_after, 
+                orders.products 
+                FROM orders 
+                INNER JOIN farmers ON orders.farmer_id = farmers.id 
+                INNER JOIN buyers ON orders.buyer_id = buyers.id 
+                WHERE orders.id = :order_id
+            ');
+
+            $this->db->bind(':order_id', $orderId);
+            $result = $this->db->single();
+            return $result;
+    }
+
+    public function history($id){
+        $this->db->query('
+            SELECT delivery_info.order_id,
+                delivery_info.date,
+                delivery_info.amount,
+                buyers.name as buyer,
+                fproducts.name as productName,
+                delivery_info.delivery_id,
+                delivery_info.location as dropoffAddr,
+                delivery_info.pic_before,
+                delivery_info.pic_after,
+                farmers.name as farmer,
+                farmers.phone as fphone,
+                buyers.phone as bphone,
+                farmer_buyer_orders.capacity,
+                farmers.location as pickupAddr
+            FROM
+                delivery_info
+            INNER JOIN
+                farmer_buyer_orders on farmer_buyer_orders.id = delivery_info.order_id
+            INNER JOIN 
+                buyers on farmer_buyer_orders.buyer_id = buyers.id
+            INNER JOIN
+                fproducts on farmer_buyer_orders.fproduct_id = fproducts.fproduct_id
+            INNER JOIN
+                farmers on farmer_buyer_orders.farmer_id = farmers.id
+            WHERE
+                delivery_info.delivery_person_id = :id
+            ');
+
+        $this->db->bind(':id', $id);
+
+        return $this->db->resultSet();
+
+    }
+
+    public function getOrderHistoryById($id){
+        $this->db->query('
+            SELECT delivery_info.order_id,
+                delivery_info.date,
+                delivery_info.amount,
+                buyers.name as buyer,
+                fproducts.name as productName,
+                delivery_info.delivery_id,
+                delivery_info.location as dropoffAddr,
+                delivery_info.pic_before,
+                delivery_info.pic_after,
+                farmers.name as farmer,
+                farmers.phone as fphone,
+                buyers.phone as bphone,
+                farmer_buyer_orders.capacity,
+                farmers.location as pickupAddr
+            FROM
+                delivery_info
+            INNER JOIN
+                farmer_buyer_orders on farmer_buyer_orders.id = delivery_info.order_id
+            INNER JOIN 
+                buyers on farmer_buyer_orders.buyer_id = buyers.id
+            INNER JOIN
+                fproducts on farmer_buyer_orders.fproduct_id = fproducts.fproduct_id
+            INNER JOIN
+                farmers on farmer_buyer_orders.farmer_id = farmers.id
+            WHERE
+                delivery_info.order_id = :id
+            ');
+
+        $this->db->bind(':id', $id);
+
+        return $this->db->single(); // This returns a single row as an object
+
+    }
         
 
         

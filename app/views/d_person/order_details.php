@@ -4,36 +4,51 @@
 
 <?php require APPROOT . '/views/inc/sidebars/d_person.php'; ?>
 
-<div class="order_container">
-    <h2>Order Details</h2>
+<div class="order-container">
+    <h2 class="page-title">Order Details</h2>
 
     <?php if (isset($data['orders']) && !empty($data['orders'])) : ?>
-        <div class="card mt-3">
-            <div class="card-header">
-                <h4>Order ID: <?= htmlspecialchars($data['orders']->id); ?></h4>
+        <div class="order-card">
+            <div class="order-card-header">
+                <h3>Order ID: <?= htmlspecialchars($data['orders']->id); ?></h3>
             </div>
-            <div class="card-body">
-                <h5>Farmer Details</h5>
-                <p><strong>Name:</strong> <?= htmlspecialchars($data['orders']->farmer); ?></p>
-                <p><strong>Contact:</strong> <?= htmlspecialchars($data['orders']->fphone); ?></p>
+            <div class="order-card-body">
                 
-                <hr>
+                <!-- Table-like layout for order details -->
+                <div class="details-table">
+                    <div class="row">
+                        <div class="cell title">Farmer Name</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->farmer); ?></div>
+
+                        <div class="cell title">Buyer Name</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->buyer); ?></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="cell title">Farmer Contact</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->fphone); ?></div>
+
+                        <div class="cell title">Buyer Contact</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->phone); ?></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="cell title">Product Type</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->name); ?></div>
+
+                        <div class="cell title">Quantity</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->capacity); ?></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="cell title">Pick-up Address</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->pickup_address); ?></div>
+
+                        <div class="cell title">Drop-off Address</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->address); ?></div>
+                    </div>
+                </div>
                 
-                <h5>Buyer Details</h5>
-                <p><strong>Name:</strong> <?= htmlspecialchars($data['orders']->buyer); ?></p>
-                <p><strong>Contact:</strong> <?= htmlspecialchars($data['orders']->phone); ?></p>
-                
-                <hr>
-                
-                <h5>Product Details</h5>
-                <p><strong>Type:</strong> <?= htmlspecialchars($data['orders']->name); ?></p>
-                <p><strong>Quantity:</strong> <?= htmlspecialchars($data['orders']->capacity); ?></p>
-                
-                <hr>
-                
-                <h5>Delivery Information</h5>
-                <p><strong>Pick-up address:</strong> <?= htmlspecialchars($data['orders']->pickup_address); ?></p>
-                <p><strong>Drop-off address:</strong> <?= htmlspecialchars($data['orders']->dropoff_address); ?></p>
             </div>
         </div>
     <?php else : ?>
