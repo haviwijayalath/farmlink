@@ -32,7 +32,7 @@ class Farmer
     // Saving the address before saving the farmer
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
-    $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image) VALUES(:name, :password, :email, :address_id, :phone, :image)');
+    $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image, rate) VALUES(:name, :password, :email, :address_id, :phone, :image, :rate)');
     // Bind values
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
@@ -40,6 +40,7 @@ class Farmer
     $this->db->bind(':image', $data['image']);
     $this->db->bind(':password', $data['password']);
     $this->db->bind(':address_id', $address_id);
+    $this->db->bind(':rate', 0);
 
     // Execute
     if ($this->db->execute()) {
