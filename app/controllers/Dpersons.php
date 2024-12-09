@@ -474,5 +474,26 @@ class Dpersons extends Controller {
 
       $this->view('d_person/order_details', $data);
     }
+
+
+    public function orderHistorydetails($order_id){
+
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+            redirect('users/login');
+          }
+         
+        // Get the order details by ID
+        $orderDetails = $this->userModel->getOrderHistoryById($order_id);
+
+        $data = [
+            'orders' => $orderDetails ?? [] // Default to empty array if null
+        ];
+        
+        $this->view('d_person/historydetails', $data);
+
+    }
+
 }
+
+
 ?>
