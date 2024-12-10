@@ -293,6 +293,18 @@ class Buyercontrollers extends Controller {
         
     }
 
+    public function removeWishlist($id){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
+        if ($this->buyerModel->removeWishlistItem($id)){
+            redirect('Buyercontrollers/wishlistDetails');
+        } else {
+            die('Something went wrong while removing the wishlist item.');
+        }    
+    }
+
     // Function to display all products
     public function browseproducts() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {

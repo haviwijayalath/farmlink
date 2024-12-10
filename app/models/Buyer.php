@@ -160,5 +160,15 @@ class Buyer extends Database{
 
         return $this->db->execute();
     }
+
+    public function removeWishlistItem($id){
+        $this->db->query('
+            DELETE FROM wishlist WHERE wishlist_id = :id
+        ');
+        
+        $this->db->bind(':id', $id);
+
+        return $this->db->execute();
+    }
            
 }
