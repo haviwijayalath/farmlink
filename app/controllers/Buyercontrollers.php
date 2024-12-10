@@ -250,12 +250,20 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/cart/buyerOrders');
     }
 
-    public function wishlist(){
+    public function wishlistDetails(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
-        $this->view('buyer/wishlist');
+          // get the wislist item from database
+          $wishlistItem = $this->buyerModel->getWishlistItem();
+
+          $data = [
+            'wishlistItems' => $wishlistItem
+          ];
+
+
+        $this->view('buyer/wishlist', $data);
     }
 
     // Function to display all products
