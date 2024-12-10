@@ -36,9 +36,9 @@
                         <button class="add-to-cart">
                             Add to cart
                         </button>
-                        <i class="fas fa-trash">
-
-                        </i>
+                        <a href="<?= URLROOT ?>/Buyercontrollers/removeWishlist/<?= $item->wishlist_id ?>" >
+                        <i class="fas fa-trash"></i>
+                        </a>
                     </td>
                 </tr>
             <?php endforeach; ?>
