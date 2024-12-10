@@ -98,36 +98,6 @@ input[type="number"]:focus {
   background-color: #218838;
 }
 
-.tags {
-  margin-top: 15px;
-}
-
-.tags span {
-  font-size: 0.9rem;
-  color: #6c757d;
-  background: #f8f9fa;
-  padding: 5px 10px;
-  border-radius: 15px;
-  margin-right: 10px;
-  display: inline-block;
-}
-
-.share-icons {
-  margin-top: 15px;
-}
-
-.share-icons a {
-  margin-right: 10px;
-  color: #6c757d;
-  text-decoration: none;
-  font-size: 1.5rem;
-  transition: color 0.3s ease;
-}
-
-.share-icons a:hover {
-  color: #007bff;
-}
-
 /* Responsive adjustments */
 @media (max-width: 768px) {
   .container {

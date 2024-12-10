@@ -134,5 +134,17 @@ class Buyer extends Database{
 
         return $row;
     }
+
+    public function getWishlistItem(){
+        $this->db->query('
+            SELECT w.wishlist_id, f.name, f.exp_date, f.price
+            FROM wishlist w 
+            JOIN fproducts f ON w.product_id = f.fproduct_id
+            WHERE w.buyer_id = :buyer_id
+        ');
+
+        $this->db->bind(':buyer_id', $_SESSION['user_id']);
+        return $this->db->resultSet();
+    }
            
 }
