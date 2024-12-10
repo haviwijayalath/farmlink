@@ -146,5 +146,19 @@ class Buyer extends Database{
         $this->db->bind(':buyer_id', $_SESSION['user_id']);
         return $this->db->resultSet();
     }
+
+    public function addWishlistItem($data){
+        $this->db->query('
+            INSERT INTO wishlist (buyer_id,product_id)
+            VALUES (:buyer_id, :product_id)
+        ');
+
+        $this->db->bind(':buyer_id',$data['buyer_id']);
+        $this->db->bind(':product_id',$data['product_id']);
+
+        print_r($data);
+
+        return $this->db->execute();
+    }
            
 }

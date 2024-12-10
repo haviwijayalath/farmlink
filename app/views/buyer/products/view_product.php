@@ -23,7 +23,11 @@
         <input type="number" name="quantity" value="1" min="1" max="<?= $data['stock'] ?>">
         <button type="submit" class="btn btn-primary">Add to Cart</button>
       </form>
-      <a href="<?php echo URLROOT; ?>/buyercontrollers/wishlistDetails"><i class="fa-solid fa-bookmark" style="color:black"></i></a>
+
+      <form action="<?= URLROOT ?>/buyercontrollers/addToWishlist" method="POST">
+        <input type="hidden" name="product_id" value="<?= $data['fId'] ?>">
+        <button type="submit" class="btn btn-primary">Add to Wishlist</button>
+      </form>
     </div>
   </div>
   

@@ -262,8 +262,35 @@ class Buyercontrollers extends Controller {
             'wishlistItems' => $wishlistItem
           ];
 
-
         $this->view('buyer/wishlist', $data);
+    }
+
+    public function addToWishlist(){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $data = [
+                'buyer_id' => $_SESSION['user_id'],
+                'product_id' => $_POST['product_id'],
+            ];
+
+            if(empty($data['product_id'])){
+                echo ("not working");
+            }
+
+            if($this->buyerModel->addWishlistItem($data)){
+                redirect('Buyercontrollers/wishlistDetails');
+            } else {
+                die('Something went wrong while adding to the wishlist.');
+            }
+        } else {
+            redirect('Buyercontrollers/wishlistDetails');
+        }
+        
     }
 
     // Function to display all products
