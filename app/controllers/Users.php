@@ -125,11 +125,8 @@ class Users extends Controller {
                 $_SESSION['user_addr_no'] = $user->addr_no;
                 $_SESSION['user_street'] = $user->street;
                 $_SESSION['user_city'] = $user->city;
-                $_SESSION['user_vehicle'] = $user->type;
+                $_SESSION['user_vehicle_id'] = $user->vehicle_id;
                 $_SESSION['user_delivery_area'] = $user->area;
-                $_SESSION['user_v_regno'] = $user->regno;
-                $_SESSION['user_v_capacity'] = $user->capacity;
-                $_SESSION['user_v_image'] = $user->v_image;
                 $_SESSION['user_password'] = $user->password;
                 redirect('dpersons/neworder');
                 break;

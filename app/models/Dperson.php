@@ -7,43 +7,52 @@ class Dperson extends Database{
     }
 
     public function registerDeliveryPerson($data) {
-
         // Insert the address data first
         $this->db->query('INSERT INTO address (number, street, city) VALUES (:number, :street, :city)');
         $this->db->bind(':number', $data['addr_no']);
         $this->db->bind(':street', $data['street']);
         $this->db->bind(':city', $data['city']);
-       
-        // Execute the address insertion
+    
+        // Execute the address insertion and get the last inserted address ID
         if ($this->db->execute()) {
-          // Get the last inserted address ID
-          $addressId = $this->db->lastInsertId();
-    
-          // Now, insert the delivery person data along with the address ID as a foreign key
-          $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, type, area, regno, capacity, v_image, address_id) 
-                            VALUES (:name, :password, :email, :phone, :image, :vehicle, :area, :regno, :capacity, :v_image, :address_id)');
-    
-          $this->db->bind(':name', $data['name']);
-          $this->db->bind(':email', $data['email']);
-          $this->db->bind(':phone', $data['phone']);
-          $this->db->bind(':image', $data['image']);
-          $this->db->bind(':vehicle', $data['vehicle']);
-          $this->db->bind(':area', $data['area']);
-          $this->db->bind(':regno', $data['regno']);
-          $this->db->bind(':capacity', $data['capacity']);
-          $this->db->bind(':v_image', $data['v_image']);
-          $this->db->bind(':password', $data['password']);
-          $this->db->bind(':address_id', $addressId); // Use the address ID as a foreign key
-    
-          // Execute the delivery person insertion
-          return $this->db->execute();
+            $addressId = $this->db->lastInsertId(); // Now safely fetch address ID
         } else {
             return false; // Address insertion failed
         }
-      }
+    
+        // Insert the vehicle data
+        $this->db->query('INSERT INTO vehicle_info (regno, capacity, type, v_image) VALUES (:regno, :capacity, :vehicle, :v_image)');
+        $this->db->bind(':vehicle', $data['vehicle']);
+        $this->db->bind(':regno', $data['regno']);
+        $this->db->bind(':capacity', $data['capacity']);
+        $this->db->bind(':v_image', $data['v_image']);
+    
+        // Execute the vehicle insertion and get the last inserted vehicle ID
+        if ($this->db->execute()) {
+            $vehicleId = $this->db->lastInsertId(); // Safely fetch vehicle ID
+        } else {
+            return false; // Vehicle insertion failed
+        }
+    
+        // Insert the delivery person data
+        $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, area, address_id, vehicle_id) 
+                          VALUES (:name, :password, :email, :phone, :image, :area, :address_id, :vehicle_id)');
+        $this->db->bind(':name', $data['name']);
+        $this->db->bind(':email', $data['email']);
+        $this->db->bind(':phone', $data['phone']);
+        $this->db->bind(':image', $data['image']);
+        $this->db->bind(':area', $data['area']);
+        $this->db->bind(':password', $data['password']);
+        $this->db->bind(':address_id', $addressId); // Use the address ID as a foreign key
+        $this->db->bind(':vehicle_id', $vehicleId); // Use the vehicle ID as a foreign key
+    
+        // Execute the delivery person insertion
+        return $this->db->execute();
+    }
+    
 
       //Find user by email
-public function findUserByEmail($email) {
+    public function findUserByEmail($email) {
     // List of tables to check
     $tables = ['farmers', 'buyers', 'consultants', 'suppliers', 'delivery_persons'];
   
@@ -64,10 +73,11 @@ public function findUserByEmail($email) {
     public function getUserById($id) {
         // Update query to join with the addresses table
         $this->db->query('
-            SELECT dp.id, dp.name, dp.email, dp.phone, dp.area, dp.image, dp.address_id, dp.password,
-                   dp.type, dp.regno, dp.capacity, dp.v_image, a.number, a.street, a.city
+            SELECT dp.id, dp.name, dp.email, dp.phone, dp.area, dp.image, dp.address_id, dp.password, dp.vehicle_id,
+                   v.type, v.regno, v.capacity, v.v_image, a.number, a.street, a.city
             FROM delivery_persons dp
             LEFT JOIN address a ON dp.address_id = a.address_id
+            LEFT JOIN vehicle_info v ON dp.vehicle_id = v.vehicle_id
             WHERE dp.id = :id
         ');
 
@@ -75,7 +85,7 @@ public function findUserByEmail($email) {
         return $this->db->single();
     }
 
-public function updateUser($data) {
+    public function updateUser($data) {
 
      // Update address details in the address table
      $this->db->query('
@@ -110,8 +120,8 @@ public function updateUser($data) {
 
 
 // Add a new vehicle
-public function addVehicle($data) {
-    $this->db->query('UPDATE delivery_persons SET type = :type, regno = :regno, capacity = :capacity, v_image = :v_image WHERE id = :id');
+    public function addVehicle($data) {
+    $this->db->query('UPDATE vehicle_info SET type = :type, regno = :regno, capacity = :capacity, v_image = :v_image WHERE vehicle_id = :id');
     $this->db->bind(':type', $data['type']);
     $this->db->bind(':regno', $data['regno']);
     $this->db->bind(':capacity', $data['capacity']);
@@ -119,7 +129,7 @@ public function addVehicle($data) {
     $this->db->bind(':id', $data['id']);
 
     return $this->db->execute();
-}
+    }
 
     // Fetch new orders filtered by delivery area
     public function getNewOrdersByArea($deliveryArea) {
