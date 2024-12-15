@@ -202,7 +202,7 @@ class Dpaccounts extends Controller {
                 'regno' => trim($_POST['regno']),
                 'capacity' => trim($_POST['capacity']),
                 'v_image' => '', // Handle file upload
-                'id' => $_SESSION['user_id'],
+                'id' => $_SESSION['user_vehicle_id']
             ];
 
             // Handle file upload
