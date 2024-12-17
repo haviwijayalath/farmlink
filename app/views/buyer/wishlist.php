@@ -33,9 +33,11 @@
                         <div class="added-date">
                             Expire : <?= htmlspecialchars($item->exp_date) ?>
                         </div>
-                        <button class="add-to-cart">
-                            Add to cart
-                        </button>
+                        <form action="<?= URLROOT ?>/buyercontrollers/addToCart" method="POST" >
+                            <input type="hidden" name="product_id" value="<?= $item->fproduct_id ?>">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="add-to-cart">Add to cart</button>
+                        </form>
                         <a href="<?= URLROOT ?>/Buyercontrollers/removeWishlist/<?= $item->wishlist_id ?>" >
                         <i class="fas fa-trash"></i>
                         </a>
