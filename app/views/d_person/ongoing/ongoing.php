@@ -22,7 +22,7 @@
             <?php foreach ($data['orders'] as $index => $order): ?>
                 <tr>
                     <td>
-                        <a href="<?= URLROOT ?>/dpersons/orderdetails/<?= htmlspecialchars($order->id) ?>" class="ongoing-idbtn">
+                        <a href="<?= URLROOT ?>/dpersons/getongoing/<?= htmlspecialchars($order->id) ?>" class="ongoing-idbtn">
                             <?= htmlspecialchars($order->id) ?>
                         </a>
                     </td>

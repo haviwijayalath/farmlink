@@ -493,6 +493,25 @@ class Dpersons extends Controller {
 
     }
 
+    public function getongoing($order_id){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+            redirect('users/login');
+          }
+
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+         
+        // Get the order details by ID
+        $orderDetails = $this->userModel->getongoingbyID($deliveryArea,$order_id);
+        
+
+        $data = [
+            'orders' => $orderDetails ?? [] // Default to empty array if null
+        ];
+        
+        $this->view('d_person/ongoing/ongoing_details', $data);
+
+    }
+
 }
 
 

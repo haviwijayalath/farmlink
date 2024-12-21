@@ -394,7 +394,43 @@ class Dperson extends Database{
 
     }
         
-
+    public function getongoingbyID($deliveryArea,$id)
+    {
+        $this->db->query('
+                SELECT 
+                    farmer_buyer_orders.id,
+                    farmers.location AS pickup_address,
+                    farmer_buyer_orders.address,
+                    farmer_buyer_orders.capacity,
+                    buyers.name as buyer,
+                    farmer_buyer_orders.amount,
+                    farmer_buyer_orders.date,
+                    fproducts.name,
+                    farmers.name as farmer,
+                    buyers.phone,
+                    farmers.phone as fphone
+      
+                FROM 
+                    farmer_buyer_orders
+                INNER JOIN 
+                    farmers ON farmer_buyer_orders.farmer_id = farmers.id
+                INNER JOIN 
+                    address AS farmer_addresses ON farmers.address_id = farmer_addresses.address_id
+                INNER JOIN 
+                    buyers ON farmer_buyer_orders.buyer_id = buyers.id
+                INNER JOIN 
+                      fproducts ON fproducts.fproduct_id = farmer_buyer_orders.fproduct_id
+                WHERE 
+                    farmers.location = :deliveryArea 
+                    AND farmer_buyer_orders.status = "ongoing"
+                    AND farmer_buyer_orders.id = :order_id
+            ');
+            
+            $this->db->bind(':deliveryArea', $deliveryArea);
+            $this->db->bind(':order_id', $id);
+        
+            return $this->db->single();
+    }
         
     
 }
