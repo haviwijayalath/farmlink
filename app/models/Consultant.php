@@ -98,7 +98,7 @@ public function findUserByEmail($email) {
 
   // Fetch all questions from the questions table
   public function fetchQuestions() {
-    $this->db->query('SELECT q_id, farmer_id, description FROM forum_questions');
+    $this->db->query('SELECT q_id, farmer_id, questions FROM forum_questions');
 
     // Return the result set as an array of objects
     return $this->db->resultSet();
@@ -106,12 +106,12 @@ public function findUserByEmail($email) {
 
   // Store an answer in the answers table
    public function storeAnswer($data) {
-    $this->db->query('INSERT INTO forum_answers (consultant_id, q_id, description) VALUES (:consultant_id, :q_id, :description)');
+    $this->db->query('INSERT INTO forum_questions (consultant_id, q_id, answers) VALUES (:consultant_id, :q_id, :answers)');
 
     // Bind parameters
     $this->db->bind(':consultant_id', $data['consultant_id']);
     $this->db->bind(':q_id', $data['q_id']);
-    $this->db->bind(':description', $data['answer']);
+    $this->db->bind(':answers', $data['answer']);
 
     // Execute and return the result
     return $this->db->execute();

@@ -204,11 +204,11 @@
         // Check if data exists
         if ($questions) {
             // Send data to the view
-            $this->view('consultant/pages/displayQuestions', ['questions' => $questions]);
+            $this->view('consultant/pages/forum', ['questions' => $questions]);
         } else {
             // If no data found, handle appropriately
             flash('data_message', 'No questions found', 'alert alert-warning');
-            $this->view('consultant/pages/displayQuestions', ['questions' => []]);
+            $this->view('consultant/pages/forum', ['questions' => []]);
         }
     }
     
@@ -235,18 +235,18 @@
             // Ensure no errors exist
             if (empty($data['answer_err'])) {
                 // All validations passed
-                if ($this->dataModel->storeAnswer($data)) {
+                if ($this->consulatntModel->storeAnswer($data)) {
                     // Success, redirect or handle response
                     flash('Succesfull', 'Answer successfully submitted');
                     redirect('consultant/index');
                 } else {
                     // Error storing data
                     flash('Unsuccesfull', 'Error submitting answer', 'alert alert-danger');
-                    $this->view('consultant/pages/sendAnswer', $data);
+                    $this->view('consultant/pages/forum', $data);
                 }
             } else {
                 // Load the view with errors
-                $this->view('consultant/pages/sendAnswer', $data);
+                $this->view('consultant/pages/forum', $data);
             }
         } else {
             // Initialize empty data for GET request
@@ -258,7 +258,7 @@
             ];
     
             // Load the form view
-            $this->view('consultant/pages/sendAnswer', $data);
+            $this->view('consultant/pages/forum', $data);
         }
     }
     
