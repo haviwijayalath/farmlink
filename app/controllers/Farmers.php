@@ -506,18 +506,18 @@
           // Ensure no errors exist
           if (empty($data['question_err'])) {
               // All validations passed
-              if ($this->dataModel->storeQuestion($data['farmer_id'], $data['question'])) {
+              if ($this->farmerModel->storeQuestion($data['farmer_id'], $data['question'])) {
                   // Success, redirect or handle response
                   flash('question_message', 'Question successfully submitted');
                   redirect('farmers/index');
               } else {
                   // Error storing data
                   flash('question_message', 'Error submitting question', 'alert alert-danger');
-                  $this->view('pages/askQuestion', $data);
+                  $this->view('pages/forum', $data);
               }
           } else {
               // Load the view with errors
-              $this->view('pages/askQuestion', $data);
+              $this->view('pages/forum', $data);
           }
       } else {
           // Initialize empty data for GET request
@@ -528,37 +528,37 @@
           ];
   
           // Load the form view
-          $this->view('pages/askQuestion', $data);
+          $this->view('pages/forum', $data);
       }
   }
 
   public function getAnswers() {
     // Retrieve data using the model
-    $answers = $this->dataModel->fetchAnswers($qid);
+    $answers = $this->consultantModel->fetchAnswers($q_id);
 
     // Check if data exists
     if ($answers) {
         // Pass data to the view
-        $this->view('pages/displayAnswers', ['answers' => $answers]);
+        $this->view('pages/forum', ['answers' => $answers]);
     } else {
         // If no data found, handle appropriately
         flash('data_message', 'No answers found', 'alert alert-warning');
-        $this->view('pages/displayAnswers', ['answers' => []]);
+        $this->view('pages/forum', ['answers' => []]);
     }
   }
 
   public function getQuestions () {
   
-    $questions = $this->dataModel->fetchQuestions();
+    $questions = $this->farmerModel->fetchQuestions();
     
         // Check if data exists
         if ($questions) {
             // Send data to the view
-            $this->view('pages/displayQuestions', ['questions' => $questions]);
+            $this->view('pages/forum', ['questions' => $questions]);
         } else {
             // If no data found, handle appropriately
             flash('data_message', 'No questions found', 'alert alert-warning');
-            $this->view('pages/displayQuestions', ['questions' => []]);
+            $this->view('pages/forum', ['questions' => []]);
       }
 
   }

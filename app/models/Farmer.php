@@ -170,17 +170,9 @@ class Farmer
   }
 
 
-  // Fetch question ids from farmerid
-  public function fetchQidFromFid ($id){
-    $this->db->query('SELECT q_id FROM forum_questions WHERE farmer_id = :id');
-    $this->db->bind(':id', $id);
-    return $this->db->resultSet(); 
-  }
-
-
   // Fetch all questions from the questions table
   public function fetchAnswers($id) {
-    $this->db->query('SELECT description FROM forum_answers WHERE q_id = :id');
+    $this->db->query('SELECT answers FROM forum_questions WHERE q_id = :id');
 
     // Bind the question ID to the query
     $this->db->bind(':id', $id);
@@ -191,12 +183,12 @@ class Farmer
 
   // Store an answer in the answers table
    public function storeQuestions($data) {
-    $this->db->query('INSERT INTO forum_questions ( q_id, farmer_id, description) VALUES (:q_id, farmer_id, :description)');
+    $this->db->query('INSERT INTO forum_questions ( q_id, farmer_id, questions) VALUES (:q_id, :farmer_id, :questions)');
 
     // Bind parameters
     $this->db->bind(':q_id', $data['q_id']);
     $this->db->bind(':farmer_id', $data['farmer_id']);
-    $this->db->bind(':description', $data['question']);
+    $this->db->bind(':questions', $data['question']);
 
     // Execute and return the result
     return $this->db->execute();
