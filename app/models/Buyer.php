@@ -38,33 +38,25 @@ class Buyer extends Database{
         }
         return false;  // Return false if no match is found in any table
     }
-    
+  
+    public function getUserById($id){
+        $this->db->query('select * from buyers where id = :id');
 
-        // public function getUserById($id) {
-        //     // Update query to join with the addresses table
-        //     $this->db->query('
-        //         SELECT dp.id, dp.name, dp.email, dp.phone, dp.area, dp.image, dp.address_id, dp.password,
-        //                dp.vehicle, dp.regno, dp.capacity, dp.v_image, a.number, a.street, a.city
-        //         FROM delivery_persons dp
-        //         LEFT JOIN address a ON dp.address_id = a.address_id
-        //         WHERE dp.id = :id
-        //     ');
-
-        //     $this->db->bind(':id', $id);
-        //     return $this->db->single();
-        // }
+        $this->db->bind(':id',$id);
+        return $this->db->single();
+    }
 
     public function updateUser($data) {
     public function updateUser($data) {
 
-        $this->db->query('UPDATE buyers SET name = :name, email = :email, phone = :phone , password = :password,');
+        $this->db->query('UPDATE buyers SET name = :name, email = :email, password = :password, phone = :phone where id = :id');
         
         // Bind values
         $this->db->bind(':id', $data['id']);
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':phone', $data['phone']);
-        $this->db->bind(':password', $data['password']);
+        $this->db->bind(':password', $data['new_password']);
 
         $userUpdated = $this->db->execute();
         $userUpdated = $this->db->execute();

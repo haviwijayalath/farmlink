@@ -122,10 +122,19 @@ class Buyercontrollers extends Controller {
             redirect('users/login'); 
           }
 
-        $this->view('buyer/accounts/buyer_account');
+        $data = [
+            'name' => $_SESSION['user_name'],
+            'phone_num' => $_SESSION['user_phone'],
+            'email' => $_SESSION['user_email']
+        ];
+
+        $this->view('buyer/accounts/buyer_account',$data);
     }
 
-    public function editProfile() {
+    public function editProfile($id = null) {
+        if($id === null){
+            $id = $_SESSION['user_id'];
+        }
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
@@ -210,22 +219,6 @@ class Buyercontrollers extends Controller {
           ];
             // Load view
             $this->view('buyer/accounts/buyer_editaccount', $data);
-        }
-    }
-
-    public function deactivate(){
-        $result = $this->buyerModel->deleteAccount($_SESSION['user_id']);
-
-        if($result){
-            //clear session data
-            session_unset();
-            session_destroy();
-
-            $this->view('buyer/accounts/deactivation');
-        } else {
-             // Set an error flash message and redirect to an appropriate page
-            flash('error', 'Failed to deactivate the user account. Please try again.');
-            redirect('Buyercontrollers/viewProfile');
         }
     }
 
