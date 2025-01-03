@@ -14,13 +14,13 @@
 
                 <div class="user-details">
                     <div class="detail-item">
-                        <strong>Name: </strong>
+                        <strong>Name:</strong><?= $data['name'] ?>
                     </div>
                     <div class="detail-item">
-                        <strong>Phone Number: </strong>
+                        <strong>Phone Number:</strong><?= $data['phone_num'] ?>
                     </div>
                     <div class="detail-item">
-                        <strong>Email: </strong>
+                        <strong>Email:</strong><?= $data['email'] ?>
                     </div>
                 </div>
             </div>
