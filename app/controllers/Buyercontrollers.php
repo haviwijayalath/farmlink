@@ -423,4 +423,58 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/products/view_product', $data);
     }
 
+    public function payhereProcess(){
+        $amount = 3000;
+        $merchant_id = "1229272";
+        $merchant_secret = "Mjg0OTYwNzA0MjU4NDUzNDYyODMxOTIzMzMzNDczNzY5MzI1NzM3" ;
+        $order_id = uniqid();
+        $item = "Door bell wireles";
+        $currency = "LKR";
+        $first_name = "Saman";
+        $last_name = "Perera";
+        $email = "samanp@gmail.com";
+        $phone = "0771234567";
+        $address = "No.1, Galle Road";
+        $city = "Colombo";
+
+        // $hash = strtoupper(
+        //     md5(
+        //         $merchant_id . 
+        //         $order_id . 
+        //         number_format($amount, 2, '.', '') . 
+        //         $currency .  
+        //         strtoupper(md5($merchant_secret)) 
+        //     ) 
+        // );
+
+        $hash = strtoupper(
+            md5(
+                $merchant_id .
+                $order_id .
+                number_format($amount, 2, '.', '') .
+                $currency .
+                strtoupper(md5($merchant_secret))
+            )
+        );        
+
+        $data = [
+            "amount" => $amount,
+            "merchant_id" => $merchant_id,
+            "order_id" => $order_id,
+            "item" => $item,
+            "currency" => $currency,
+            "hash" => $hash,
+            "first_name" => $first_name,
+            "last_name" => $last_name,
+            "email" => $email,
+            "phone" => $phone,
+            "address" => $address,
+            "city" => $city
+        ];
+
+        $jsonOBJ = json_encode($data);
+
+        echo $jsonOBJ;
+    }
+
 }
