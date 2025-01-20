@@ -27,7 +27,8 @@
             </div>
             <div class="action-buttons">
                 <a href="<?php echo URLROOT?>/Buyercontrollers/editprofile" class="btn edit-btn">Edit Profile</a>
-                <a href="" class="btn delete-btn" onclick=";">Delete Account</a>
+
+                <a href="<?= URLROOT ?>/Buyercontrollers/deactivate" class="btn delete-btn" onclick="confirmDelete();">Delete Account</a>
             </div>
         </div>
     </div>
