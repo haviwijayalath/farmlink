@@ -81,13 +81,6 @@ class Buyer extends Database{
             JOIN fproducts p ON c.product_id = p.fproduct_id
             WHERE c.buyer_id = :buyer_id
         ');
-    public function getCartItems(){
-        $this->db->query('
-            SELECT c.cart_id, c.quantity, p.name,  p.price 
-            FROM buyer_carts c
-            JOIN fproducts p ON c.product_id = p.fproduct_id
-            WHERE c.buyer_id = :buyer_id
-        ');
 
         $this->db->bind(':buyer_id', $_SESSION['user_id']);
         return $this->db->resultSet();

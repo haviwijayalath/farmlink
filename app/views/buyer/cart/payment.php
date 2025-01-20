@@ -84,7 +84,7 @@
 
     xhttp.onreadystatechange = ()=>{
         if(xhttp.readyState == 4 && xhttp.status == 200){
-            alert(xhttp.responseText); // display the respone
+            //alert(xhttp.responseText); // display the respone
 
             var obj = JSON.parse(xhttp.responseText);
 
@@ -92,6 +92,11 @@
             payhere.onCompleted = function onCompleted(orderId) {
                 console.log("Payment completed. OrderID:" + orderId);
                 // Note: validate the payment and show success or failure page to the customer
+
+                  // Redirect to confirmOrder page only on success
+                  if (orderId) {
+                    window.location.href = "<?= URLROOT ?>/Buyercontrollers/orderConfirm";
+                }
             };
 
             // Payment window closed
