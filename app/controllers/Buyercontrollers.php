@@ -219,6 +219,22 @@ class Buyercontrollers extends Controller {
         }
     }
 
+    public function deactivate(){
+        $result = $this->buyerModel->deleteAccount($_SESSION['user_id']);
+
+        if($result){
+            //clear session data
+            session_unset();
+            session_destroy();
+
+            $this->view('buyer/accounts/deactivation');
+        } else {
+             // Set an error flash message and redirect to an appropriate page
+            flash('error', 'Failed to deactivate the user account. Please try again.');
+            redirect('Buyercontrollers/viewProfile');
+        }
+    }
+
     public function cartDetails(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');

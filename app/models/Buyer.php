@@ -62,6 +62,16 @@ class Buyer extends Database{
         return $userUpdated ;
     }
 
+    public function deleteAccount($userID){
+        $this->db->query('
+            delete from buyers where id = :userID
+        ');
+        $this->db->bind(':userID',$userID);
+
+        // Execute the query and return true if successful, false otherwise
+        return $this->db->execute();
+    }
+
     public function getCartItems(){
         $this->db->query('
             SELECT c.cart_id, c.quantity, p.name,  p.price 
