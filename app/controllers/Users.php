@@ -85,6 +85,7 @@ class Users extends Controller {
                 $_SESSION['admin_id'] = $user->id;
                 $_SESSION['admin_name'] = $user->name;
                 $_SESSION['user_email'] = $user->email;
+                $_SESSION['user_role'] = 'admin';
                 redirect('admins/dashboard');
                 break;
 
@@ -101,11 +102,11 @@ class Users extends Controller {
             case 'buyers':
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['user_name'] = $user->name;
-                $_SESSION['user_role'] = $user->role; // Store the user's role in session
+                $_SESSION['user_role'] = 'buyer';
                 $_SESSION['user_phone'] = $user->phone;
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_password'] = $user->password;
-                redirect('Buyercontrollers/cartDetails');
+                redirect('Buyercontrollers/browseproducts');
                 break;
 
             case 'suppliers':
@@ -115,18 +116,15 @@ class Users extends Controller {
             case 'delivery_persons':
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['user_name'] = $user->name;
-                $_SESSION['user_role'] = $user->role; // Store the user's role in session
+                $_SESSION['user_role'] = 'dperson';
                 $_SESSION['user_phone'] = $user->phone;
                 $_SESSION['user_image'] = $user->image;
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_addr_no'] = $user->addr_no;
                 $_SESSION['user_street'] = $user->street;
                 $_SESSION['user_city'] = $user->city;
-                $_SESSION['user_vehicle'] = $user->type;
+                $_SESSION['user_vehicle_id'] = $user->vehicle_id;
                 $_SESSION['user_delivery_area'] = $user->area;
-                $_SESSION['user_v_regno'] = $user->regno;
-                $_SESSION['user_v_capacity'] = $user->capacity;
-                $_SESSION['user_v_image'] = $user->v_image;
                 $_SESSION['user_password'] = $user->password;
                 redirect('dpersons/neworder');
                 break;

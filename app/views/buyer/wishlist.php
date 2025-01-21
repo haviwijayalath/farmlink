@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/wishlist.css">
 
@@ -16,51 +16,34 @@
             </tr>
         </thead>
         <tbody>
-            <tr>
-                <td class="product-name">
-                    Carrot
-                </td>
-                <td>
-                    <span class="price">
-                        Rs.300.00
-                    </span>
-                </td>
-                <td>
-                    In Stock
-                </td>
-                <td>
-                    <div class="added-date">
-                        Added on: December 5, 2024
-                    </div>
-                    <button class="add-to-cart">
-                        Add to cart
-                    </button>
-                    <i class="fas fa-trash"></i>
-                </td>
-            </tr>
-
-            <tr>
-                <td class="product-name">
-                    Gova
-                </td>
-                <td>
-                    <span class="price">
-                        Rs.200.00
-                    </span>
-                </td>
-                <td>
-                    Out of Stock
-                </td>
-                <td>
-                    <div class="added-date">
-                        Added on: December 2, 2024
-                    </div>
-                    <button class="add-to-cart">
-                        Add to cart
-                    </button>
-                    <i class="fas fa-trash"></i>
-                </td>
-            </tr>
+            <?php foreach ($data['wishlistItems'] as $item): ?>
+                <tr>
+                    <td class="product-name">
+                        <?= htmlspecialchars($item->name) ?>
+                    </td>
+                    <td>
+                        <span class="price">
+                            Rs.<?= number_format($item->price, 2) ?>
+                        </span>
+                    </td>
+                    <td>
+                        In Stock
+                    </td>
+                    <td>
+                        <div class="added-date">
+                            Expire : <?= htmlspecialchars($item->exp_date) ?>
+                        </div>
+                        <form action="<?= URLROOT ?>/buyercontrollers/addToCart" method="POST" >
+                            <input type="hidden" name="product_id" value="<?= $item->fproduct_id ?>">
+                            <input type="hidden" name="quantity" value="1">
+                            <button type="submit" class="add-to-cart">Add to cart</button>
+                        </form>
+                        <a href="<?= URLROOT ?>/Buyercontrollers/removeWishlist/<?= $item->wishlist_id ?>" >
+                        <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
         </tbody>
     </table>
 </div>

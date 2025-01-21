@@ -13,7 +13,7 @@
 
 
     <!-- Products Section -->
-    <section id="products" class="products">
+    <section id="products" class="products"> 
         <h2>Discover Our Products</h2>
         <div class="product-grid">
             <div class="product-item">

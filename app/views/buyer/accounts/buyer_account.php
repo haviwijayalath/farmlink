@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/account.css">
 
@@ -14,21 +14,28 @@
 
                 <div class="user-details">
                     <div class="detail-item">
-                        <strong>Name: </strong>
+                        <strong>Name:</strong><?= $data['name'] ?>
                     </div>
                     <div class="detail-item">
-                        <strong>Phone Number: </strong>
+                        <strong>Phone Number:</strong><?= $data['phone_num'] ?>
                     </div>
                     <div class="detail-item">
-                        <strong>Email: </strong>
+                        <strong>Email:</strong><?= $data['email'] ?>
                     </div>
                 </div>
             </div>
             <div class="action-buttons">
-                <a href="<?php echo URLROOT?>Buyercontrollers/editprofile" class="btn edit-btn">Edit Profile</a>
-                <a href="" class="btn delete-btn" onclick=";">Delete Account</a>
+                <a href="<?php echo URLROOT?>/Buyercontrollers/editprofile" class="btn edit-btn">Edit Profile</a>
+
+                <a href="<?= URLROOT ?>/Buyercontrollers/deactivate" class="btn delete-btn" onclick="confirmDelete();">Delete Account</a>
             </div>
         </div>
     </div>
+
+    <script>
+        function confirmDelete(){
+            return confirm("Are you sure you want to delete your account?")
+        }
+    </script>
 
   <?php require APPROOT . '/views/inc/footer.php'; ?>

@@ -5,7 +5,7 @@ class Dpaccounts extends Controller {
     
   public function __construct() {
     // Protect all methods in this controller
-    if (!isLoggedIn()) {
+    if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
         redirect('users/login'); // Redirect to login page if not logged in
     }
 
@@ -202,7 +202,7 @@ class Dpaccounts extends Controller {
                 'regno' => trim($_POST['regno']),
                 'capacity' => trim($_POST['capacity']),
                 'v_image' => '', // Handle file upload
-                'id' => $_SESSION['user_id'],
+                'id' => $_SESSION['user_vehicle_id']
             ];
 
             // Handle file upload
@@ -244,7 +244,7 @@ class Dpaccounts extends Controller {
         $this->view('d_person/accounts/deactivation');
     } else {
         // Set an error flash message and redirect to an appropriate page
-        $this->setFlash('error', 'Failed to deactivate the user account. Please try again.');
+        flash('error', 'Failed to deactivate the user account. Please try again.');
         redirect('dpaccounts/account');
     }
     }

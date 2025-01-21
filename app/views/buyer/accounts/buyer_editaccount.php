@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/editaccount.css">
 
@@ -6,7 +6,7 @@
 
 <div class="edit-profile-container">
     <h2>Edit Your Profile</h2>
-    <form method="POST" action="">
+    <form method="POST" action="<?php echo URLROOT; ?>/Buyercontrollers/editprofile/<?php echo $data['id']; ?>">
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" name="name" id="name" value="" required>
@@ -14,6 +14,10 @@
         <div class="form-group">
             <label for="email">Email</label>
             <input type="email" name="email" id="email" value="" required>
+        </div>
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" name="phone" id="phone" value="" required>
         </div>
 
         <div class="form-group">

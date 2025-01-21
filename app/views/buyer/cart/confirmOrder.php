@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/confirmOrder.css">
 
@@ -11,7 +11,7 @@
     <div class="message">
         Your order is successfully place
     </div>
-    <a class="track-order-btn" href="<?php echo URLROOT?>Buyercontrollers/buyerOrders">
+    <a class="track-order-btn" href="<?php echo URLROOT?>/Buyercontrollers/buyerOrders">
         Track Order
     </a>
 </div>
