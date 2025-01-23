@@ -12,6 +12,7 @@ class Buyercontrollers extends Controller {
         if (isLoggedIn()) {
             redirect('buyers/index');
         }
+        }
 
         // check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -82,6 +83,7 @@ class Buyercontrollers extends Controller {
                 //register user
                 if($this->buyerModel->registerBuyer($data)){
                     flash('register_success', 'You are successfully registered! Log in now');
+                    flash('register_success', 'You are successfully registered! Log in now');
                     redirect('users/login');
                  }else{
                      die('Something went wrong');
@@ -116,22 +118,14 @@ class Buyercontrollers extends Controller {
     // Function to display account page
     public function viewProfile() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login'); 
           }
 
-        $data = [
-            'name' => $_SESSION['user_name'],
-            'phone_num' => $_SESSION['user_phone'],
-            'email' => $_SESSION['user_email']
-        ];
-
-        $this->view('buyer/accounts/buyer_account',$data);
+        $this->view('buyer/accounts/buyer_account');
     }
 
-    public function editProfile($id = null) {
-        if($id === null){
-            $id = $_SESSION['user_id'];
-        }
+    public function editProfile() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
@@ -237,10 +231,12 @@ class Buyercontrollers extends Controller {
 
     public function cartDetails(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
         // get the cart items from database
+        $cartItems = $this->buyerModel->getCartItems(); 
         $cartItems = $this->buyerModel->getCartItems(); 
         $total = 0;
 
@@ -258,6 +254,7 @@ class Buyercontrollers extends Controller {
 
     public function addToCart(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -266,9 +263,14 @@ class Buyercontrollers extends Controller {
 
             $data = [
                 'buyer_id' => $_SESSION['user_id'],
+                'buyer_id' => $_SESSION['user_id'],
                 'product_id' => $_POST['product_id'],
                 'quantity' => $_POST['quantity']
             ];
+
+            if(empty($data['product_id'])){
+                echo ("not working");
+            }
 
             if(empty($data['product_id'])){
                 echo ("not working");
@@ -285,6 +287,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function updateCartItem() {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
         }
@@ -314,6 +317,7 @@ class Buyercontrollers extends Controller {
     
     public function removeCartItem($id){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -326,6 +330,7 @@ class Buyercontrollers extends Controller {
 
     public function deliveryOptions(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -333,6 +338,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function paymentDetails(){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
@@ -342,6 +348,7 @@ class Buyercontrollers extends Controller {
 
     public function orderConfirm(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -350,12 +357,71 @@ class Buyercontrollers extends Controller {
 
     public function buyerOrders(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
         $this->view('buyer/cart/buyerOrders');
     }
 
+    public function wishlistDetails(){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
+          // get the wislist item from database
+          $wishlistItem = $this->buyerModel->getWishlistItem();
+
+          $data = [
+            'wishlistItems' => $wishlistItem
+          ];
+
+        $this->view('buyer/wishlist', $data);
+    }
+
+    public function addToWishlist(){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $data = [
+                'buyer_id' => $_SESSION['user_id'],
+                'product_id' => $_POST['product_id'],
+            ];
+
+            if(empty($data['product_id'])){
+                echo ("not working");
+            }
+
+            if($this->buyerModel->addWishlistItem($data)){
+                redirect('Buyercontrollers/wishlistDetails');
+            } else {
+                die('Something went wrong while adding to the wishlist.');
+            }
+        } else {
+            redirect('Buyercontrollers/wishlistDetails');
+        }
+        
+    }
+
+    public function removeWishlist($id){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
+        if ($this->buyerModel->removeWishlistItem($id)){
+            redirect('Buyercontrollers/wishlistDetails');
+        } else {
+            die('Something went wrong while removing the wishlist item.');
+        }    
+    }
+
+    // Function to display all products
+    public function browseproducts() {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
     public function wishlistDetails(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
@@ -437,60 +503,6 @@ class Buyercontrollers extends Controller {
             'fEmail' => $product->email
         ];
         $this->view('buyer/products/view_product', $data);
-    }
-
-    public function payhereProcess(){
-        $amount = 3000;
-        $merchant_id = "1229272";
-        $merchant_secret = "Mjg0OTYwNzA0MjU4NDUzNDYyODMxOTIzMzMzNDczNzY5MzI1NzM3" ;
-        $order_id = uniqid();
-        $item = "Door bell wireles";
-        $currency = "LKR";
-        $first_name = "Saman";
-        $last_name = "Perera";
-        $email = "samanp@gmail.com";
-        $phone = "0771234567";
-        $address = "No.1, Galle Road";
-        $city = "Colombo";
-
-        // $hash = strtoupper(
-        //     md5(
-        //         $merchant_id . 
-        //         $order_id . 
-        //         number_format($amount, 2, '.', '') . 
-        //         $currency .  
-        //         strtoupper(md5($merchant_secret)) 
-        //     ) 
-        // );
-
-        $hash = strtoupper(
-            md5(
-                $merchant_id .
-                $order_id .
-                number_format($amount, 2, '.', '') .
-                $currency .
-                strtoupper(md5($merchant_secret))
-            )
-        );        
-
-        $data = [
-            "amount" => $amount,
-            "merchant_id" => $merchant_id,
-            "order_id" => $order_id,
-            "item" => $item,
-            "currency" => $currency,
-            "hash" => $hash,
-            "first_name" => $first_name,
-            "last_name" => $last_name,
-            "email" => $email,
-            "phone" => $phone,
-            "address" => $address,
-            "city" => $city
-        ];
-
-        $jsonOBJ = json_encode($data);
-
-        echo $jsonOBJ;
     }
 
 }

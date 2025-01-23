@@ -1,4 +1,5 @@
 <?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/payment.css">
 
@@ -8,6 +9,7 @@
     <div class="order-summery">
         <h2>CART TOTAL</h2>
         <div class="item">
+            <div class="lable">SUB TOTAL</div> 
             <div class="lable">SUB TOTAL</div> 
             <div class="value">Rs.1750</div>
         </div>
@@ -35,8 +37,10 @@
             <img alt="Maestro logo" height="20" width="20" src="<?= URLROOT ?>/public/images/3.jpg"/>
         </div>
         <span class="payment-method-info">
+        <span class="payment-method-info">
             Pay with your Visa, American Express or Mastercard.
         </span>
+
 
 
         <div class="payment-details">
@@ -55,12 +59,7 @@
             </p>
         </div>
 
-        <a class="place-order-btn" onclick="payNow();"> Buy Now </a>
-        <!-- <script src="http://localhost/farmlink/script.js"></script> -->
-        <!-- <script src="script.js"></script> -->
-        <script type="text/javascript" src="https://www.payhere.lk/lib/payhere.js"></script>
-
-        <!-- <a class="place-order-btn" href="<?php echo URLROOT?>/Buyercontrollers/orderConfirm">
+        <a class="place-order-btn" href="<?php echo URLROOT?>/Buyercontrollers/orderConfirm">
             Place Order
         </a> -->
     </div>

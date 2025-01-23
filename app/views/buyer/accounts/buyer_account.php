@@ -1,4 +1,5 @@
 <?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/account.css">
 
@@ -26,8 +27,7 @@
             </div>
             <div class="action-buttons">
                 <a href="<?php echo URLROOT?>/Buyercontrollers/editprofile" class="btn edit-btn">Edit Profile</a>
-
-                <a href="<?= URLROOT ?>/Buyercontrollers/deactivate" class="btn delete-btn" onclick="confirmDelete();">Delete Account</a>
+                <a href="" class="btn delete-btn" onclick=";">Delete Account</a>
             </div>
         </div>
     </div>
