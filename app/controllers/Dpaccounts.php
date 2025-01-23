@@ -263,5 +263,16 @@ class Dpaccounts extends Controller {
     }
     
 
+    public function revenueCheck()
+    {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+            redirect('users/login');
+          }
+
+        $deliveryId = $_SESSION['user_id'] ?? null;
+        $this->view('d_person/accounts/revenue');
+
+    }
+
     }
 
