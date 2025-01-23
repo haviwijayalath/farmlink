@@ -8,6 +8,7 @@
     <li><a href="<?= URLROOT ?>/dpaccounts/vehicleinfo"><i class="fas fa-truck"></i><span>Vehicle</span></a></li>
     <li><a href="<?= URLROOT ?>/dpersons/history"><i class="fas fa-history"></i><span>Delivery History</span></a></li>
     <li><a href="<?= URLROOT ?>/dpersons/ongoingDeliveries"><i class="fa-solid fa-truck-fast"></i><span>Ongoing</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpaccounts/revenueCheck"><i class="fa-solid fa-hand-holding-dollar"></i><span>Revenue</span></a></li>
     <!-- Logout -->
     <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
   </ul>

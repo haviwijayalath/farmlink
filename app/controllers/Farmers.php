@@ -157,7 +157,7 @@
     }
 
     public function index() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
 
@@ -172,7 +172,7 @@
     }
 
     public function viewprofile() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
 
@@ -180,7 +180,7 @@
     }
 
     public function editprofile() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       
@@ -188,7 +188,7 @@
     }
 
     public function managestocks() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       
@@ -293,7 +293,7 @@
           }
         } else {
           // Load view with errors
-          $this->view('farmers/register', $data);
+          $this->view('farmers/addstocks', $data);
         }
       } else {
         // Init data
@@ -318,7 +318,7 @@
     }
 
     public function editstocks($id) {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
 
@@ -420,7 +420,7 @@
           }
         } else {
           // Load view with errors
-          $this->view('farmers/register', $data);
+          $this->view('farmers/editstocks', $data);
         }
       } else {
         // Init data
@@ -450,7 +450,7 @@
     }
 
     public function deletestock($id) {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
 
@@ -469,7 +469,7 @@
     }
     
     public function manageorders() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       
@@ -477,7 +477,7 @@
     }
 
     public function viewsales() {
-      if (!isLoggedIn()) {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
       

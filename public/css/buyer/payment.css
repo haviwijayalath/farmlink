@@ -94,9 +94,16 @@
     color: #666;
 }
 
-span{
-    font-size: 14px;
-    color: #666; 
+.payment-method-info {
+    font-size: 20px;
+    color: #000000; 
+    margin-top: 0;  
+}
+
+/* even though it is herre by changing this make slide bar content chanfge */
+span {
+    font-size: 20px;
+    color: #ffffff; 
     margin-top: 0;  
 }
 

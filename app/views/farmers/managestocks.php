@@ -23,7 +23,7 @@
 
             <h5 class="card-title"><?= htmlspecialchars($product->name); ?></h5>
             <p class="card-text"><?php echo htmlspecialchars($product->description); ?></p>
-            <p class="card-text">Price: $<?php echo htmlspecialchars($product->price); ?></p>
+            <p class="card-text">Price: Rs.<?php echo htmlspecialchars($product->price); ?></p>
             <p class="card-text">Stock: <?php echo htmlspecialchars($product->stock); ?></p>
             <p class="card-text">Expiry Date: <?php echo htmlspecialchars($product->exp_date); ?></p>
             <a href="<?= URLROOT ?>/farmers/editstocks/<?= $product->fproduct_id ?>" class="btn btn-primary">Edit</a>

@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/payment.css">
 
@@ -8,7 +8,7 @@
     <div class="order-summery">
         <h2>CART TOTAL</h2>
         <div class="item">
-            <div class="lable">SUB TOTAL</div>
+            <div class="lable">SUB TOTAL</div> 
             <div class="value">Rs.1750</div>
         </div>
         <div class="divider"></div>
@@ -34,9 +34,10 @@
             <img alt="American Express logo" height="20" width="20" src="<?= URLROOT ?>/public/images/2.jpg"/>
             <img alt="Maestro logo" height="20" width="20" src="<?= URLROOT ?>/public/images/3.jpg"/>
         </div>
-        <span>
+        <span class="payment-method-info">
             Pay with your Visa, American Express or Mastercard.
         </span>
+
 
         <div class="payment-details">
         <input placeholder="Card holder name" type="text"/>
@@ -54,7 +55,7 @@
             </p>
         </div>
 
-        <a class="place-order-btn" href="<?php echo URLROOT?>Buyercontrollers/orderConfirm">
+        <a class="place-order-btn" href="<?php echo URLROOT?>/Buyercontrollers/orderConfirm">
             Place Order
         </a>
     </div>

@@ -11,7 +11,7 @@ class Buyercontrollers extends Controller {
     public function register(){
         if (isLoggedIn()) {
             redirect('buyers/index');
-          }
+        }
 
         // check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
@@ -81,6 +81,7 @@ class Buyercontrollers extends Controller {
                 
                 //register user
                 if($this->buyerModel->registerBuyer($data)){
+                    flash('register_success', 'You are successfully registered! Log in now');
                     redirect('users/login');
                  }else{
                      die('Something went wrong');
@@ -114,28 +115,27 @@ class Buyercontrollers extends Controller {
 
     // Function to display account page
     public function viewProfile() {
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login'); 
           }
-          
-        $data = [];
-        $this->view('buyer/accounts/buyer_account', $data);
+
+        $this->view('buyer/accounts/buyer_account');
     }
 
     public function editProfile() {
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
         $this->view('buyer/accounts/buyer_editaccount');
     }
 
     public function cartDetails(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
         // get the cart items from database
-        $cartItems = $this->buyerModel->getCartItems();
+        $cartItems = $this->buyerModel->getCartItems(); 
         $total = 0;
 
         foreach ($cartItems as $item) {
@@ -151,7 +151,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function addToCart(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -159,10 +159,14 @@ class Buyercontrollers extends Controller {
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
             $data = [
-                'buyer_id' => $_POST['user_id'],
+                'buyer_id' => $_SESSION['user_id'],
                 'product_id' => $_POST['product_id'],
                 'quantity' => $_POST['quantity']
             ];
+
+            if(empty($data['product_id'])){
+                echo ("not working");
+            }
 
             if($this->buyerModel->addCartItem($data)){
                 redirect('Buyercontrollers/cartDetails');
@@ -175,7 +179,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function updateCartItem() {
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
         }
     
@@ -202,9 +206,8 @@ class Buyercontrollers extends Controller {
         }
     }
     
-    
     public function removeCartItem($id){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -216,7 +219,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function deliveryOptions(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -224,7 +227,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function paymentDetails(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -232,7 +235,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function orderConfirm(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
@@ -240,19 +243,94 @@ class Buyercontrollers extends Controller {
     }
 
     public function buyerOrders(){
-        if (!isLoggedIn()) {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
         $this->view('buyer/cart/buyerOrders');
     }
 
-    public function wishlist(){
-        if (!isLoggedIn()) {
+    public function wishlistDetails(){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
 
-        $this->view('buyer/wishlist');
+          // get the wislist item from database
+          $wishlistItem = $this->buyerModel->getWishlistItem();
+
+          $data = [
+            'wishlistItems' => $wishlistItem
+          ];
+
+        $this->view('buyer/wishlist', $data);
+    }
+
+    public function addToWishlist(){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
+        if($_SERVER['REQUEST_METHOD'] == 'POST'){
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $data = [
+                'buyer_id' => $_SESSION['user_id'],
+                'product_id' => $_POST['product_id'],
+            ];
+
+            if(empty($data['product_id'])){
+                echo ("not working");
+            }
+
+            if($this->buyerModel->addWishlistItem($data)){
+                redirect('Buyercontrollers/wishlistDetails');
+            } else {
+                die('Something went wrong while adding to the wishlist.');
+            }
+        } else {
+            redirect('Buyercontrollers/wishlistDetails');
+        }
+        
+    }
+
+    public function removeWishlist($id){
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
+        if ($this->buyerModel->removeWishlistItem($id)){
+            redirect('Buyercontrollers/wishlistDetails');
+        } else {
+            die('Something went wrong while removing the wishlist item.');
+        }    
+    }
+
+    // Function to display all products
+    public function browseproducts() {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
+        $data = $this->buyerModel->getProducts();
+        $this->view('buyer/products/browse_products', $data);
+    }
+
+    // Function to display a single product
+    public function viewproduct($id) {
+        $product = $this->buyerModel->getProductById($id);
+        $data = [
+            'pName' => $product->productName,
+            'description' => $product->description,
+            'price' => $product->price,
+            'stock' => $product->stock,
+            'pImage' => $product->productImage,
+            'exp_date' => $product->exp_date,
+            'fId' => $id,
+            'fName' => $product->farmerName,
+            'fImage' => $product->farmerImage,
+            'fEmail' => $product->email
+        ];
+        $this->view('buyer/products/view_product', $data);
     }
 
 }

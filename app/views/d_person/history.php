@@ -37,12 +37,12 @@
                     <?php foreach($data['orders'] as $index => $order): ?>
                         <tr>
                             <td>
-                                <a href="<?= URLROOT ?>/orders/orderDetails/<?= htmlspecialchars($order->order_id) ?>" class="historybtn">
+                                <a href="<?= URLROOT ?>/dpersons/orderHistorydetails/<?= htmlspecialchars($order->order_id) ?>" class="historybtn">
                                     <?= htmlspecialchars($order->order_id) ?>
                                 </a>
                             </td>
                             <td><?= htmlspecialchars($order->productName) ?></td>
-                            <td class="customer-name"><?= htmlspecialchars($order->name) ?></td>
+                            <td class="customer-name"><?= htmlspecialchars($order->buyer) ?></td>
                             <td><?= htmlspecialchars($order->amount) ?></td>
                             <td class="order-date"><?= htmlspecialchars($order->date) ?></td>
                         </tr>
