@@ -3,12 +3,15 @@
 class Dpersons extends Controller {
     private $userModel;
     
+    private $userModel;
+    
     public function __construct() {
         $this->userModel = $this->model('Dperson'); 
     }
 
     public function index() {
 
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
@@ -19,6 +22,7 @@ class Dpersons extends Controller {
     // Show new orders page
     public function neworder() {
 
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
@@ -48,6 +52,7 @@ class Dpersons extends Controller {
     public function confirm($orderId) {
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
 
@@ -61,6 +66,7 @@ class Dpersons extends Controller {
     // Display ongoing deliveries
     public function ongoingDeliveries() {
 
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
@@ -88,6 +94,7 @@ class Dpersons extends Controller {
     public function proof(){
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
 
@@ -104,6 +111,7 @@ class Dpersons extends Controller {
     public function endDelivery() {
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
 
@@ -118,7 +126,11 @@ class Dpersons extends Controller {
     
 
     public function deliveryUploadPickup() {
+    public function deliveryUploadPickup() {
 
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+            redirect('users/login');
+            }
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
             }
@@ -133,10 +145,25 @@ class Dpersons extends Controller {
             $pickupImage = $_FILES['pickup_image'];
             $pickupImageName = time() . '_pickup_' . basename($pickupImage['name']);
             $pickupImagePath = $uploadDir . $pickupImageName;
+        if (isset($_FILES['pickup_image'])) {
+            $uploadDir = APPROOT . '/../public/d_uploads/';
+    
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+    
+            $pickupImage = $_FILES['pickup_image'];
+            $pickupImageName = time() . '_pickup_' . basename($pickupImage['name']);
+            $pickupImagePath = $uploadDir . $pickupImageName;
 
             if (move_uploaded_file($pickupImage['tmp_name'], $pickupImagePath)) {
                 $relativePath = 'public/d_uploads/' . $pickupImageName;
+            if (move_uploaded_file($pickupImage['tmp_name'], $pickupImagePath)) {
+                $relativePath = 'public/d_uploads/' . $pickupImageName;
 
+                $deliveryId = $this->userModel->savePickupImages($_SESSION['order_id'], $_SESSION['user_id'],$_SESSION['pickup_address'], $pickupImageName);
+                    
+                    if ( $deliveryId) {
                 $deliveryId = $this->userModel->savePickupImages($_SESSION['order_id'], $_SESSION['user_id'],$_SESSION['pickup_address'], $pickupImageName);
                     
                     if ( $deliveryId) {
@@ -152,10 +179,25 @@ class Dpersons extends Controller {
             redirect('dpersons/proof');
         }
     }
+                        $_SESSION['pickup_image'] = $relativePath;
+        
+                        $_SESSION['delivery_id'] = $deliveryId;
+        
+                        // Redirect with success
+                        redirect('dpersons/ongoingDeliveries');
+                }
+            }
+            redirect('dpersons/proof');
+        }
+    }
 
         
     public function deliveryUploadDropoff() {
+    public function deliveryUploadDropoff() {
 
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+            redirect('users/login');
+            }
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
             }
@@ -205,8 +247,54 @@ class Dpersons extends Controller {
         }
     }
         
+        // Check if files are uploaded
+        if (isset($_FILES['dropoff_image'])) {
+            // Directory to save uploaded images
+            $uploadDir = APPROOT . '/../public/d_uploads/';
+    
+            // Create the directory if it doesn't exist
+            if (!is_dir($uploadDir)) {
+                mkdir($uploadDir, 0777, true);
+            }
+    
+            // Handle dropoff image
+            $dropoffImage = $_FILES['dropoff_image'];
+            $dropoffImageName = time() . '_dropoff_' . basename($dropoffImage['name']);
+            $dropoffImagePath = $uploadDir . $dropoffImageName;
+    
+            // Move the uploaded file to the directory
+            if (move_uploaded_file($dropoffImage['tmp_name'], $dropoffImagePath)) {
+                // Store the relative path in the database
+                $relativePath = 'public/d_uploads/' . $dropoffImageName;
+    
+                // Debug: Check if the delivery_id and path are correct
+                echo "Delivery ID: " .  $_SESSION['delivery_id'];
+                echo "Dropoff Image Path: " . $relativePath;
+    
+                // Save the dropoff image path in the database
+                if ($this->userModel->saveDropoffImage( $_SESSION['delivery_id'], $relativePath)) {
+                    $_SESSION['dropoff_image'] = $relativePath; // Store in session variable
+                    $this->endDelivery();
+                } else {
+                    // Error handling if saving image fails
+                    echo "Failed to save the dropoff image in the database.";
+                    redirect('dpersons/proof');
+                }
+            } else {
+                // Error handling if file upload fails
+                echo "Failed to upload dropoff image.";
+                redirect('dpersons/proof');
+            }
+        } else {
+            // No image uploaded
+            echo "No dropoff image uploaded.";
+            redirect('dpersons/proof');
+        }
+    }
+        
     public function history(){
 
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
@@ -227,6 +315,7 @@ class Dpersons extends Controller {
     public function tracking(){
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
 
@@ -239,7 +328,11 @@ class Dpersons extends Controller {
 
     }
 
+
     public function register() {
+        if (isLoggedIn()) {
+            redirect('dpersons/index');
+        }
         if (isLoggedIn()) {
             redirect('dpersons/index');
         }
@@ -400,6 +493,7 @@ class Dpersons extends Controller {
                   //register user
                   if($this->userModel->registerDeliveryPerson($data)){
                     flash('register_success', 'You are successfully registered! Log in now');
+                    flash('register_success', 'You are successfully registered! Log in now');
                     redirect('users/login');
                  }else{
                      die('Something went wrong');
@@ -458,6 +552,7 @@ class Dpersons extends Controller {
 
     public function orderdetails($order_id){
 
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
           }
