@@ -67,7 +67,6 @@
         <!-- <a class="place-order-btn" href="<?php echo URLROOT?>/Buyercontrollers/orderConfirm">
             Place Order
         </a> -->
-        </a> -->
     </div>
 </div>
 

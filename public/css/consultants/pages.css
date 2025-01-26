@@ -1,46 +1,65 @@
-/* General Styles */
+
+/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* General Body Styles */
 body {
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    margin: 0;
-    padding: 0;
-    background-color: #f9f9f9;
+    background-color: #f4f4f4;
     color: #333;
-}
-
-.container {
-    width: 80%;
-    max-width: 1200px;
-    margin: 20px auto;
     padding: 20px;
-    background: #fff;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
 }
 
+/* Container for all content */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Heading Styles */
 h1 {
-    font-size: 2.5em;
+    font-size: 2rem;
+    color: #333;
     margin-bottom: 20px;
     text-align: center;
-    color: #007bff;
 }
 
-h2 {
-    font-size: 1.8em;
-    margin-top: 20px;
-    color: #007bff;
-    border-bottom: 2px solid #007bff;
-    padding-bottom: 5px;
-}
-
-/* Flash Messages */
+/* Flash Message Styles */
 .alert {
-    padding: 15px;
+    padding: 10px 15px;
     margin-bottom: 20px;
-    border-radius: 4px;
-    font-size: 1em;
-    color: #fff;
-    background-color: #007bff;
+    border-radius: 5px;
+    font-weight: bold;
+    text-align: center;
+}
+
+.alert-success {
+    background-color: #28a745;
+    color: white;
+}
+
+.alert-danger {
+    background-color: #dc3545;
+    color: white;
+}
+
+.alert-info {
+    background-color: #17a2b8;
+    color: white;
+}
+
+.invalid-feedback {
+    color: #dc3545;
+    font-size: 0.875rem;
 }
 
 /* Form Styles */
@@ -48,110 +67,105 @@ form {
     margin-top: 20px;
 }
 
+/* Input and Textarea Fields */
 .form-group {
     margin-bottom: 15px;
 }
-
-label {
+.form-group label {
     display: block;
-    margin-bottom: 5px;
     font-weight: bold;
+    margin-bottom: 5px;
 }
 
-input[type="text"],
-textarea {
+.form-control {
     width: 100%;
     padding: 10px;
+    font-size: 1rem;
     border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 1em;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    transition: border-color 0.3s;
 }
 
-textarea {
-    resize: vertical;
-}
-
-.is-invalid {
+.form-control.is-invalid {
     border-color: #dc3545;
 }
 
-.invalid-feedback {
-    color: #dc3545;
-    font-size: 0.9em;
+.form-control:focus {
+    border-color: #007bff;
+    outline: none;
+    background-color: #fff;
 }
 
-button {
-    padding: 10px 20px;
-    font-size: 1em;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
-}
-
-.btn-primary {
+/* Submit Button */
+button[type="submit"] {
     background-color: #007bff;
-    color: #fff;
+    color: white;
+    padding: 10px 15px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
     transition: background-color 0.3s;
 }
 
-.btn-primary:hover {
+button[type="submit"]:hover {
     background-color: #0056b3;
 }
 
-.btn-secondary {
-    background-color: #6c757d;
-    color: #fff;
-    transition: background-color 0.3s;
-}
-
-.btn-secondary:hover {
-    background-color: #565e64;
-}
-
-/* Questions List */
-.questions-list {
+/* List Styling */
+ul {
     list-style: none;
     padding: 0;
-    margin: 0;
 }
 
-.question-item {
-    margin-bottom: 15px;
-    padding: 15px;
-    background: #f1f1f1;
-    border-radius: 4px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-}
-
-.question-item p {
-    margin: 0 0 10px;
-}
-
-/* Answers List */
-.answers-list {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-}
-
-.answer-item {
+li {
     margin-bottom: 10px;
-    padding: 10px;
-    background: #e9ecef;
-    border-radius: 4px;
 }
 
-/* Responsive Design */
+.questions-list, .answers-list {
+    padding-left: 20px;
+}
+
+.question-item, .answer-item {
+    background-color: #f9f9f9;
+    padding: 15px;
+    margin-bottom: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+}
+
+.question-item p, .answer-item p {
+    margin: 0;
+    font-size: 1rem;
+    color: #333;
+}
+
+.question-item a {
+    text-decoration: none;
+    color: #007bff;
+    font-weight: bold;
+}
+
+.question-item a:hover {
+    text-decoration: underline;
+}
+
+/* For responsiveness */
 @media (max-width: 768px) {
     .container {
-        width: 90%;
+        padding: 15px;
     }
 
     h1 {
-        font-size: 2em;
+        font-size: 1.75rem;
     }
 
-    h2 {
-        font-size: 1.5em;
+    .form-control {
+        font-size: 0.9rem;
+    }
+
+    button[type="submit"] {
+        font-size: 0.9rem;
     }
 }
