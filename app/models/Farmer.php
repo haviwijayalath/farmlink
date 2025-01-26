@@ -169,14 +169,12 @@ class Farmer
     }
   }
 
-
   // Fetch question ids from farmerid
   public function fetchQidFromFid ($id){
     $this->db->query('SELECT q_id FROM forum_questions WHERE farmer_id = :id');
     $this->db->bind(':id', $id);
     return $this->db->resultSet(); 
   }
-
 
   // Fetch all questions from the questions table
   public function fetchAnswers($id) {
@@ -201,6 +199,4 @@ class Farmer
     // Execute and return the result
     return $this->db->execute();
   }
-
-  
 }

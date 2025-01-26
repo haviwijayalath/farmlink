@@ -116,7 +116,4 @@ public function findUserByEmail($email) {
     // Execute and return the result
     return $this->db->execute();
   }
-
- 
-  
 }

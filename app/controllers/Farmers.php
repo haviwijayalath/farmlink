@@ -559,9 +559,5 @@
             flash('data_message', 'No questions found', 'alert alert-warning');
             $this->view('pages/displayQuestions', ['questions' => []]);
       }
-
   }
-
-  
-  
 }

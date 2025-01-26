@@ -1,4 +1,5 @@
 <?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/account.css">
 

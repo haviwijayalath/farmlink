@@ -198,6 +198,7 @@
     }
 
     public function getQuestions() {
+
         // Retrieve data using the model
         $questions = $this->consultantModel->fetchQuestions();
     
@@ -235,18 +236,22 @@
             // Ensure no errors exist
             if (empty($data['answer_err'])) {
                 // All validations passed
+
                 if ($this->dataModel->storeAnswer($data)) {
+
                     // Success, redirect or handle response
                     flash('Succesfull', 'Answer successfully submitted');
                     redirect('consultant/index');
                 } else {
                     // Error storing data
                     flash('Unsuccesfull', 'Error submitting answer', 'alert alert-danger');
+
                     $this->view('consultant/pages/sendAnswer', $data);
                 }
             } else {
                 // Load the view with errors
                 $this->view('consultant/pages/sendAnswer', $data);
+
             }
         } else {
             // Initialize empty data for GET request
@@ -258,9 +263,8 @@
             ];
     
             // Load the form view
+
             $this->view('consultant/pages/sendAnswer', $data);
         }
     }
-    
-  
   }
