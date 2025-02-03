@@ -6,7 +6,7 @@
     <li><a href="<?= URLROOT ?>/consultants/index"><i class="fas fa-home"></i><span>Dashboard</span></a></li>
     <li><a href="<?= URLROOT ?>/consultants/viewprofile"><i class="fas fa-user"></i><span>View Profile</span></a></li>
     <li><a href="<?= URLROOT ?>/consultants/editprofile"><i class="fas fa-edit"></i><span>Edit Profile</span></a></li>
-    <li><a href="<?= URLROOT ?>/consultants/getQuestions"><i class="fa-solid fa-comment"></i><span>Forum</span></a></li>
+    <li><a href="<?= URLROOT ?>/forums/index"><i class="fa-solid fa-comment"></i><span>Forum</span></a></li>
     
     <!-- Logout -->
     <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>

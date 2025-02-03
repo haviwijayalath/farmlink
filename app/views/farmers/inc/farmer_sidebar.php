@@ -9,7 +9,7 @@
     <li><a href="<?php echo URLROOT?>/farmers/managestocks"><i class="fa-solid fa-boxes-stacked"></i>Stocks</a></li>
     <li><a href="<?php echo URLROOT?>/farmers/manageorders"><i class="fa-solid fa-bars"></i>Orders</a></li>
     <li><a href="<?php echo URLROOT?>/farmers/viewsales"><i class="fa-solid fa-clipboard-check"></i>Sales</a></li>
-    <li><a href="<?php echo URLROOT?>/users/forum"><i class="fa-solid fa-comment"></i>Forum</a></li>
+    <li><a href="<?php echo URLROOT?>/forums/index"><i class="fa-solid fa-comment"></i>Forum</a></li>
     <li><a href="<?php echo URLROOT?>/farmers/bookconsultant"><i class="fa-solid fa-user-tie"></i>Consultant</a></li>
     <li><a href="javascript:void(0)" onclick="showLogoutPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
   </ul>

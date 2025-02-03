@@ -1,24 +1,17 @@
 <?php
-
-class Farmer
-{
+class Farmer {
   private $db;
 
-  public function __construct()
-  {
+  public function __construct() {
     $this->db = new Database;
   }
 
-  // Saving the address
-  public function saveAddress($no, $street, $city)
-  {
+  // Save address and return inserted address ID.
+  public function saveAddress($no, $street, $city) {
     $this->db->query('INSERT INTO address (number, Street, City) VALUES(:number, :street, :city)');
-    // Bind values
     $this->db->bind(':number', $no);
     $this->db->bind(':street', $street);
     $this->db->bind(':city', $city);
-
-    // Execute
     if ($this->db->execute()) {
       return $this->db->lastInsertId();
     } else {
@@ -26,173 +19,144 @@ class Farmer
     }
   }
 
-  // Register farmer
-  public function register($data)
-  {
-    // Saving the address before saving the farmer
+  // Register farmer.
+  public function register($data) {
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
-
     $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image) VALUES(:name, :password, :email, :address_id, :phone, :image)');
-    // Bind values
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
     $this->db->bind(':phone', $data['phone_number']);
     $this->db->bind(':image', $data['image']);
     $this->db->bind(':password', $data['password']);
     $this->db->bind(':address_id', $address_id);
-
-    // Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
+    return $this->db->execute();
   }
 
-  // Find farmer by email
-  public function findFarmerByEmail($email)
-  {
+  // Find farmer by email.
+  public function findFarmerByEmail($email) {
     $this->db->query('SELECT * FROM farmers WHERE email = :email');
-    // Bind value
     $this->db->bind(':email', $email);
-
     $row = $this->db->single();
-
-    // Check row
-    if ($this->db->rowCount() > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return $this->db->rowCount() > 0;
   }
 
-  // Login farmer
-  public function login($email, $password)
-  {
+  // Login farmer.
+  public function login($email, $password) {
     $this->db->query('SELECT * FROM farmers WHERE email = :email');
     $this->db->bind(':email', $email);
-
     $row = $this->db->single();
-    $hashed_password = $row->password;
-
-    if (password_verify($password, $hashed_password)) {
+    if ($row && password_verify($password, $row->password)) {
       return $row;
     } else {
       return false;
     }
   }
 
-  // Get farmer by id
-  public function getFarmerById($id)
-  {
+  // Get farmer by id.
+  public function getFarmerById($id) {
     $this->db->query('SELECT * FROM farmers WHERE id = :id');
     $this->db->bind(':id', $id);
-
-    $row = $this->db->single();
-
-    return $row;
+    return $this->db->single();
   }
 
-  // list stocks
-  public function getStocks()
-  {
-    $this->db->query('SELECT * FROM fproducts');
-
-    $results = $this->db->resultSet();
-
-    return $results;
-  }
-
-  // Get stock by id
-  public function getStockById($id)
-  {
-    $this->db->query('SELECT * FROM fproducts WHERE fproduct_id = :id');
-    $this->db->bind(':id', $id);
-
-    $row = $this->db->single();
-
-    return $row;
-  }
   
-  // Add stock
-  public function addStock($data)
-  {
-    $this->db->query('INSERT INTO fproducts (farmer_id, name, description, price, stock, exp_date, image) VALUES(:farmer_id, :name, :description, :price, :stock, :exp_date, :image)');
-    // Bind values
+  // --- Forum Functionality (for questions) ---
+  // Store a question asked by a farmer.
+  public function storeQuestion($data) {
+    // Inserts into the new forum_questions table.
+    $this->db->query('INSERT INTO forum_questions (farmer_id, question, created_at) VALUES (:farmer_id, :question, NOW())');
     $this->db->bind(':farmer_id', $_SESSION['user_id']);
-    $this->db->bind(':name', $data['name']);
-    $this->db->bind(':description', $data['description']);
-    $this->db->bind(':price', $data['price']);
-    $this->db->bind(':stock', $data['stock']);
-    $this->db->bind(':exp_date', $data['exp_date']);
-    $this->db->bind(':image', $data['image']);
-
-    // Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-  public function updateStock($id, $data) {
-    $this->db->query('UPDATE fproducts SET name = :name, description = :description, price = :price, stock = :stock, exp_date = :exp_date, image = :image WHERE fproduct_id = :id');
-    // Bind values
-    $this->db->bind(':id', $id);
-    $this->db->bind(':name', $data['name']);
-    $this->db->bind(':description', $data['description']);
-    $this->db->bind(':price', $data['price']);
-    $this->db->bind(':stock', $data['stock']);
-    $this->db->bind(':exp_date', $data['exp_date']);
-    $this->db->bind(':image', $data['image']);
-
-    // Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-        return false;
-    }
-  }
-
-  // Delete stock
-  public function deleteStock($id)
-  {
-    $this->db->query('DELETE FROM fproducts WHERE fproduct_id = :id');
-    // Bind values
-    $this->db->bind(':id', $id);
-
-    // Execute
-    if ($this->db->execute()) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
-
-  // Fetch all questions from the questions table
-  public function fetchAnswers($id) {
-    $this->db->query('SELECT answers FROM forum_questions WHERE q_id = :id');
-
-    // Bind the question ID to the query
-    $this->db->bind(':id', $id);
-
-    // Return the result set as an array of objects
-    return $this->db->resultSet();
-  }
-
-  // Store an answer in the answers table
-   public function storeQuestions($data) {
-    $this->db->query('INSERT INTO forum_questions ( q_id, farmer_id, questions) VALUES (:q_id, :farmer_id, :questions)');
-
-    // Bind parameters
-    $this->db->bind(':q_id', $data['q_id']);
-    $this->db->bind(':farmer_id', $data['farmer_id']);
-    $this->db->bind(':questions', $data['question']);
-
-    // Execute and return the result
+    $this->db->bind(':question', $data['question']);
     return $this->db->execute();
   }
 
-  
+  public function fetchQuestions() {
+    // This query joins the forum_questions table with the farmers table to get the farmer's name.
+    $this->db->query(
+      "SELECT fq.id, fq.question, fq.created_at, f.name AS farmer_name
+       FROM forum_questions fq
+       JOIN farmers f ON fq.farmer_id = f.id
+       ORDER BY fq.created_at DESC"
+    );
+    
+    // Return the result set as an array of objects.
+    $questions = $this->db->resultSet();
+    return $questions;
+  }
+
+   // list stocks
+   public function getStocks()
+   {
+     $this->db->query('SELECT * FROM fproducts');
+ 
+     $results = $this->db->resultSet();
+ 
+     return $results;
+   }
+ 
+   // Get stock by id
+   public function getStockById($id)
+   {
+     $this->db->query('SELECT * FROM fproducts WHERE fproduct_id = :id');
+     $this->db->bind(':id', $id);
+ 
+     $row = $this->db->single();
+ 
+     return $row;
+   }
+   
+   // Add stock
+   public function addStock($data)
+   {
+     $this->db->query('INSERT INTO fproducts (farmer_id, name, description, price, stock, exp_date, image) VALUES(:farmer_id, :name, :description, :price, :stock, :exp_date, :image)');
+     // Bind values
+     $this->db->bind(':farmer_id', $_SESSION['user_id']);
+     $this->db->bind(':name', $data['name']);
+     $this->db->bind(':description', $data['description']);
+     $this->db->bind(':price', $data['price']);
+     $this->db->bind(':stock', $data['stock']);
+     $this->db->bind(':exp_date', $data['exp_date']);
+     $this->db->bind(':image', $data['image']);
+ 
+     // Execute
+     if ($this->db->execute()) {
+       return true;
+     } else {
+       return false;
+     }
+   }
+ 
+   public function updateStock($id, $data) {
+     $this->db->query('UPDATE fproducts SET name = :name, description = :description, price = :price, stock = :stock, exp_date = :exp_date, image = :image WHERE fproduct_id = :id');
+     // Bind values
+     $this->db->bind(':id', $id);
+     $this->db->bind(':name', $data['name']);
+     $this->db->bind(':description', $data['description']);
+     $this->db->bind(':price', $data['price']);
+     $this->db->bind(':stock', $data['stock']);
+     $this->db->bind(':exp_date', $data['exp_date']);
+     $this->db->bind(':image', $data['image']);
+ 
+     // Execute
+     if ($this->db->execute()) {
+       return true;
+     } else {
+         return false;
+     }
+   }
+ 
+   // Delete stock
+   public function deleteStock($id)
+   {
+     $this->db->query('DELETE FROM fproducts WHERE fproduct_id = :id');
+     // Bind values
+     $this->db->bind(':id', $id);
+ 
+     // Execute
+     if ($this->db->execute()) {
+       return true;
+     } else {
+       return false;
+     }
+   }
 }
