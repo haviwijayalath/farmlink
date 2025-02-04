@@ -1,56 +1,391 @@
-.account-container {
+/* Main Content */
+.acc-main-content {
+  background-color: #ffffff;
+  border-radius: 20px;
+  padding: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+  margin-left: 200px;
+  margin-top: 140px;
+  margin-bottom: 20px;
+  width: 60%;
+}
+
+@media (max-width: 768px) {
+  .acc-main-content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Profile Details */
+.acc-profile-details {
   display: flex;
-  justify-content: center; /* Align container in the center */
-  padding: 20px;
-  margin: 40px;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.account-content {
+.acc-profile-details h2 {
+  font-size: 1.8rem;
+  margin-bottom: 20px;
+  color: #222;
+  text-align: center;
+}
+
+/* Profile Image */
+.acc-profile-image {
   display: flex;
-  align-items: center; /* Align items vertically in the center */
-  background-color: #f7f7f7;
-  padding: 20px;
-  border-radius: 8px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Add subtle shadow */
-  max-width: 800px; /* Limit max width for content */
-  width: 100%; /* Ensure content stretches full width */
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+  justify-content: center;
 }
 
-.profile-info {
-  flex: 1;
-  margin-left: 20px; /* Adds space between the image and text */
-}
-
-.profile-pic {
-  border-radius: 50%;
-  width: 150px;
+.acc-profile-image img {
+  width: 150px; /* Larger profile picture */
   height: 150px;
-  object-fit: cover; /* Ensure image scales nicely */
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #ddd;
 }
 
-h2 {
-  margin-bottom: 10px;
+@media (max-width: 768px) {
+  .acc-profile-image img {
+    width: 120px;
+    height: 120px;
+  }
+}
+
+.acc-image-actions {
+  display: flex;
+  flex-direction: row;
+  gap: 10px;
+}
+
+.acc-image-actions button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #007bff;
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  transition: background-color 0.3s;
+}
+
+.acc-image-actions button:hover {
+  background-color: #0056b3;
+}
+
+.acc-image-actions i {
+  font-size: 1.2rem; /* Icons size */
+}
+
+/* Profile Info */
+.acc-profile-info p {
+  margin: 20px 0;
+  font-size: 1rem;
+  color: #555;
+  text-align: center;
+}
+
+.acc-profile-info strong {
   color: #333;
 }
 
-.profile-info p {
-  margin: 8px 0;
-  font-size: 16px;
-  color: #555;
+/* Action Cards */
+.acc-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 
-.edit-btn {
+.acc-action-card {
+  background-color: #f9fafc;
+  border: 1px solid #e3e8ee;
+  border-radius: 10px;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.acc-action-card h3 {
+  font-size: 1.3rem;
+  margin-bottom: 10px;
+  color: #222;
+}
+
+.acc-action-card p {
+  font-size: 0.95rem;
+  color: #555;
+  margin-bottom: 15px;
+}
+
+.change-password-container {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  padding: 20px;
+  width: 90%;
+  max-width: 500px;
+}
+
+.change-password-overlay {
+  display: none; /* Hidden by default */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 999;
+}
+
+.change-password-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+}
+
+.form-group input {
+  width: 96%;
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.form-group i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 5px;
+  background-color: #0fd78e;
+  color: #fff;
+  cursor: pointer;
+  align-items: center;
+}
+
+button:hover {
+  background-color: #0f3e06;
+}   
+
+/* Change Password Button */
+.changepw {
   display: inline-block;
   padding: 10px 20px;
-  background-color: #60ba62;
-  color: white;
-  text-decoration: none;
-  border-radius: 5px;
-  margin-top: 20px;
+  background-color: #af2708; /* Primary button color */
+  color: #ffffff;
+  font-size: 1rem;
   font-weight: bold;
+  text-decoration: none;
+  text-align: center;
+  border-radius: 5px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.changepw:hover {
+  background-color: #43130c; /* Darker shade on hover */
+  transform: translateY(-2px); /* Slight lift on hover */
+}
+
+.changepw:active {
+  background-color: #8c4800; /* Even darker for active state */
+  transform: translateY(1px); /* Subtle press-down effect */
+}
+
+.changepw:focus {
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(180, 14, 2, 0.5); /* Focus ring for accessibility */
+}
+
+/* Centering the Submit Button */
+form button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 10px 15px;
+  background-color: #007bff;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  font-size: 1rem;
+  font-weight: bold;
+  text-align: center;
   transition: background-color 0.3s ease;
 }
 
-.edit-btn:hover {
-  background-color: #4da44e; /* Darken button color on hover */
+/* Form Styling */
+form .form-group {
+  position: relative; /* For positioning the eye icon */
+  margin-bottom: 20px;
+}
+
+form input[type="password"] {
+  width: 100%;
+  padding: 10px 40px 10px 10px; /* Add padding to make space for the icon */
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 1rem;
+  box-sizing: border-box;
+}
+
+form .fa-eye-slash {
+  position:absolute;
+  right: 10px;
+  top: 70%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #aaa;
+}
+
+/* Overlay styling */
+.edit-profile-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%; /* Full height for the blur effect */
+  background: rgba(0, 0, 0, 0.6);
+  backdrop-filter: blur(5px); /* Blur effect for the background */
+  display: none;
+  z-index: 999;
+}
+
+/* Modal container */
+.edit-profile-container {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 90%;
+  max-width: 400px; /* Limit maximum width */
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+  display: none;
+  z-index: 1000;
+}
+
+/* Form styling in modal */
+.edit-profile-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-size: 1.5rem;
+}
+
+.edit-profile-container .form-group {
+  margin-bottom: 15px;
+}
+
+.edit-profile-container .form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 14px;
+  color: #555;
+}
+
+.edit-profile-container .form-group input {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  box-sizing: border-box;
+}
+
+/* Profile image in the modal */
+.edit-profile-container .form-group img {
+  display: block;
+  margin: 0 auto 15px;
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #ddd;
+}
+
+/* Form buttons */
+.edit-profile-container .form-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.edit-profile-container .form-buttons .cancel-btn,
+.edit-profile-container .form-buttons .save-btn {
+  flex: 1;
+  padding: 10px;
+  font-size: 14px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.edit-profile-container .form-buttons .cancel-btn {
+  background: #ddd;
+  color: #333;
+}
+
+.edit-profile-container .form-buttons .save-btn {
+  background: #007bff;
+  color: #fff;
+}
+
+.edit-profile-container .form-buttons .save-btn:hover {
+  background: #0056b3;
+}
+
+.edit-profile-container .form-buttons .cancel-btn:hover {
+  background: #bbb;
+}
+
+/* Prevent scrolling when modal is open */
+body.modal-open {
+  overflow: hidden;
+}
+
+/* Add transition effects for modal appearance */
+.edit-profile-overlay,
+.edit-profile-container {
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.edit-profile-overlay.show,
+.edit-profile-container.show {
+  display: block;
+  opacity: 1;
+  visibility: visible;
+}
+
+.edit-profile-overlay.hidden,
+.edit-profile-container.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
