@@ -2,7 +2,7 @@
 <?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
 <?php
-$vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper", "Lettuce", "Potato", "Onion", "Garlic", "Cabbage",
+$vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper", "Lettuce", "Potato", "Onion", "Garlic",
 
 'Persimmon', 'Strawberry', 'Banana', 'Tomato', 'Pear', 'Durian', 'Blackberry', 'Lingonberry', 'Kiwi', 'Lychee', 'Pineapple', 'Fig', 'Gooseberry', 'Passionfruit', 'Plum', 'Orange', 'GreenApple', 'Raspberry', 'Watermelon', 'Lemon', 'Mango', 'Blueberry', 'Apple', 'Guava', 'Apricot', 'Melon', 'Tangerine', 'Pitahaya', 'Lime', 'Pomegranate', 'Dragonfruit', 'Grape', 'Morus', 'Feijoa', 'Avocado', 'Kiwifruit', 'Cranberry', 'Cherry', 'Peach', 'Jackfruit', 'Horned Melon', 'Hazelnut', 'Pomelo', 'Mangosteen', 'Pumpkin', 'Japanese Persimmon', 'Papaya', 'Annona', 'Ceylon Gooseberry'];
 ?>
@@ -20,12 +20,13 @@ $vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper"
 
     <div class="form-group">
       <label for="product_name">Product Name: <sup>*</sup></label>
-      <select name="product_name" id="product_name" class="form-control form-control-lg" required>
-      <option value="" disabled selected>Select a product...</option>
-      <?php foreach ($vegesNfruits as $item) : ?>
-      <option value="<?php echo $item; ?>"><?php echo $item; ?></option>
-      <?php endforeach; ?>
-      </select>
+      <!-- <input type="text" name="product_name" class="form-control form-control-lg" required> -->
+      <input type="text" name="product_name" class="form-control form-control-lg" id="item-input" list="item-list" required>
+      <datalist id="item-list">
+        <?php foreach ($vegesNfruits as $item) : ?>
+          <option value="<?php echo $item; ?>">
+        <?php endforeach; ?>
+      </datalist>
     </div>
 
     <!-- Include jQuery and Select2 -->
