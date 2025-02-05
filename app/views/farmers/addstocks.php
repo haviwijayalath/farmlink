@@ -1,6 +1,12 @@
 <?php require APPROOT . '/views/farmers/inc/header.php'; ?>
 <?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
+<?php
+$vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper", "Lettuce", "Potato", "Onion", "Garlic",
+
+'Persimmon', 'Strawberry', 'Banana', 'Tomato', 'Pear', 'Durian', 'Blackberry', 'Lingonberry', 'Kiwi', 'Lychee', 'Pineapple', 'Fig', 'Gooseberry', 'Passionfruit', 'Plum', 'Orange', 'GreenApple', 'Raspberry', 'Watermelon', 'Lemon', 'Mango', 'Blueberry', 'Apple', 'Guava', 'Apricot', 'Melon', 'Tangerine', 'Pitahaya', 'Lime', 'Pomegranate', 'Dragonfruit', 'Grape', 'Morus', 'Feijoa', 'Avocado', 'Kiwifruit', 'Cranberry', 'Cherry', 'Peach', 'Jackfruit', 'Horned Melon', 'Hazelnut', 'Pomelo', 'Mangosteen', 'Pumpkin', 'Japanese Persimmon', 'Papaya', 'Annona', 'Ceylon Gooseberry'];
+?>
+
 <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/farmers/addstocks.css?version=1">
 
 <br><br>
@@ -14,7 +20,13 @@
 
     <div class="form-group">
       <label for="product_name">Product Name: <sup>*</sup></label>
-      <input type="text" name="product_name" class="form-control form-control-lg" required>
+      <!-- <input type="text" name="product_name" class="form-control form-control-lg" required> -->
+      <input type="text" name="product_name" class="form-control form-control-lg" id="item-input" list="item-list" required>
+      <datalist id="item-list">
+        <?php foreach ($vegesNfruits as $item) : ?>
+          <option value="<?php echo $item; ?>">
+        <?php endforeach; ?>
+      </datalist>
     </div>
 
     <div class="form-group">
