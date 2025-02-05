@@ -6,7 +6,7 @@
 
 <div class="addr-container">
     <h2>Billing & Shipping</h2>
-    <form action="index.php?controller=AddressController&action=saveAddress" method="POST">
+    <form action="<?php echo URLROOT; ?>/orderControllers/saveAddress" method="POST" enctype="multipart/form-data">
         <label>Title *</label>
         <select name="title" required>
             <option value="Mr">Mr</option>
@@ -20,8 +20,11 @@
         <label>Last Name *</label>
         <input type="text" name="last_name" required>
 
+        <label>House number *</label>
+        <input type="text" name="number" placeholder="House number" required>
+
         <label>Street Address *</label>
-        <input type="text" name="street_address" placeholder="House number and street name" required>
+        <input type="text" name="street_address" placeholder="Street name" required>
 
         <label>City *</label>
         <select name="city" required>
@@ -35,7 +38,10 @@
         <input type="text" value="Sri Lanka" disabled>
 
         <label>Mobile Number *</label>
-        <input type="text" name="mobile1" required>
+        <input type="text" name="mobile" required>
+
+        <label>Email *</label>
+        <input type="email" name="email" placeholder="Enter your email" required>
 
         <button type="submit">Submit</button>
     </form>
