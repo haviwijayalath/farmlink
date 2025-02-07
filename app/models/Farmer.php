@@ -50,6 +50,57 @@ class Farmer
     }
   }
 
+  // Update farmer
+  public function updateProfile($data)
+  {
+    $this->db->query('UPDATE farmers SET name = :name, email = :email, phone = :phone, image = :image WHERE id = :id');
+    // Bind values
+    $this->db->bind(':id', $_SESSION['user_id']);
+    $this->db->bind(':name', $data['name']);
+    $this->db->bind(':email', $data['email']);
+    $this->db->bind(':phone', $data['phone']);
+    $this->db->bind(':image', $data['image']);
+
+    // Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Update password
+  // public function updatePassword($data)
+  // {
+  //   $this->db->query('UPDATE farmers SET password = :password WHERE id = :id');
+  //   // Bind values
+  //   $this->db->bind(':id', $_SESSION['user_id']);
+  //   $this->db->bind(':password', $data['password']);
+
+  //   // Execute
+  //   if ($this->db->execute()) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
+  // verify password
+  // public function verifyPassword($password)
+  // {
+  //   $this->db->query('SELECT * FROM farmers WHERE id = :id');
+  //   $this->db->bind(':id', $_SESSION['user_id']);
+
+  //   $row = $this->db->single();
+  //   $hashed_password = $row->password;
+
+  //   if (password_verify($password, $hashed_password)) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
+
   // Find farmer by email
   public function findFarmerByEmail($email)
   {
