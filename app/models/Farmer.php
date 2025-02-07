@@ -64,8 +64,8 @@ class Farmer {
   // Store a question asked by a farmer.
   public function storeQuestion($data) {
     // Inserts into the new forum_questions table.
-    $this->db->query('INSERT INTO forum_questions (farmer_id, question, created_at) VALUES (:farmer_id, :question, NOW())');
-    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+    $this->db->query('INSERT INTO forum_questions (consultant_id, questions, createdAt) VALUES (:consultant_id, :question, NOW())');
+    $this->db->bind(':consultant_id', $_SESSION['user_id']);
     $this->db->bind(':question', $data['question']);
     return $this->db->execute();
   }
@@ -73,10 +73,11 @@ class Farmer {
   public function fetchQuestions() {
     // This query joins the forum_questions table with the farmers table to get the farmer's name.
     $this->db->query(
-      "SELECT fq.id, fq.question, fq.created_at, f.name AS farmer_name
+      "SELECT fq.q_id, fq.questions, fq.createdAt, f.name AS farmer_name
        FROM forum_questions fq
-       JOIN farmers f ON fq.farmer_id = f.id
-       ORDER BY fq.created_at DESC"
+       LEFT JOIN farmers f ON fq.farmer_id = f.id
+       LEFT JOIN consultants c ON fq.consultant_id = c.id
+       ORDER BY fq.createdAt DESC"
     );
     
     // Return the result set as an array of objects.

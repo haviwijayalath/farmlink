@@ -46,7 +46,7 @@ class Forums extends Controller {
           if (empty($data['question_err'])) {
               if ($this->farmerModel->storeQuestion($data)) {
                   flash('forum_message', 'Question submitted successfully');
-                  redirect('forum/index');
+                  redirect('forums/index');
               } else {
                   die('Something went wrong.');
               }
@@ -54,7 +54,7 @@ class Forums extends Controller {
               $this->view('forum/index', $data);
           }
       } else {
-          redirect('forum/index');
+          redirect('forums/index');
       }
   }
   

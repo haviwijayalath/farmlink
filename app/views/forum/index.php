@@ -37,7 +37,7 @@
     <!-- Ask a Question Section (For Farmers) -->
     <section id="ask-question">
       <h2>Ask a Question</h2>
-      <form action="<?= URLROOT; ?>/forum/ask" method="POST">
+      <form action="<?php echo URLROOT; ?>/forums/ask/" method="POST">
         <div class="form-group">
           <label for="question">Your Question:</label>
           <textarea 
@@ -59,7 +59,7 @@
         <ul class="questions-list">
           <?php foreach($data['questions'] as $question): ?>
             <li class="question-item">
-              <p><strong>Q:</strong> <?= htmlspecialchars($question->question); ?></p>
+              <p><strong>Q:</strong> <?= htmlspecialchars($question->questions); ?></p>
               <!-- Link to view answers for this question -->
               <a href="<?= URLROOT; ?>/forum/index/<?= $question->id; ?>" class="btn btn-secondary">View Answers</a>
             </li>
