@@ -1,0 +1,60 @@
+.order-container {
+  padding: 20px;
+  margin-top: 60px;
+  margin-left: 250px;
+}
+
+.page-title {
+  text-align: center;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+.order-card {
+  background-color: #f9f9f9;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.order-card-header {
+  background-color: #3f51b5;
+  color: #fff;
+  padding: 16px;
+  text-align: center;
+}
+
+.order-card-body {
+  padding: 20px;
+}
+
+.details-table {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  width: 100%;
+}
+
+.row {
+  display: contents;
+}
+
+.cell {
+  padding: 15px;
+  background-color: #ffffff;
+  border: 1px solid #ddd;
+  text-align: center;
+}
+
+.cell.title {
+  font-weight: bold;
+  background-color: #f1f1f1;
+  text-align: left;
+}
+
+.cell img.order-image {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 8px;
+}

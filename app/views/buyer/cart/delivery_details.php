@@ -1,4 +1,4 @@
-<?php require APPROOT . '/views/inc/header.php'; ?>
+<?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/delivery_details.css">
 
@@ -43,18 +43,26 @@
     }
 
     function redirectToPayment() {
-        const selectedOption = document.querySelector('input[name="delivery"]:checked');
-        
-        // Check if "In-Store Pickup" is selected
-        if (selectedOption && selectedOption.value === "In-Store Pickup") {
-            console.log("correct");
-            // Redirect to payment.php if "In-Store Pickup" is selected
-            window.location.href = "<?= URLROOT ?>buyercontrollers/paymentDetails";
-            return false; // Prevent form submission to avoid refresh
-        }
-        // Submit the form for other options (if needed)
-        return true;
+    const selectedOption = document.querySelector('input[name="delivery"]:checked');
+
+    if (!selectedOption) {
+        alert("Please select a delivery option.");
+        return false;
     }
+
+    if (selectedOption.value === "Home Delivery") {
+        // Redirect to the address filling page
+        window.location.href = "<?= URLROOT ?>/orderControllers/address";
+        return false; // Prevent form submission to avoid refresh
+    } else if (selectedOption.value === "In-Store Pickup") {
+        // Redirect to payment details page
+        window.location.href = "<?= URLROOT ?>/buyercontrollers/paymentDetails";
+        return false;
+    }
+
+    return true; // Submit the form for other cases if needed
+}
+
 
 </script>
 

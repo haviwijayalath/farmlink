@@ -67,20 +67,27 @@ class Consultant {
     return $this->db->single();
   }
 
-  // --- Forum Functionality (for answers) ---
-  // Store an answer provided by a consultant.
-  public function storeAnswer($data) {
-    $this->db->query('INSERT INTO forum_answers (question_id, consultant_id, answer, created_at) VALUES (:question_id, :consultant_id, :answer, NOW())');
-    $this->db->bind(':question_id', $data['question_id']);
-    $this->db->bind(':consultant_id', $_SESSION['user_id']);
-    $this->db->bind(':answer', $data['answer']);
+  // Fetch all questions from the questions table
+  public function fetchQuestions() {
+    $this->db->query('SELECT q_id, farmer_id, questions FROM forum_questions');
+
+    // Return the result set as an array of objects
+    return $this->db->resultSet();
+  }
+
+  // Store an answer in the answers table
+   public function storeAnswer($data) {
+    $this->db->query('INSERT INTO forum_questions (consultant_id, q_id, answers) VALUES (:consultant_id, :q_id, :answers)');
+
+    // Bind parameters
+    $this->db->bind(':consultant_id', $data['consultant_id']);
+    $this->db->bind(':q_id', $data['q_id']);
+    $this->db->bind(':answers', $data['answer']);
+
+    // Execute and return the result
     return $this->db->execute();
   }
 
-  // Fetch all answers for a given question.
-  public function fetchAnswers($question_id) {
-    $this->db->query('SELECT * FROM forum_answers WHERE question_id = :question_id ORDER BY created_at ASC');
-    $this->db->bind(':question_id', $question_id);
-    return $this->db->resultSet();
-  }
+ 
+  
 }

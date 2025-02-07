@@ -37,6 +37,7 @@
             
             <!-- Delete Account Button -->
             <a href="<?= URLROOT ?>/dpaccounts/confirmdelete/<?= $data['id'] ?>" class="btn delete-btn" onclick="return confirmDelete();">Delete Account</a>
+            
         </div>
     </div>
 </div>

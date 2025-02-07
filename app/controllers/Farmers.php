@@ -91,44 +91,45 @@ class Farmers extends Controller {
     }
   }
 
-  public function index() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
-    }
-    $farmer = $this->farmerModel->getFarmerById($_SESSION['user_id']);
-    $data = [
-      'name' => $farmer->name,
-      'phone' => $farmer->phone,
-      'email' => $farmer->email,
-      'image' => $farmer->image
-    ];
-    $this->view('farmers/index', $data);
-  }
+    public function index() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
 
-  public function viewprofile() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
+      $farmer = $this->farmerModel->getFarmerbyId($_SESSION['user_id']);
+      $data = [
+        'name' => $farmer->name,
+        'phone' => $farmer->phone,
+        'email' => $farmer->email,
+        'image' => $farmer->image
+      ];
+      $this->view('farmers/index', $data);
     }
+
+    public function viewprofile() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
 
     $this->view('farmers/viewprofile');
   }
 
-  public function editprofile() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
+    public function editprofile() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
+      $this->view('farmers/editprofile');
     }
-    
-    $this->view('farmers/editprofile');
-  }
 
-  public function managestocks() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
+    public function managestocks() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
+      $data = $this->farmerModel->getStocks();
+      $this->view('farmers/managestocks', $data);
     }
-    
-    $data = $this->farmerModel->getStocks();
-    $this->view('farmers/managestocks', $data);
-  }
 
   public function addstocks() {
     if (!isLoggedIn()) {
@@ -216,28 +217,28 @@ class Farmers extends Controller {
         }
       }
 
-      // Make sure no other errors before uploading the picture
-      if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
-        // Add stock to the database
-        if ($this->farmerModel->addStock($data)) {
-          flash('stock_message', 'Stock Added');
-          redirect('farmers/managestocks');
+        // Make sure no other errors before uploading the picture
+        if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
+          // Add stock to the database
+          if ($this->farmerModel->addStock($data)) {
+            flash('stock_message', 'Stock Added');
+            redirect('farmers/managestocks');
+          } else {
+            die('Something went wrong');
+          }
         } else {
-          die('Something went wrong');
+          // Load view with errors
+          $this->view('farmers/register', $data);
         }
       } else {
-        // Load view with errors
-        $this->view('farmers/register', $data);
-      }
-    } else {
-      // Init data
-      $data = [
-        'name' => '',
-        'description' => '',
-        'price' => '',
-        'stock' => '',
-        'exp_date' => '',
-        'image' => '',
+        // Init data
+        $data = [
+          'name' => '',
+          'description' => '',
+          'price' => '',
+          'stock' => '',
+          'exp_date' => '',
+          'image' => '',
 
         'name_err' => '',
         'price_err' => '',
@@ -251,10 +252,10 @@ class Farmers extends Controller {
     }
   }
 
-  public function editstocks($id) {
-    if (!isLoggedIn()) {
-      redirect('users/login');
-    }
+    public function editstocks($id) {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
 
     // Check for POST
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -343,22 +344,22 @@ class Farmers extends Controller {
         $data['image'] = $this->farmerModel->getStockById($id)->image;
       }
 
-      // Make sure no other errors before uploading the picture
-      if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
-        // Add stock to the database
-        if ($this->farmerModel->updateStock($id, $data)) {
-          flash('stock_message', 'Stock Updated');
-          redirect('farmers/managestocks');
+        // Make sure no other errors before uploading the picture
+        if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
+          // Add stock to the database
+          if ($this->farmerModel->updateStock($id, $data)) {
+            flash('stock_message', 'Stock Updated');
+            redirect('farmers/managestocks');
+          } else {
+            die('Something went wrong');
+          }
         } else {
-          die('Something went wrong');
+          // Load view with errors
+          $this->view('farmers/register', $data);
         }
       } else {
-        // Load view with errors
-        $this->view('farmers/register', $data);
-      }
-    } else {
-      // Init data
-      $product = $this->farmerModel->getStockById($id);
+        // Init data
+        $product = $this->farmerModel->getStockById($id);
 
       if ($product->farmer_id != $_SESSION['user_id']) {
         redirect('farmers/managestocks');
@@ -383,10 +384,10 @@ class Farmers extends Controller {
     }
   }
 
-  public function deletestock($id) {
-    if (!isLoggedIn()) {
-      redirect('users/login');
-    }
+    public function deletestock($id) {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
 
     $product = $this->farmerModel->getStockById($id);
 
@@ -394,27 +395,109 @@ class Farmers extends Controller {
       redirect('farmers/managestocks');
     }
 
-    if ($this->farmerModel->deleteStock($id)) {
-      flash('stock_message', 'Stock Removed');
-      redirect('farmers/managestocks');
-    } else {
-      die('Something went wrong');
-    }
-  }
-  
-  public function manageorders() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
+      if ($this->farmerModel->deleteStock($id)) {
+        flash('stock_message', 'Stock Removed');
+        redirect('farmers/managestocks');
+      } else {
+        die('Something went wrong');
+      }
     }
     
-    $this->view('farmers/manageorders');
+    public function manageorders() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
+      $this->view('farmers/manageorders');
+    }
+
+    public function viewsales() {
+      if (!isLoggedIn()) {
+        redirect('users/login');
+      }
+      
+      $this->view('farmers/viewsales');
+    }
+
+
+    public function askQuestions() {
+      // Check for POST request
+      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+          // Sanitize POST data
+          $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+  
+          // Initialize data
+          $data = [
+              'farmer_id' => trim($_POST['farmer_id']),
+              'question' => trim($_POST['question']),
+              'question_err' => ''
+          ];
+  
+          // Validate `description`
+          if (empty($data['question'])) {
+              $data['question_err'] = 'Question is required';
+          }
+  
+          // Ensure no errors exist
+          if (empty($data['question_err'])) {
+              // All validations passed
+              if ($this->farmerModel->storeQuestion($data['farmer_id'], $data['question'])) {
+                  // Success, redirect or handle response
+                  flash('question_message', 'Question successfully submitted');
+                  redirect('farmers/index');
+              } else {
+                  // Error storing data
+                  flash('question_message', 'Error submitting question', 'alert alert-danger');
+                  $this->view('pages/forum', $data);
+              }
+          } else {
+              // Load the view with errors
+              $this->view('pages/forum', $data);
+          }
+      } else {
+          // Initialize empty data for GET request
+          $data = [
+              'farmer_id' => '',
+              'question' => '',
+              'question_err' => ''
+          ];
+  
+          // Load the form view
+          $this->view('pages/forum', $data);
+      }
   }
 
-  public function viewsales() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
+  public function getAnswers() {
+    // Retrieve data using the model
+    $answers = $this->consultantModel->fetchAnswers($q_id);
+
+    // Check if data exists
+    if ($answers) {
+        // Pass data to the view
+        $this->view('pages/forum', ['answers' => $answers]);
+    } else {
+        // If no data found, handle appropriately
+        flash('data_message', 'No answers found', 'alert alert-warning');
+        $this->view('pages/forum', ['answers' => []]);
     }
-    
-    $this->view('farmers/viewsales');
   }
+
+  public function getQuestions () {
+  
+    $questions = $this->farmerModel->fetchQuestions();
+    
+        // Check if data exists
+        if ($questions) {
+            // Send data to the view
+            $this->view('pages/forum', ['questions' => $questions]);
+        } else {
+            // If no data found, handle appropriately
+            flash('data_message', 'No questions found', 'alert alert-warning');
+            $this->view('pages/forum', ['questions' => []]);
+      }
+
+  }
+
+  
+  
 }
