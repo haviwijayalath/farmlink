@@ -14,7 +14,6 @@
                 <th>Drop-Off</th>
                 <th>Buyer</th>
                 <th></th>
-                <th></th>
             </tr>
         </thead>
         <tbody>
@@ -22,8 +21,8 @@
             <?php foreach ($data['orders'] as $index => $order): ?>
                 <tr>
                     <td>
-                        <a href="<?= URLROOT ?>/dpersons/getongoing/<?= htmlspecialchars($order->id) ?>" class="ongoing-idbtn">
-                            <?= htmlspecialchars($order->id) ?>
+                        <a href="<?= URLROOT ?>/dpersons/getongoing/<?= htmlspecialchars($order->orderID) ?>" class="ongoing-idbtn">
+                            <?= htmlspecialchars($order->orderID) ?>
                         </a>
                     </td>
                     <td><?= htmlspecialchars($order->pickup_address) ?></td>
@@ -50,10 +49,10 @@
     
     <div id="info" style="margin-top: 20px;">
     <p><strong>Distance:</strong> <span id="distance"></span></p>
-    <p><strong>Delivery Fee:</strong> <span id="fee"></span></p>
+    <p><strong>Delivery Fee:</strong> Rs.<?= htmlspecialchars($order->amount) ?></p>
     </div>
-<!-- Map container -->
-<div id="map" style="height: 500px; width: 100%; margin-bottom: 60px; margin-top: 60px;"></div>
+    <!-- Map container -->
+    <div id="map" style="height: 500px; width: 100%; margin-bottom: 60px; margin-top: 60px;"></div>
 
 </div>
 

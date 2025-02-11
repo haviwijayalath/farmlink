@@ -4,22 +4,25 @@
 
 <?php require APPROOT . '/views/inc/sidebars/d_person.php';?>
 
-<div class="container">
-    <div class="summary-card">
-        <h2>Order Completion Summary</h2>
-        
-        <div class="info-box">
-            <p><strong>Order ID:</strong> <?php echo htmlspecialchars($order_id ?? 'ORDXXX'); ?></p>
-            <p><strong>Amount Earned:</strong> $<?php echo number_format($amount_earned ?? 100.00, 2); ?></p>
-            <p><strong>Deductions:</strong> -$<?php echo number_format($deductions ?? 0.00, 2); ?></p>
-            <hr>
-            <p class="total"><strong>Updated Total Earnings:</strong> $<?php echo number_format($total_earnings ?? 600.75, 2); ?></p>
-        </div>
+<script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.getElementById("summaryModal").style.display = "block";
+        });
 
-        <div class="button-group">
-            <a href="<?php echo URLROOT; ?>/earnings" class="btn">View Earnings</a>
-            <a href="<?php echo URLROOT; ?>/dashboard" class="btn btn-secondary">Back to Dashboard</a>
-        </div>
+        function closeModal() {
+            document.getElementById("summaryModal").style.display = "none";
+            window.location.href = "delivery_dashboard.php"; // Redirect to dashboard
+        }
+</script>
+
+<div id="summaryModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal()">×</span>
+        <h2>Delivery Completed!</h2>
+        <div class="summary-box"><strong>Order ID:</strong> <?php echo $_SESSION['order_id']; ?></div>
+        <div class="summary-box"><strong>Earned:</strong> $<?php echo number_format($summary['amount'], 2); ?></div>
+        <div class="summary-box"><strong>Total Earnings:</strong> $<?php echo number_format($summary['totearnings'], 2); ?></div>
+        <button class="confirm-btn" onclick="closeModal()">OK</button>
     </div>
 </div>
 
