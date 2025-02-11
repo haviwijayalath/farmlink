@@ -75,7 +75,7 @@ class Buyer extends Database{
 
     public function getCartItems(){
         $this->db->query('
-            SELECT c.cart_id, c.quantity, p.name,  p.price 
+            SELECT c.cart_id, c.quantity, c.price, p.name,  p.price 
             FROM buyer_carts c
             JOIN fproducts p ON c.product_id = p.fproduct_id
             WHERE c.buyer_id = :buyer_id
@@ -86,14 +86,24 @@ class Buyer extends Database{
     }
 
     public function addCartItem($data){
+
+        $this->db->query('select price from fproducts where fproduct_id = :product_id');
+        $this->db->bind(':product_id',$data['product_id']);
+        $product = $this->db->single();
+
+        if (!$product) {
+            return false; // Product not found
+        }
+
         $this->db->query('
-            INSERT INTO buyer_carts (buyer_id,product_id,quantity) 
-            VALUES (:buyer_id,:product_id,:quantity)
+            INSERT INTO buyer_carts (buyer_id,product_id,quantity,price) 
+            VALUES (:buyer_id,:product_id,:quantity,:price)
         '); 
         
         $this->db->bind(':buyer_id',$data['buyer_id']);
         $this->db->bind(':product_id',$data['product_id']);
         $this->db->bind(':quantity',$data['quantity']);
+        $this->db->bind(':price',$product->price);
 
         print_r($data);
 
@@ -101,13 +111,30 @@ class Buyer extends Database{
     }
 
     public function updateCartItem($data){
+
+        // fetch the current unit price
+        $this->db->query('
+            select price from fproducts where fproduct_id = (select product_id from buyer_carts where cart_id = :cart_id)
+        ');
+        $this->db->bind(':cart_id',$data['cart_id']);
+        $product = $this->db->single();
+
+        if (!$product) {
+            return false; // Product not found
+        }
+
+        // recalculate the price
+        $newPrice = $product->price * $data['quantity'];
+
         $this->db->query('
             UPDATE buyer_carts 
-            SET quantity = :quantity 
+            SET quantity = :quantity ,price = :price
             WHERE cart_id = :cart_id
         ');
+
         $this->db->bind(':cart_id', $data['cart_id']);
         $this->db->bind(':quantity', $data['quantity']);
+        $this->db->bind(':price', $newPrice);
         return $this->db->execute();
     }
 
