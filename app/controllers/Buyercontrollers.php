@@ -269,7 +269,7 @@ class Buyercontrollers extends Controller {
                 'buyer_id' => $_SESSION['user_id'],
                 'buyer_id' => $_SESSION['user_id'],
                 'product_id' => $_POST['product_id'],
-                'quantity' => $_POST['quantity']
+                'quantity' => $_POST['quantity'],
             ];
 
             if(empty($data['product_id'])){

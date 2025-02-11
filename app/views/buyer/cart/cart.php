@@ -10,7 +10,7 @@
         <thead>
             <tr>
                 <th>Product</th>
-                <th>Price</th>
+                <th>Unit Price</th>
                 <th>Qty (Kg)</th>
                 <th>Subtotal</th>
                 <th>Action</th>
