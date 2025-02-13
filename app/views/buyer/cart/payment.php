@@ -9,7 +9,6 @@
         <h2>CART TOTAL</h2>
         <div class="item">
             <div class="lable">SUB TOTAL</div> 
-            <div class="lable">SUB TOTAL</div> 
             <div class="value">Rs.1750</div>
         </div>
         <div class="divider"></div>
@@ -25,23 +24,7 @@
     </div>
 
     <div class="payment-option">
-        <h2>Payment Options</h2>
-        <div class="payment-method">
-            <input checked="" id="card" name="payment" type="radio" value="card"/>
-            <label for="card">
-                Credit/Debit card
-            </label>
-            <img alt="Visa logo" height="20" width="20" src="<?= URLROOT ?>/public/images/1.jpg"/>
-            <img alt="American Express logo" height="20" width="20" src="<?= URLROOT ?>/public/images/2.jpg"/>
-            <img alt="Maestro logo" height="20" width="20" src="<?= URLROOT ?>/public/images/3.jpg"/>
-        </div>
-        <span class="payment-method-info">
-        <span class="payment-method-info">
-            Pay with your Visa, American Express or Mastercard.
-        </span>
-
-
-
+        
         <div class="payment-details">
         <input placeholder="Card holder name" type="text"/>
             <input placeholder="Card number" type="text"/>
