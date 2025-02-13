@@ -242,7 +242,6 @@ class Buyercontrollers extends Controller {
 
         // get the cart items from database
         $cartItems = $this->buyerModel->getCartItems(); 
-        $cartItems = $this->buyerModel->getCartItems(); 
         $total = 0;
 
         foreach ($cartItems as $item) {
@@ -335,6 +334,14 @@ class Buyercontrollers extends Controller {
             redirect('users/login');
           }
 
+        // check cart is empty
+        $cartItems = $this->buyerModel->getCartItems();
+
+        if(empty($cartItems)){
+            flash('Error', 'Your cart is empty. Please add products before proceeding to delivery options.');
+            redirect('Buyercontrollers/cartDetails');
+        }
+
         $this->view('buyer/cart/delivery_details');
     }
 
@@ -358,7 +365,7 @@ class Buyercontrollers extends Controller {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
-
+          
         $this->view('buyer/cart/buyerOrders');
     }
 
@@ -446,6 +453,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function payhereProcess(){
+
         $amount = 3000;
         $merchant_id = "1229272";
         $merchant_secret = "Mjg0OTYwNzA0MjU4NDUzNDYyODMxOTIzMzMzNDczNzY5MzI1NzM3" ;
