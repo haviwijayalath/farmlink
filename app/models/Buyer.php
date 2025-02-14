@@ -79,6 +79,8 @@ class Buyer extends Database{
             FROM buyer_carts c
             JOIN fproducts p ON c.product_id = p.fproduct_id
             WHERE c.buyer_id = :buyer_id
+            order by c.cart_id desc
+            limit 1
         ');
 
         $this->db->bind(':buyer_id', $_SESSION['user_id']);
@@ -86,25 +88,50 @@ class Buyer extends Database{
     }
 
     public function addCartItem($data){
-
+ 
         $this->db->query('select price from fproducts where fproduct_id = :product_id');
         $this->db->bind(':product_id',$data['product_id']);
+
         $product = $this->db->single();
 
         if (!$product) {
             return false; // Product not found
         }
 
+        // cheack buyer already has an item in the cart
         $this->db->query('
-            INSERT INTO buyer_carts (buyer_id,product_id,quantity,price) 
-            VALUES (:buyer_id,:product_id,:quantity,:price)
-        '); 
-        
-        $this->db->bind(':buyer_id',$data['buyer_id']);
-        $this->db->bind(':product_id',$data['product_id']);
-        $this->db->bind(':quantity',$data['quantity']);
-        $this->db->bind(':price',$product->price);
+            select cart_id from buyer_carts where buyer_id = :buyer_id
+        ');
 
+        $this->db->bind(':buyer_id' , $data['buyer_id']);
+        $existingCartItem = $this->db->single();
+
+        if($existingCartItem){
+            // If an item exists, update it instead of adding a new one
+            $this->db->query('
+            UPDATE buyer_carts 
+            SET product_id = :product_id, quantity = :quantity, price = :price 
+            WHERE buyer_id = :buyer_id
+            ');
+
+            $this->db->bind(':product_id', $data['product_id']);
+            $this->db->bind(':quantity', $data['quantity']);
+            $this->db->bind(':buyer_id', $data['buyer_id']);
+            $this->db->bind(':price', $product->price);
+
+        } else {
+            // If no item exists, insert a new one
+        $this->db->query('
+            INSERT INTO buyer_carts (buyer_id, product_id, quantity, price) 
+            VALUES (:buyer_id, :product_id, :quantity, :price)
+            ');
+
+            $this->db->bind(':buyer_id', $data['buyer_id']);
+            $this->db->bind(':product_id', $data['product_id']);
+            $this->db->bind(':quantity', $data['quantity']);
+            $this->db->bind(':price',$product->price);
+        }
+        
         print_r($data);
 
         return $this->db->execute();

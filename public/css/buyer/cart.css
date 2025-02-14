@@ -157,3 +157,22 @@ button:hover {
     background-color: #5a6268;
 }
 
+.empty-cart-message{
+    text-align: center;
+    color: red;
+    font-size: 30px;
+    font-weight: bold;
+    padding: 20px;
+    background-color: #f8d7da; /* Light red background for contrast */
+    border: 1px solid #f5c6cb; /* Add a subtle border */
+    border-radius: 5px; /* Rounded corners for a modern look */
+    margin: 10px 0;
+}
+
+.btn-delivery:disabled {
+    background-color: gray;
+    cursor: not-allowed;
+    opacity: 0.7;
+    width: 100%;
+}
+
