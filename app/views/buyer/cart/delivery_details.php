@@ -4,10 +4,9 @@
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
-
 <div class="delivery-options">
     <h2>Delivery options</h2>
-    <form method="POST" action="" onsubmit="return redirectToPayment()">
+    <form method="POST" action="<?= URLROOT ?>/buyercontrollers/deliveryOptions" onsubmit="return redirectToPayment()">
         <div class="option" id="homeDelivery" onclick="selectOption('homeDelivery')">
             <input type="radio" name="delivery" value="Home Delivery" id="homeDeliveryRadio" hidden>
             <label for="homeDeliveryRadio">
@@ -25,12 +24,16 @@
             </label>
         </div>
 
-        
-        <button type="submit" onclick="redirectToPayment()">Confirm Selection</button>
+        <button type="submit">Confirm Selection</button>
     </form>
 </div>
 
 <script>
+    // Get cart ID from URL (assuming it's in the query string)
+    const urlParams = new URLSearchParams(window.location.search);
+    const cartId = urlParams.get('cart_id');
+
+    // Function to select delivery options
     function selectOption(optionId) {
         // Deselect all options
         document.querySelectorAll('.option').forEach(opt => {
@@ -42,28 +45,32 @@
         document.getElementById(optionId + 'Radio').checked = true;
     }
 
+    // Redirect user based on selected delivery option and cartId
     function redirectToPayment() {
-    const selectedOption = document.querySelector('input[name="delivery"]:checked');
+        const selectedOption = document.querySelector('input[name="delivery"]:checked');
 
-    if (!selectedOption) {
-        alert("Please select a delivery option.");
-        return false;
+        if (!selectedOption) {
+            alert("Please select a delivery option.");
+            return false; // Prevent form submission if no option is selected
+        }
+
+        if (!cartId) {
+            alert("Cart ID not found.");
+            return false; // Prevent form submission if cartId is not available
+        }
+
+        if (selectedOption.value === "Home Delivery") {
+            // Redirect to the address filling page with cart ID
+            window.location.href = "<?= URLROOT ?>/orderControllers/address/" + cartId;
+            return false; // Prevent form submission since we're redirecting
+        } else if (selectedOption.value === "In-Store Pickup") {
+            // Redirect to payment details page with cart ID
+            window.location.href = "<?= URLROOT ?>/buyercontrollers/paymentDetails?cart_id=" + cartId;
+            return false; // Prevent form submission since we're redirecting
+        }
+
+        return true; // In case everything is fine and form should be submitted
     }
-
-    if (selectedOption.value === "Home Delivery") {
-        // Redirect to the address filling page
-        window.location.href = "<?= URLROOT ?>/orderControllers/address";
-        return false; // Prevent form submission to avoid refresh
-    } else if (selectedOption.value === "In-Store Pickup") {
-        // Redirect to payment details page
-        window.location.href = "<?= URLROOT ?>/buyercontrollers/paymentDetails";
-        return false;
-    }
-
-    return true; // Submit the form for other cases if needed
-}
-
-
 </script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
