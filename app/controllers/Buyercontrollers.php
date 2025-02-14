@@ -249,6 +249,7 @@ class Buyercontrollers extends Controller {
         }
     
         $data = [
+            'cartID' => $cartItems[0]->cart_id,
             'cartItems' => $cartItems,
             'total' => $total
         ];
@@ -332,26 +333,46 @@ class Buyercontrollers extends Controller {
     public function deliveryOptions(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
-          }
-
-        // check cart is empty
+        }
+    
+        // Check if 'cart_id' is passed in the URL
+        if (isset($_GET['cart_id'])) {
+            $cart_id = $_GET['cart_id']; // Retrieve the cart ID from the URL
+            $data = [
+                'cartID' => $cart_id
+            ];
+        } else {
+            // Handle the case where cart_id is not provided
+            echo "Cart ID is missing!";
+            return;
+        }
+    
+        // check if cart is empty
         $cartItems = $this->buyerModel->getCartItems();
-
-        if(empty($cartItems)){
+    
+        if (empty($cartItems)) {
             flash('Error', 'Your cart is empty. Please add products before proceeding to delivery options.');
             redirect('Buyercontrollers/cartDetails');
         }
-
-        $this->view('buyer/cart/delivery_details');
+    
+        // Pass data to the view
+        $this->view('buyer/cart/delivery_details', $data);
     }
-
-    public function paymentDetails(){
+    
+    
+    public function paymentDetails() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
-          }
-
-        $this->view('buyer/cart/payment');
+        }
+    
+        // Get cart_id from GET request
+        $cart_id = $_GET['cart_id'] ?? null;  // Optional: handle missing cart_id gracefully
+    
+        // Pass the cart_id to the view
+        $data = ['cartID' => $cart_id];
+        $this->view('buyer/cart/payment', $data);
     }
+    
 
     public function orderConfirm(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {

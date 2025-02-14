@@ -8,14 +8,21 @@ class orderControllers extends Controller{
     $this->orderModel = $this->model('Order');
   }
 
-  public function address(){
-      $this->view('buyer/cart/address');
-  }
+  public function address($cart_id) {
+    $data = [
+        'cartID' => $cart_id
+    ];
+    $this->view('buyer/cart/address', $data);
+}
+
 
   public function saveAddress()
     {
         // Check if form is submitted
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+            $cartId = isset($_POST['cart_id']) ? $_POST['cart_id'] : null;
+
             // Sanitize and get POST data
             $data = [
                 'title' => trim($_POST['title']),
@@ -27,7 +34,8 @@ class orderControllers extends Controller{
                 'country' => 'Sri Lanka',  // Fixed country
                 'mobile' => trim($_POST['mobile']),
                 'email' => trim($_POST['email']),
-                'buyer_id' => $_SESSION['user_id']  // Assuming the buyer is logged in, and buyer ID is in the session
+                'buyer_id' => $_SESSION['user_id'],  // Assuming the buyer is logged in, and buyer ID is in the session
+                'cartId' => $cartId
             ];
 
             // Validate data
