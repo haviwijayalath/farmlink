@@ -10,7 +10,7 @@
     <?php if (isset($data['orders']) && !empty($data['orders'])) : ?>
         <div class="order-card">
             <div class="order-card-header">
-                <h3>Order ID: <?= htmlspecialchars($data['orders']->id); ?></h3>
+                <h3>Order ID: <?= htmlspecialchars($data['orders']->orderID); ?></h3>
             </div>
             <div class="order-card-body">
                 
@@ -29,7 +29,7 @@
                         <div class="cell"><?= htmlspecialchars($data['orders']->fphone); ?></div>
 
                         <div class="cell title">Buyer Contact</div>
-                        <div class="cell"><?= htmlspecialchars($data['orders']->phone); ?></div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->mobileNo); ?></div>
                     </div>
 
                     <div class="row">
@@ -37,7 +37,7 @@
                         <div class="cell"><?= htmlspecialchars($data['orders']->name); ?></div>
 
                         <div class="cell title">Quantity</div>
-                        <div class="cell"><?= htmlspecialchars($data['orders']->capacity); ?></div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->quantity); ?></div>
                     </div>
 
                     <div class="row">
@@ -45,7 +45,15 @@
                         <div class="cell"><?= htmlspecialchars($data['orders']->pickup_address); ?></div>
 
                         <div class="cell title">Drop-off Address</div>
-                        <div class="cell"><?= htmlspecialchars($data['orders']->address); ?></div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->dropoff_address); ?></div>
+                    </div>
+
+                    <div class="row">
+                        <div class="cell title">Delivery Fee</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->amount); ?></div>
+
+                        <div class="cell title">Ordered Date</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->orderDate); ?></div>
                     </div>
                 </div>
                 

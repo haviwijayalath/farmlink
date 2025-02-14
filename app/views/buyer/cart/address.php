@@ -43,6 +43,8 @@
         <label>Email *</label>
         <input type="email" name="email" placeholder="Enter your email" required>
 
+        <input type="hidden" name="cart_id" value="<?= htmlspecialchars($data['cartID']); ?>">
+
         <button type="submit">Submit</button>
     </form>
 </div>

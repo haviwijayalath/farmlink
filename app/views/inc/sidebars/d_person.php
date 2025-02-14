@@ -10,7 +10,7 @@
     <li><a href="<?= URLROOT ?>/dpersons/ongoingDeliveries"><i class="fa-solid fa-truck-fast"></i><span>Ongoing</span></a></li>
     <li><a href="<?= URLROOT ?>/dpaccounts/revenueCheck"><i class="fa-solid fa-hand-holding-dollar"></i><span>Revenue</span></a></li>
     <!-- Logout -->
-    <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
+    <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fa-solid fa-right-from-bracket fa-rotate-180"></i><span>Logout</span></a></li>
   </ul>
 
   
