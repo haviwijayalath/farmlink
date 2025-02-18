@@ -227,5 +227,22 @@ class Buyer extends Database{
 
         return $this->db->execute();
     }
+
+    public function getSuccessOrderDetails(){
+        $buyer_id = $_SESSION['user_id'];
+
+        $this->db->query('
+            select product,quantity,dropAddress,orderDate,status from order_success
+            where buyerID = :id
+        ');
+
+        $this->db->bind(':id', $buyer_id);
+
+        // Fetch all results
+        $results = $this->db->resultSet();
+
+        // Return the results (empty array if no orders exist)
+        return $results ?: [];
+    }
            
 }

@@ -386,8 +386,14 @@ class Buyercontrollers extends Controller {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
+        
+        $orderItem = $this->buyerModel->getSuccessOrderDetails();
+
+        $data = [
+            'orderItems' => $orderItem
+        ];
           
-        $this->view('buyer/cart/buyerOrders');
+        $this->view('buyer/cart/buyerOrders', $data);
     }
 
     public function wishlistDetails(){
@@ -398,6 +404,7 @@ class Buyercontrollers extends Controller {
           // get the wislist item from database
           $wishlistItem = $this->buyerModel->getWishlistItem();
 
+          //pass the data to view
           $data = [
             'wishlistItems' => $wishlistItem
           ];
