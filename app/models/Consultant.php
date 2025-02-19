@@ -75,19 +75,35 @@ class Consultant {
     return $this->db->resultSet();
   }
 
-  // Store an answer in the answers table
-   public function storeAnswer($data) {
-    $this->db->query('INSERT INTO forum_questions (consultant_id, q_id, answers) VALUES (:consultant_id, :q_id, :answers)');
+public function storeAnswer($data) {
+  $this->db->query("
+    INSERT INTO forum_answers (q_id, consultant_id, answer, description, createdAt)
+    VALUES (:q_id, :consultant_id, :answer, :description, NOW())
+  ");
+  // Assume the logged-in consultant's ID is stored in $_SESSION['user_id']
+  $this->db->bind(':q_id', $data['question_id']);
+  $this->db->bind(':consultant_id', $_SESSION['user_id']);
+  $this->db->bind(':answer', $data['answer']);
+  // Description is optional (if none, you can pass an empty string)
+  $this->db->bind(':description', $data['description'] ?? '');
+  return $this->db->execute();
+}
 
-    // Bind parameters
-    $this->db->bind(':consultant_id', $data['consultant_id']);
-    $this->db->bind(':q_id', $data['q_id']);
-    $this->db->bind(':answers', $data['answer']);
-
-    // Execute and return the result
-    return $this->db->execute();
-  }
-
- 
+// File: app/models/Consultant.php
+public function fetchAnswers($question_id) {
+  $this->db->query("
+    SELECT 
+      fa.ans_id, 
+      fa.answer, 
+      fa.createdAt, 
+      c.name AS consultant_name
+    FROM forum_answers fa
+    JOIN consultants c ON fa.consultant_id = c.id
+    WHERE fa.q_id = :q_id
+    ORDER BY fa.createdAt ASC
+  ");
+  $this->db->bind(':q_id', $question_id);
+  return $this->db->resultSet();
+}
   
 }
