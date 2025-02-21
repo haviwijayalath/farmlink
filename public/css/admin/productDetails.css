@@ -1,0 +1,80 @@
+.content {
+  max-width: 900px;
+  margin: 20px auto;
+  padding: 20px;
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  margin-top: 80px;
+  margin-bottom: 50px;
+  margin-left: 400px;
+}
+
+h2, h3 {
+  text-align: center;
+  color: #333;
+  margin-bottom: 15px;
+}
+
+/* Table Styling */
+.details-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+.details-table th, .details-table td {
+  padding: 10px;
+  border: 1px solid #ddd;
+  text-align: left;
+}
+
+.details-table th {
+  background: #f8f8f8;
+  font-weight: bold;
+}
+
+/* Product Summary */
+.product-summary {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 20px;
+  border-bottom: 2px solid #ddd;
+}
+
+.product-summary img {
+  width: 200px;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Farmer Information */
+.farmer-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  padding: 15px;
+  background: #f9f9f9;
+  border-radius: 8px;
+  margin-top: 15px;
+}
+
+.farmer-info img {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 2px solid #ddd;
+}
+
+/* Responsive Design */
+@media screen and (max-width: 768px) {
+  .product-summary, .farmer-info {
+      flex-direction: column;
+      text-align: center;
+  }
+
+  .product-summary img, .farmer-info img {
+      margin: 0 auto 10px auto;
+  }
+}
