@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 <?php require APPROOT . '/views/inc/buyerHeader.php'; ?>
 
-<link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/account.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/account.css">
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
@@ -28,14 +28,34 @@
             <div class="action-buttons">
                 <a href="<?php echo URLROOT?>/Buyercontrollers/editprofile" class="btn edit-btn">Edit Profile</a>
 
-                <a href="<?= URLROOT ?>/Buyercontrollers/deactivate" class="btn delete-btn" onclick="confirmDelete();">Delete Account</a>
+                <!-- trigger the confirmation popup -->
+                <a href="javascript:void(0)" class="btn delete-btn" onclick="showDeactivatePopup();">Delete Account</a>
             </div>
         </div>
-    </div>
+    </div> 
+
+    <!-- confirmation popup -->
+     <div id="deactivate-popup" class="popup-container" style="display: none;">
+        <div class="popup-content">
+            <h2>Are you sure you want to deactivate your account?</h2>
+            <p>This action cannot be undone.</p>
+
+            <div class="button-container">
+                <a href="<?= URLROOT ?>/Buyercontrollers/deactivate" id="confirm-deactivate" class="remove-button" >Yes, Deactivate</a>
+                <button onclick="closeDeactivatePopup()" class="cancel-button">Cancel</button>
+            </div>
+        </div>
+     </div>
 
     <script>
-        function confirmDelete(){
-            return confirm("Are you sure you want to delete your account?")
+         // Show the confirmation popup
+        function showDeactivatePopup() {
+            document.getElementById('deactivate-popup').style.display = 'flex';
+        }
+
+        // Close the confirmation popup
+        function closeDeactivatePopup() {
+            document.getElementById('deactivate-popup').style.display = 'none';
         }
     </script>
 
