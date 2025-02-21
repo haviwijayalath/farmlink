@@ -45,12 +45,12 @@
                     </td>
                 </tr>
             <?php endforeach; ?>
-            
+
             <?php else: ?>
                     <tr>
                         <td colspan="5" style="text-align: center;">No Wishlist item found.</td>
                     </tr>
-                <?php endif; ?>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>
