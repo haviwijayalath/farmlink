@@ -77,15 +77,13 @@ class Consultant {
 
 public function storeAnswer($data) {
   $this->db->query("
-    INSERT INTO forum_answers (q_id, consultant_id, answer, description, createdAt)
-    VALUES (:q_id, :consultant_id, :answer, :description, NOW())
+    INSERT INTO forum_answers (q_id, consultant_id, answer, createdAt)
+    VALUES (:q_id, :consultant_id, :answer, NOW())
   ");
   // Assume the logged-in consultant's ID is stored in $_SESSION['user_id']
   $this->db->bind(':q_id', $data['question_id']);
   $this->db->bind(':consultant_id', $_SESSION['user_id']);
   $this->db->bind(':answer', $data['answer']);
-  // Description is optional (if none, you can pass an empty string)
-  $this->db->bind(':description', $data['description'] ?? '');
   return $this->db->execute();
 }
 
@@ -95,7 +93,8 @@ public function fetchAnswers($question_id) {
     SELECT 
       fa.ans_id, 
       fa.answer, 
-      fa.createdAt, 
+      fa.createdAt,
+      fa.consultant_id, 
       c.name AS consultant_name
     FROM forum_answers fa
     JOIN consultants c ON fa.consultant_id = c.id
@@ -105,5 +104,41 @@ public function fetchAnswers($question_id) {
   $this->db->bind(':q_id', $question_id);
   return $this->db->resultSet();
 }
+
+public function getAnswerById($ans_id) {
+  $this->db->query("SELECT * FROM forum_answers WHERE ans_id = :ans_id AND consultant_id = :consultant_id");
+  $this->db->bind(':ans_id', $ans_id);
+  $this->db->bind(':consultant_id', $_SESSION['user_id']);
+  return $this->db->single();
+}
+
+
+// Update an existing answer
+public function updateAnswer($ans_id, $data) {
+  $this->db->query("
+    UPDATE forum_answers 
+    SET answer = :answer
+    WHERE ans_id = :ans_id
+      AND consultant_id = :consultant_id
+  ");
+  $this->db->bind(':answer', $data['answer']);
+  $this->db->bind(':ans_id', $ans_id);
+  // Ensure only the consultant who submitted can update
+  $this->db->bind(':consultant_id', $_SESSION['user_id']);
+  return $this->db->execute();
+}
+
+// Delete an answer
+public function deleteAnswer($ans_id) {
+  $this->db->query("
+    DELETE FROM forum_answers 
+    WHERE ans_id = :ans_id
+      AND consultant_id = :consultant_id
+  ");
+  $this->db->bind(':ans_id', $ans_id);
+  $this->db->bind(':consultant_id', $_SESSION['user_id']);
+  return $this->db->execute();
+}
+
   
 }
