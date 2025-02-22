@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Chat Forum</title>
-  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/pages.css">
+  <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/forum.css">
   <style>
     .container { max-width: 900px; margin: 0 auto; padding: 20px; }
     .btn { padding: 8px 12px; text-decoration: none; border-radius: 4px; display: inline-block; margin-right: 5px; }
-    .btn-primary { background-color: #007BFF; color: #fff; }
-    .btn-secondary { background-color: #6c757d; color: #fff; }
+    .btn-primary { background-color:rgb(26, 161, 57); color: #fff; }
+    .btn-secondary { background-color:rgb(26, 161, 57); color: #fff; }
     .btn-danger { background-color: #dc3545; color: #fff; }
     .form-group { margin-bottom: 15px; }
     textarea { width: 100%; padding: 8px; }
