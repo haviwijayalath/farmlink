@@ -9,76 +9,72 @@ class Users extends Controller {
     }
 
     public function login() {
-        //check for POST
+        // Check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-        //process form
-        // Sanitize POST data
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+            // Process form
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-        // Init data
-        $data = [
-            'email' => trim($_POST['email']),
-            'password' => trim($_POST['password']),
-            'email_err' => '',
-            'password_err' => ''
-        ];
+            // Init data
+            $data = [
+                'email' => trim($_POST['email']),
+                'password' => trim($_POST['password']),
+                'email_err' => '',
+                'password_err' => ''
+            ];
 
-        //Validate email
-        if(empty($data['email'])) {
-            $data['email_err'] = 'Please enter your Email';
-        }
+            // Validate email
+            if(empty($data['email'])) {
+                $data['email_err'] = 'Please enter your Email';
+            }
 
-        // Validate password
-        if (empty($data['password'])) {
-            $data['password_err'] = 'Please enter a password';
-        }
+            // Validate password
+            if (empty($data['password'])) {
+                $data['password_err'] = 'Please enter a password';
+            }
 
-        //Check for user
-        if($this->userModel->findUserByEmail($data['email'])){
-            //User found
-        } else {
-            //User not found
-            $data['email_err'] = 'No user found';
-        }
-
-        //Make sure errors are empty
-        if(empty($data['email_err']) && empty($data['password_err'])){
-            //Validated
-            //Check and set logged in user
-            $loggedInUser = $this->userModel->login($data['email'], $data['password']);
-
-            if($loggedInUser){
-                //Create session
-               $this->createUserSession($loggedInUser);
+            // Check for user
+            if($this->userModel->findUserByEmail($data['email'])){
+                // User found
             } else {
-                $data['password_err'] = 'Password incorrect';
+                // User not found
+                $data['email_err'] = 'No user found';
+            }
 
+            // Make sure errors are empty
+            if(empty($data['email_err']) && empty($data['password_err'])){
+                // Validated; check and set logged in user
+                $loggedInUser = $this->userModel->login($data['email'], $data['password']);
+
+                if($loggedInUser){
+                    // Create session (which now also sets user_type)
+                    $this->createUserSession($loggedInUser);
+                } else {
+                    $data['password_err'] = 'Password incorrect';
+                    $this->view('users/login', $data);
+                }
+
+            } else {
+                // Load the view with errors
                 $this->view('users/login', $data);
             }
 
         } else {
-            //Load the view with errors
+            // Init data
+            $data =[
+                'email' => '',
+                'password' => '',
+                'email_err' => '',
+                'password_err' => ''
+            ];
+
+            // Load view
             $this->view('users/login', $data);
-        }
-
-      }else{
-        //init data
-        $data =[
-            'email' => '',
-            'password' => '',
-            'email_err' => '',
-            'password_err' => ''
-        ];
-
-        //load view
-        $this->view('users/login', $data);
         }
     }
 
-
     public function createUserSession($user){
-
-        //Redirect based on role
+        // Redirect based on role, and set extra session variable user_type
         switch ($user->role) {
             case 'admins':
                 $_SESSION['admin_logged_in'] = true;
@@ -86,16 +82,18 @@ class Users extends Controller {
                 $_SESSION['admin_name'] = $user->name;
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_role'] = 'admin';
+                $_SESSION['user_type'] = 'admin'; // Added
                 redirect('admins/dashboard');
                 break;
 
             case 'farmers':
-                // initializing the session variables
+                // Initializing the session variables for a farmer
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['user_name'] = $user->name;
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_image'] = $user->image;
                 $_SESSION['user_role'] = 'farmer'; 
+                $_SESSION['user_type'] = 'farmer'; // Added
                 redirect('farmers/index');
                 break;
 
@@ -105,11 +103,12 @@ class Users extends Controller {
                 $_SESSION['user_role'] = 'buyer';
                 $_SESSION['user_phone'] = $user->phone;
                 $_SESSION['user_email'] = $user->email;
-                $_SESSION['user_password'] = $user->password;
+                $_SESSION['user_type'] = 'buyer'; // Added
                 redirect('Buyercontrollers/browseproducts');
                 break;
 
             case 'suppliers':
+                $_SESSION['user_type'] = 'supplier'; // Added
                 redirect('pages/index');
                 break;
 
@@ -126,16 +125,18 @@ class Users extends Controller {
                 $_SESSION['user_vehicle_id'] = $user->vehicle_id;
                 $_SESSION['user_delivery_area'] = $user->area;
                 $_SESSION['user_password'] = $user->password;
+                $_SESSION['user_type'] = 'delivery_person'; // Added
                 redirect('dpersons/neworder');
                 break;
 
             case 'consultants':
-                    // initializing the session variables
+                // Initializing the session variables for a consultant
                 $_SESSION['user_id'] = $user->id;
                 $_SESSION['user_name'] = $user->name;
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_image'] = $user->image;
                 $_SESSION['user_role'] = $user->role; 
+                $_SESSION['user_type'] = 'consultant'; // Added
                 redirect('consultants/viewprofile');
                 break;
 
@@ -146,7 +147,6 @@ class Users extends Controller {
     }
 
     public function logout(){
-
         unset($_SESSION['user_id']);
         unset($_SESSION['user_name']);
         unset($_SESSION['user_phone']);
@@ -156,8 +156,9 @@ class Users extends Controller {
         unset($_SESSION['user_city']);
         unset($_SESSION['user_email']);
         unset($_SESSION['user_password']);
+        unset($_SESSION['user_type']); // Added
 
-        //Logout based on role
+        // Logout based on role
         switch ($_SESSION['user_role']) {
             case 'admins':
                 session_destroy();
@@ -193,8 +194,7 @@ class Users extends Controller {
                 session_destroy();
                 redirect('users/login');
                 break;
-          } 
-      
+        } 
     }
 
 }
