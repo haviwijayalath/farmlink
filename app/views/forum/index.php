@@ -8,8 +8,8 @@
   <style>
     .container { max-width: 900px; margin: 0 auto; padding: 20px; }
     .btn { padding: 8px 12px; text-decoration: none; border-radius: 4px; display: inline-block; margin-right: 5px; }
-    .btn-primary { background-color:rgb(26, 161, 57); color: #fff; }
-    .btn-secondary { background-color:rgb(26, 161, 57); color: #fff; }
+    .btn-primary { background-color: rgb(26, 161, 57); color: #fff; }
+    .btn-secondary { background-color: rgb(26, 161, 57); color: #fff; }
     .btn-danger { background-color: #dc3545; color: #fff; }
     .form-group { margin-bottom: 15px; }
     textarea { width: 100%; padding: 8px; }
@@ -34,18 +34,20 @@
       </div>
     <?php endif; ?>
 
-    <!-- Ask a Question Section (For Farmers) -->
-    <section id="ask-question">
-      <h2>Ask a Question</h2>
-      <form action="<?= URLROOT; ?>/forums/ask" method="POST">
-        <div class="form-group">
-          <label for="question">Your Question:</label>
-          <textarea name="question" id="question" rows="5" placeholder="Type your question here..." class="<?= !empty($data['question_err']) ? 'is-invalid' : ''; ?>"><?= htmlspecialchars($data['question'] ?? ''); ?></textarea>
-          <span class="invalid-feedback"><?= $data['question_err'] ?? ''; ?></span>
-        </div>
-        <button type="submit" class="btn btn-primary">Submit Question</button>
-      </form>
-    </section>
+    <!-- Ask a Question Section (ONLY for Farmers) -->
+    <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'farmer'): ?>
+      <section id="ask-question">
+        <h2>Ask a Question</h2>
+        <form action="<?= URLROOT; ?>/forums/ask" method="POST">
+          <div class="form-group">
+            <label for="question">Your Question:</label>
+            <textarea name="question" id="question" rows="5" placeholder="Type your question here..." class="<?= !empty($data['question_err']) ? 'is-invalid' : ''; ?>"><?= htmlspecialchars($data['question'] ?? ''); ?></textarea>
+            <span class="invalid-feedback"><?= $data['question_err'] ?? ''; ?></span>
+          </div>
+          <button type="submit" class="btn btn-primary">Submit Question</button>
+        </form>
+      </section>
+    <?php endif; ?>
 
     <!-- Questions and Answers List Section -->
     <section id="questions-list">
@@ -75,7 +77,7 @@
                     <?php else: ?>
                       <p><strong>A:</strong> <?= htmlspecialchars($answer->answer); ?></p>
                       <small>Answered by: <?= htmlspecialchars($answer->consultant_name); ?> on <?= date("M d, Y", strtotime($answer->createdAt)); ?></small>
-                      <?php if(isset($_SESSION['user_id']) && $_SESSION['user_id'] == $answer->consultant_id): ?>
+                      <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'consultant' && isset($_SESSION['user_id']) && $_SESSION['user_id'] == $answer->consultant_id): ?>
                         <br>
                         <a href="<?= URLROOT; ?>/forums/editAnswer/<?= $answer->ans_id; ?>" class="btn btn-secondary">Edit</a>
                         <a href="<?= URLROOT; ?>/forums/deleteAnswer/<?= $answer->ans_id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this answer?');">Delete</a>
@@ -88,21 +90,23 @@
               <?php endif; ?>
             </div>
             
-            <!-- Answer Submission Form for this Question -->
-            <?php 
-              // Hide the new answer form if an answer is being edited for this question.
-              if (!isset($data['edit_answer']) || (isset($data['edit_answer']) && $data['edit_answer']->q_id != $question->id)) : 
-            ?>
-              <div class="answer-form" style="margin-top: 15px;">
-                <h4>Your Answer:</h4>
-                <form action="<?= URLROOT; ?>/forums/answer" method="POST">
-                  <input type="hidden" name="question_id" value="<?= $question->id; ?>">
-                  <div class="form-group">
-                    <textarea name="answer" rows="3" placeholder="Type your answer here..."><?= htmlspecialchars($data['answer'] ?? ''); ?></textarea>
-                  </div>
-                  <button type="submit" class="btn btn-primary">Submit Answer</button>
-                </form>
-              </div>
+            <!-- Answer Submission Form for this Question (ONLY for Consultants) -->
+            <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'consultant'): ?>
+              <?php 
+                // Hide the new answer form if an answer is currently being edited for this question.
+                if (!isset($data['edit_answer']) || (isset($data['edit_answer']) && $data['edit_answer']->q_id != $question->id)) : 
+              ?>
+                <div class="answer-form" style="margin-top: 15px;">
+                  <h4>Your Answer:</h4>
+                  <form action="<?= URLROOT; ?>/forums/answer" method="POST">
+                    <input type="hidden" name="question_id" value="<?= $question->id; ?>">
+                    <div class="form-group">
+                      <textarea name="answer" rows="3" placeholder="Type your answer here..."><?= htmlspecialchars($data['answer'] ?? ''); ?></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit Answer</button>
+                  </form>
+                </div>
+              <?php endif; ?>
             <?php endif; ?>
           </div>
         <?php endforeach; ?>
