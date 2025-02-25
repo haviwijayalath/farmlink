@@ -79,6 +79,7 @@ class Farmer {
         fq.q_id AS id, 
         fq.questions AS question, 
         fq.createdAt, 
+        fq.farmer_id,
         f.name AS farmer_name
       FROM forum_questions fq
       LEFT JOIN farmers f ON fq.farmer_id = f.id
@@ -86,6 +87,29 @@ class Farmer {
     ");
     return $this->db->resultSet();
   }
+
+  // Fetch a single question by ID
+  public function getQuestionById($q_id) {
+    $this->db->query("SELECT q_id AS id, farmer_id, questions AS question, createdAt FROM forum_questions WHERE q_id = :q_id");
+    $this->db->bind(':q_id', $q_id);
+    return $this->db->single();
+}
+
+
+// Update a question (only updates the question text)
+public function updateQuestion($q_id, $data) {
+  $this->db->query("UPDATE forum_questions SET questions = :question WHERE q_id = :q_id");
+  $this->db->bind(':question', $data['question']);
+  $this->db->bind(':q_id', $q_id);
+  return $this->db->execute();
+}
+
+// Delete a question
+public function deleteQuestion($q_id) {
+  $this->db->query("DELETE FROM forum_questions WHERE q_id = :q_id");
+  $this->db->bind(':q_id', $q_id);
+  return $this->db->execute();
+}
 
    // list stocks
    public function getStocks()

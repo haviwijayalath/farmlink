@@ -146,5 +146,79 @@ class Forums extends Controller {
           die('Something went wrong.');
         }
       }
+
+      // Show inline edit form for a question (only for the farmer who asked it)
+public function editQuestion($q_id) {
+  // Ensure only a logged-in farmer can edit
+  if(!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'farmer'){
+      redirect('forums/index');
   }
+  $question = $this->farmerModel->getQuestionById($q_id);
+  if(!$question || $question->farmer_id != $_SESSION['user_id']){
+      flash('forum_message', 'Unauthorized access', 'alert alert-danger');
+      redirect('forums/index');
+  }
+  // Fetch all questions with their answers
+  $questions = $this->farmerModel->fetchQuestions();
+  foreach ($questions as $q) {
+       $q->answers = $this->consultantModel->fetchAnswers($q->id);
+  }
+  $data = [
+       'questions' => $questions,
+       'edit_question' => $question
+  ];
+  $this->view('forum/index', $data);
+}
+
+// Process the update of a question
+public function updateQuestion($q_id) {
+  if($_SERVER['REQUEST_METHOD'] == 'POST'){
+       $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+       $data = [
+            'question' => trim($_POST['question']),
+            'question_err' => ''
+       ];
+       if(empty($data['question'])){
+            $data['question_err'] = 'Please enter a question';
+       }
+       if(empty($data['question_err'])){
+           if($this->farmerModel->updateQuestion($q_id, $data)){
+               flash('forum_message', 'Question updated successfully');
+               redirect('forums/index');
+           } else {
+               die('Something went wrong');
+           }
+       } else {
+           $question = $this->farmerModel->getQuestionById($q_id);
+           $questions = $this->farmerModel->fetchQuestions();
+           foreach($questions as $q){
+              $q->answers = $this->consultantModel->fetchAnswers($q->id);
+           }
+           $data['edit_question'] = $question;
+           $data['questions'] = $questions;
+           $this->view('forum/index', $data);
+       }
+  } else {
+       redirect('forums/index');
+  }
+}
+
+// Delete a question (only allowed for the farmer who asked it)
+public function deleteQuestion($q_id) {
+  if(!isset($_SESSION['user_type']) || $_SESSION['user_type'] !== 'farmer'){
+       redirect('forums/index');
+  }
+  $question = $this->farmerModel->getQuestionById($q_id);
+  if(!$question || $question->farmer_id != $_SESSION['user_id']){
+       redirect('forums/index');
+  }
+  if($this->farmerModel->deleteQuestion($q_id)){
+       flash('forum_message', 'Question deleted successfully');
+       redirect('forums/index');
+  } else {
+       die('Something went wrong');
+  }
+}
+
+}
   

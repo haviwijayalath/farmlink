@@ -38,14 +38,19 @@
     <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'farmer'): ?>
       <section id="ask-question">
         <h2>Ask a Question</h2>
-        <form action="<?= URLROOT; ?>/forums/ask" method="POST">
-          <div class="form-group">
-            <label for="question">Your Question:</label>
-            <textarea name="question" id="question" rows="5" placeholder="Type your question here..." class="<?= !empty($data['question_err']) ? 'is-invalid' : ''; ?>"><?= htmlspecialchars($data['question'] ?? ''); ?></textarea>
-            <span class="invalid-feedback"><?= $data['question_err'] ?? ''; ?></span>
-          </div>
-          <button type="submit" class="btn btn-primary">Submit Question</button>
-        </form>
+        <?php
+          // If editing a question, hide the ask form.
+          if(!isset($data['edit_question'])):
+        ?>
+          <form action="<?= URLROOT; ?>/forums/ask" method="POST">
+            <div class="form-group">
+              <label for="question">Your Question:</label>
+              <textarea name="question" id="question" rows="5" placeholder="Type your question here..." class="<?= !empty($data['question_err']) ? 'is-invalid' : ''; ?>"><?= htmlspecialchars($data['question'] ?? ''); ?></textarea>
+              <span class="invalid-feedback"><?= $data['question_err'] ?? ''; ?></span>
+            </div>
+            <button type="submit" class="btn btn-primary">Submit Question</button>
+          </form>
+        <?php endif; ?>
       </section>
     <?php endif; ?>
 
@@ -55,9 +60,29 @@
       <?php if(!empty($data['questions'])): ?>
         <?php foreach($data['questions'] as $question): ?>
           <div class="question-item">
-            <p><strong>Q:</strong> <?= htmlspecialchars($question->question); ?></p>
-            <small>Asked by: <?= htmlspecialchars($question->farmer_name); ?> on <?= date("M d, Y", strtotime($question->createdAt)); ?></small>
-            
+            <?php if(isset($data['edit_question']) && $data['edit_question']->id == $question->id): ?>
+              <!-- Inline Edit Form for the Question -->
+              <form action="<?= URLROOT; ?>/forums/updateQuestion/<?= $question->id; ?>" method="POST">
+                <div class="form-group">
+                  <label for="edit_question_<?= $question->id; ?>">Edit Question:</label>
+                  <textarea name="question" id="edit_question_<?= $question->id; ?>" rows="5" class="<?= !empty($data['question_err']) ? 'is-invalid' : ''; ?>"><?= htmlspecialchars($data['edit_question']->question); ?></textarea>
+                  <span class="invalid-feedback"><?= $data['question_err'] ?? ''; ?></span>
+                </div>
+                <button type="submit" class="btn btn-primary">Update Question</button>
+                <a href="<?= URLROOT; ?>/forums/index" class="btn btn-secondary">Cancel</a>
+              </form>
+            <?php else: ?>
+              <p><strong>Q:</strong> <?= htmlspecialchars($question->question); ?></p>
+              <small>
+                Asked by: <?= htmlspecialchars($question->farmer_name); ?> on <?= date("M d, Y", strtotime($question->createdAt)); ?>
+              </small>
+              <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'farmer' && isset($question->farmer_id) && $_SESSION['user_id'] == $question->farmer_id): ?>
+                <br>
+                <a href="<?= URLROOT; ?>/forums/editQuestion/<?= $question->id; ?>" class="btn btn-secondary">Edit Question</a>
+                <a href="<?= URLROOT; ?>/forums/deleteQuestion/<?= $question->id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this question?');">Delete Question</a>
+              <?php endif; ?>
+            <?php endif; ?>
+
             <!-- Answers List for this Question -->
             <div class="answers-list">
               <?php if(!empty($question->answers)): ?>
@@ -76,7 +101,9 @@
                       </form>
                     <?php else: ?>
                       <p><strong>A:</strong> <?= htmlspecialchars($answer->answer); ?></p>
-                      <small>Answered by: <?= htmlspecialchars($answer->consultant_name); ?> on <?= date("M d, Y", strtotime($answer->createdAt)); ?></small>
+                      <small>
+                        Answered by: <?= htmlspecialchars($answer->consultant_name); ?> on <?= date("M d, Y", strtotime($answer->createdAt)); ?>
+                      </small>
                       <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'consultant' && isset($_SESSION['user_id']) && $_SESSION['user_id'] == $answer->consultant_id): ?>
                         <br>
                         <a href="<?= URLROOT; ?>/forums/editAnswer/<?= $answer->ans_id; ?>" class="btn btn-secondary">Edit</a>
@@ -93,7 +120,7 @@
             <!-- Answer Submission Form for this Question (ONLY for Consultants) -->
             <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'consultant'): ?>
               <?php 
-                // Hide the new answer form if an answer is currently being edited for this question.
+                // Hide the new answer form if an answer is being edited for this question.
                 if (!isset($data['edit_answer']) || (isset($data['edit_answer']) && $data['edit_answer']->q_id != $question->id)) : 
               ?>
                 <div class="answer-form" style="margin-top: 15px;">
