@@ -377,6 +377,7 @@
 
         $data = [
           'name' => trim($_POST['product_name']),
+          'type' => trim($_POST['category']),
           'description' => trim($_POST['description']),
           'price' => trim($_POST['price']),
           'stock' => trim($_POST['quantity']),
@@ -384,6 +385,7 @@
           'image' => isset($_POST['image']) ? $_POST['image'] : '',
 
           'name_err' => '',
+          'type_err' => '',
           'price_err' => '',
           'stock_err' => '',
           'exp_date_err' => '',
@@ -393,6 +395,11 @@
         // Validate Name
         if (empty($data['name'])) {
           $data['name_err'] = 'Please enter name';
+        }
+
+        // Validate Type
+        if (empty($data['type'])) {
+          $data['type_err'] = 'Please select a type';
         }
 
         // Validate Price
@@ -451,7 +458,7 @@
         }
 
         // Make sure no other errors before uploading the picture
-        if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
+        if (empty($data['name_err']) && empty($data['type_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
           // Add stock to the database
           if ($this->farmerModel->addStock($data)) {
             flash('stock_message', 'Stock Added');
@@ -467,6 +474,7 @@
         // Init data
         $data = [
           'name' => '',
+          'type' => '',
           'description' => '',
           'price' => '',
           'stock' => '',
@@ -474,6 +482,7 @@
           'image' => '',
 
           'name_err' => '',
+          'type_err' => '',
           'price_err' => '',
           'stock_err' => '',
           'exp_date_err' => '',
@@ -498,6 +507,7 @@
 
         $data = [
           'name' => trim($_POST['product_name']),
+          'type' => trim($_POST['category']),
           'description' => trim($_POST['description']),
           'price' => trim($_POST['price']),
           'stock' => trim($_POST['quantity']),
@@ -505,6 +515,7 @@
           'image' => isset($_POST['image']) ? $_POST['image'] : '',
 
           'name_err' => '',
+          'type_err' => '',
           'price_err' => '',
           'stock_err' => '',
           'exp_date_err' => '',
@@ -514,6 +525,11 @@
         // Validate Name
         if (empty($data['name'])) {
           $data['name_err'] = 'Please enter name';
+        }
+
+        // Validate Type
+        if (empty($data['type'])) {
+          $data['type_err'] = 'Please select a type';
         }
 
         // Validate Price
@@ -578,7 +594,7 @@
         }
 
         // Make sure no other errors before uploading the picture
-        if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
+        if (empty($data['name_err']) && empty($data['type_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
           // Add stock to the database
           if ($this->farmerModel->updateStock($id, $data)) {
             flash('stock_message', 'Stock Updated');
@@ -601,6 +617,7 @@
         $data = [
           'id' => $id,
           'product_name' => $product->name,
+          'category' => $product->type,
           'description' => $product->description,
           'price' => $product->price,
           'quantity' => $product->stock,
