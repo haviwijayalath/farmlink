@@ -169,10 +169,11 @@ class Farmer
   // Add stock
   public function addStock($data)
   {
-    $this->db->query('INSERT INTO fproducts (farmer_id, name, description, price, stock, exp_date, image) VALUES(:farmer_id, :name, :description, :price, :stock, :exp_date, :image)');
+    $this->db->query('INSERT INTO fproducts (farmer_id, name, type, description, price, stock, exp_date, image) VALUES(:farmer_id, :name, :type, :description, :price, :stock, :exp_date, :image)');
     // Bind values
     $this->db->bind(':farmer_id', $_SESSION['user_id']);
     $this->db->bind(':name', $data['name']);
+    $this->db->bind(':type', $data['type']);
     $this->db->bind(':description', $data['description']);
     $this->db->bind(':price', $data['price']);
     $this->db->bind(':stock', $data['stock']);
