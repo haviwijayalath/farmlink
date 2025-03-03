@@ -20,14 +20,27 @@ $vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper"
 
     <div class="form-group">
       <label for="product_name">Product Name: <sup>*</sup></label>
-      <!-- <input type="text" name="product_name" class="form-control form-control-lg" required> -->
-      <input type="text" name="product_name" class="form-control form-control-lg" id="item-input" list="item-list" required>
-      <datalist id="item-list">
-        <?php foreach ($vegesNfruits as $item) : ?>
-          <option value="<?php echo $item; ?>">
-        <?php endforeach; ?>
-      </datalist>
+      <select name="product_name" id="product_name" class="form-control form-control-lg" required>
+      <option value="" disabled selected>Select a product...</option>
+      <?php foreach ($vegesNfruits as $item) : ?>
+      <option value="<?php echo $item; ?>"><?php echo $item; ?></option>
+      <?php endforeach; ?>
+      </select>
     </div>
+
+    <!-- Include jQuery and Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+      $('#product_name').select2({
+        placeholder: "Search for a product...",
+        allowClear: true
+      });
+      });
+    </script>
 
     <div class="form-group">
       <label for="quantity">Quantity: <sup>*</sup></label>
@@ -68,13 +81,6 @@ $vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper"
 
 <br><br>
 
-<script>
-  function previewImage(event) {
-    const imagePreview = document.getElementById('output');
-    imagePreview.src = URL.createObjectURL(event.target.files[0]);
-    imagePreview.style.display = 'block';
-    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
-  }
-</script>
+
 
 <?php require APPROOT . '/views/farmers/inc/footer.php'; ?>
