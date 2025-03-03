@@ -4,10 +4,11 @@
 .container {
     max-width: 800px;
     margin: 0 auto;
+    margin-left: 250px;
     padding: 20px;
     font-family: Arial, sans-serif;
     line-height: 1.6;
-    background-color: #f9f9f9;
+    background-color: #ffffff;
   }
   
   /* Headings */

@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Chat Forum</title>
   <link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/forum.css">
+  <!-- Include FontAwesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p1OJGvfV7OMRo7Lu/SaBfGqWlj5bD5R3cgj8S/rwQvwoPojA5VZxRXB8fKpAzZQW+5v5wM0zTeC+L8d9PDQx3w==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <style>
     .container { max-width: 900px; margin: 0 auto; padding: 20px; }
     .btn { padding: 8px 12px; text-decoration: none; border-radius: 4px; display: inline-block; margin-right: 5px; }
@@ -38,10 +40,7 @@
     <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'farmer'): ?>
       <section id="ask-question">
         <h2>Ask a Question</h2>
-        <?php
-          // If editing a question, hide the ask form.
-          if(!isset($data['edit_question'])):
-        ?>
+        <?php if(!isset($data['edit_question'])): ?>
           <form action="<?= URLROOT; ?>/forums/ask" method="POST">
             <div class="form-group">
               <label for="question">Your Question:</label>
@@ -73,13 +72,11 @@
               </form>
             <?php else: ?>
               <p><strong>Q:</strong> <?= htmlspecialchars($question->question); ?></p>
-              <small>
-                Asked by: <?= htmlspecialchars($question->farmer_name); ?> on <?= date("M d, Y", strtotime($question->createdAt)); ?>
-              </small>
+              <small>Asked by: <?= htmlspecialchars($question->farmer_name); ?> on <?= date("M d, Y", strtotime($question->createdAt)); ?></small>
               <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'farmer' && isset($question->farmer_id) && $_SESSION['user_id'] == $question->farmer_id): ?>
                 <br>
-                <a href="<?= URLROOT; ?>/forums/editQuestion/<?= $question->id; ?>" class="btn btn-secondary">Edit Question</a>
-                <a href="<?= URLROOT; ?>/forums/deleteQuestion/<?= $question->id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this question?');">Delete Question</a>
+                <a href="<?= URLROOT; ?>/forums/editQuestion/<?= $question->id; ?>" class="btn btn-secondary"><i class="fas fa-edit"></i></a>
+                <a href="<?= URLROOT; ?>/forums/deleteQuestion/<?= $question->id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this question?');"><i class="fas fa-trash-alt"></i></a>
               <?php endif; ?>
             <?php endif; ?>
 
@@ -101,13 +98,11 @@
                       </form>
                     <?php else: ?>
                       <p><strong>A:</strong> <?= htmlspecialchars($answer->answer); ?></p>
-                      <small>
-                        Answered by: <?= htmlspecialchars($answer->consultant_name); ?> on <?= date("M d, Y", strtotime($answer->createdAt)); ?>
-                      </small>
+                      <small>Answered by: <?= htmlspecialchars($answer->consultant_name); ?> on <?= date("M d, Y", strtotime($answer->createdAt)); ?></small>
                       <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'consultant' && isset($_SESSION['user_id']) && $_SESSION['user_id'] == $answer->consultant_id): ?>
                         <br>
-                        <a href="<?= URLROOT; ?>/forums/editAnswer/<?= $answer->ans_id; ?>" class="btn btn-secondary">Edit</a>
-                        <a href="<?= URLROOT; ?>/forums/deleteAnswer/<?= $answer->ans_id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this answer?');">Delete</a>
+                        <a href="<?= URLROOT; ?>/forums/editAnswer/<?= $answer->ans_id; ?>" class="btn btn-secondary"><i class="fas fa-edit"></i></a>
+                        <a href="<?= URLROOT; ?>/forums/deleteAnswer/<?= $answer->ans_id; ?>" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this answer?');"><i class="fas fa-trash-alt"></i></a>
                       <?php endif; ?>
                     <?php endif; ?>
                   </div>
@@ -119,10 +114,7 @@
             
             <!-- Answer Submission Form for this Question (ONLY for Consultants) -->
             <?php if(isset($_SESSION['user_type']) && $_SESSION['user_type'] === 'consultant'): ?>
-              <?php 
-                // Hide the new answer form if an answer is being edited for this question.
-                if (!isset($data['edit_answer']) || (isset($data['edit_answer']) && $data['edit_answer']->q_id != $question->id)) : 
-              ?>
+              <?php if(!isset($data['edit_answer']) || (isset($data['edit_answer']) && $data['edit_answer']->q_id != $question->id)) : ?>
                 <div class="answer-form" style="margin-top: 15px;">
                   <h4>Your Answer:</h4>
                   <form action="<?= URLROOT; ?>/forums/answer" method="POST">
@@ -140,7 +132,7 @@
       <?php else: ?>
         <p>No questions available.</p>
       <?php endif; ?>
-    </section>
-  </div>
+        </section>
+    </div>
 </body>
 </html>

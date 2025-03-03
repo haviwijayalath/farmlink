@@ -112,32 +112,148 @@ class Consultants extends Controller {
     $this->view('consultant/index', $data);
   }
 
-  public function viewprofile() {
+  public function viewprofile($id = null) {
     if (!isLoggedIn()) {
-      redirect('users/login');
+        redirect('users/login');
     }
 
-    $consultant = $this->consultantModel->getConsultantbyId($_SESSION['user_id']);
+    // If no ID is provided, default to the logged-in consultant
+    if ($id === null) {
+        $id = $_SESSION['user_id'];
+    }
+    
+    $consultant = $this->consultantModel->getConsultantById($id);
 
     if ($consultant) { // Check if consultant data is found
       $data = [
           'name' => $consultant->name,
-          'specialization' => $consultant->specialization, // Add specialization
-          'experience' => $consultant->experience,       // Add experience
+          'specialization' => $consultant->specialization,
+          'experience' => $consultant->experience,
           'phone' => $consultant->phone,
           'email' => $consultant->email,
           'image' => $consultant->image
       ];
-
-    $this->view('consultant/viewprofile', $data);
+      
+      $this->view('consultant/viewprofile', $data);
+    } else {
+      flash('profile_error', 'Consultant not found', 'alert alert-danger');
+      redirect('farmers/bookconsultant');
     }
-  }
+}
+
 
   public function editprofile() {
     if (!isLoggedIn()) {
-      redirect('users/login');
+        redirect('users/login');
     }
     
-    $this->view('consultant/editprofile');
-  }
+    // Process POST
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Sanitize POST data
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        
+        // Build data array using the consultant's session id
+        $data = [
+            'id' => $_SESSION['user_id'],
+            'name' => trim($_POST['name']),
+            'email' => trim($_POST['email']),
+            'specialization' => trim($_POST['specialization']),
+            'experience' => trim($_POST['experience']),
+            'address' => trim($_POST['address']),
+            'current_password' => isset($_POST['current_password']) ? trim($_POST['current_password']) : '',
+            'new_password' => trim($_POST['new_password']),
+            'confirm_password' => trim($_POST['confirm_password']),
+            'password' => '',  // This will be set later
+            'image' => '',     // To be handled below
+            'name_err' => '',
+            'email_err' => '',
+            'password_err' => '',
+            'image_err' => ''
+        ];
+        
+        // Basic validations
+        if(empty($data['name'])) {
+            $data['name_err'] = 'Please enter your name';
+        }
+        if(empty($data['email'])) {
+            $data['email_err'] = 'Please enter your email';
+        }
+        if(!empty($data['new_password']) && ($data['new_password'] !== $data['confirm_password'])) {
+            $data['password_err'] = 'New password and confirm password do not match';
+        }
+        
+        // Handle image upload if a new image is provided
+        if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+            $target_dir = APPROOT . '/../public/uploads/consultants/';
+            // Create directory if it doesn't exist
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+            $filename = time() . '_' . basename($_FILES['image']['name']);
+            $target_file = $target_dir . $filename;
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+            $file_type = $_FILES['image']['type'];
+            
+            if (!in_array($file_type, $allowed_types)) {
+                $data['image_err'] = 'Invalid file type. Only JPG, PNG, and GIF files are allowed.';
+            } else {
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                    $data['image'] = $filename;
+                } else {
+                    $data['image_err'] = 'Error uploading image. Please try again.';
+                }
+            }
+        } else {
+            // If no new image is uploaded, retain the old image
+            $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+            $data['image'] = $consultant->image;
+        }
+        
+        // Get current consultant data for password checking
+        $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+        
+        // Process password update if new password provided
+        if (!empty($data['new_password'])) {
+            if (password_verify($data['current_password'], $consultant->password)) {
+                $data['password'] = password_hash($data['new_password'], PASSWORD_DEFAULT);
+            } else {
+                $data['password_err'] = 'Current password is incorrect';
+            }
+        } else {
+            // Retain the old password
+            $data['password'] = $consultant->password;
+        }
+        
+        // If no errors, update consultant profile
+        if (empty($data['name_err']) && empty($data['email_err']) && empty($data['password_err']) && empty($data['image_err'])) {
+            if ($this->consultantModel->updateConsultant($data)) {
+                redirect('consultants/viewprofile');
+            } else {
+                die('Something went wrong while updating your profile.');
+            }
+        } else {
+            // Load view with errors
+            $this->view('consultant/editprofile', $data);
+        }
+        
+    } else {
+        // On GET, load current consultant data from the model
+        $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+        $data = [
+            'id' => $consultant->id,
+            'name' => $consultant->name,
+            'email' => $consultant->email,
+            'specialization' => $consultant->specialization,
+            'experience' => $consultant->experience,
+            'address' => $consultant->address,
+            'image' => $consultant->image,
+            'name_err' => '',
+            'email_err' => '',
+            'password_err' => '',
+            'image_err' => ''
+        ];
+        $this->view('consultant/editprofile', $data);
+    }
+}
+
 }

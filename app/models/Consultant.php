@@ -67,6 +67,31 @@ class Consultant {
     return $this->db->single();
   }
 
+  public function updateConsultant($data) {
+    $this->db->query("
+        UPDATE consultants 
+        SET 
+            name = :name,
+            email = :email,
+            specialization = :specialization,
+            experience = :experience,
+            address = :address,
+            image = :image,
+            password = :password
+        WHERE id = :id
+    ");
+    $this->db->bind(':name', $data['name']);
+    $this->db->bind(':email', $data['email']);
+    $this->db->bind(':specialization', $data['specialization']);
+    $this->db->bind(':experience', $data['experience']);
+    $this->db->bind(':address', $data['address']);
+    $this->db->bind(':image', $data['image']);
+    $this->db->bind(':password', $data['password']);
+    $this->db->bind(':id', $data['id']);
+    
+    return $this->db->execute();
+}
+
   // Fetch all questions from the questions table
   public function fetchQuestions() {
     $this->db->query('SELECT q_id, farmer_id, questions FROM forum_questions');
@@ -140,5 +165,9 @@ public function deleteAnswer($ans_id) {
   return $this->db->execute();
 }
 
+public function getConsultants() {
+  $this->db->query("SELECT * FROM consultants ORDER BY name ASC");
+  return $this->db->resultSet();
+}
   
 }

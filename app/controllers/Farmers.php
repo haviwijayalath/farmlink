@@ -418,6 +418,20 @@ class Farmers extends Controller {
       
       $this->view('farmers/viewsales');
     }
-  
+
+    public function bookconsultant() {
+    if (!isLoggedIn()) {
+        redirect('users/login');
+    }
+    // Load the Consultant model
+    $this->consultantModel = $this->model('Consultant');
+    // Retrieve all consultants
+    $consultants = $this->consultantModel->getConsultants();
+    $data = [
+        'consultants' => $consultants
+    ];
+    // Load the view for listing consultants
+    $this->view('farmers/bookconsultant', $data);
+}
   
 }
