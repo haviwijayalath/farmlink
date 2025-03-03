@@ -405,13 +405,20 @@ class Buyercontrollers extends Controller {
         
     }
 
-      // Function to display all products
-      public function browseproducts() {
+    // Function to display all products and filter products
+    public function browseproducts() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
-          }
+        }
 
-        $data = $this->buyerModel->getProducts();
+        $filter_variables = [
+            'category' => $_GET['category'] ?? '',
+            'price' => $_GET['price'] ?? '',
+            'stock' => $_GET['stock'] ?? '',
+            'exp_date' => $_GET['exp_date'] ?? ''
+        ];
+
+        $data = $this->buyerModel->getProducts($filter_variables);
         $this->view('buyer/products/browse_products', $data);
     }
 

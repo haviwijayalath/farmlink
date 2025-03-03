@@ -120,8 +120,42 @@ class Buyer extends Database{
         return $this->db->execute();
     }
 
-    public function getProducts() {
-        $this->db->query('SELECT * FROM fproducts');
+    public function getProducts($filter_vars) {
+        
+        $query = 'SELECT * FROM fproducts';
+        $orderBy = [];
+
+        if (!empty($filter_vars)) {
+            // Handle the category condition
+            if (!empty($filter_vars['category'])) {
+                $whereCondition = "type = '" . $filter_vars['category'] . "'";
+            }
+
+            // Handle ORDER BY clauses
+            if (!empty($filter_vars['price'])) {
+                $orderBy[] = 'price ' . ($filter_vars['price'] === 'ASC' ? 'ASC' : 'DESC');
+            }
+            
+            if (!empty($filter_vars['stock'])) {
+                $orderBy[] = 'stock ' . ($filter_vars['stock'] === 'ASC' ? 'ASC' : 'DESC');
+            }
+            
+            if (!empty($filter_vars['exp_date'])) {
+                $orderBy[] = 'exp_date ' . ($filter_vars['exp_date'] === 'ASC' ? 'ASC' : 'DESC');
+            }
+
+            // Add WHERE clause if conditions exist
+            if (!empty($whereCondition)) {
+                $query .= ' WHERE ' . $whereCondition;
+            }
+
+            // Add ORDER BY clause if ordering exists
+            if (!empty($orderBy)) {
+                $query .= ' ORDER BY ' . implode(', ', $orderBy);
+            }
+        }
+
+        $this->db->query($query);
 
         $results = $this->db->resultSet();
 
