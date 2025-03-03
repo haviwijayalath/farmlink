@@ -18,6 +18,16 @@
     </div>
 
     <div class="form-group">
+      <label for="category">Category: <sup>*</sup></label>
+      <select name="category" class="form-control form-control-lg" required>
+      <option value="" disabled>Select a category...</option>
+      <option value="fruit" <?php echo ($data['category'] == 'fruit') ? 'selected' : ''; ?>>Fruits</option>
+      <option value="vege" <?php echo ($data['category'] == 'vege') ? 'selected' : ''; ?>>Vegetables</option>
+      <option value="dairy" <?php echo ($data['category'] == 'dairy') ? 'selected' : ''; ?>>Dairy</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label for="quantity">Quantity: </label>
       <input type="number" name="quantity" class="form-control form-control-lg" value="<?php echo $data['quantity']; ?>" >
     </div>

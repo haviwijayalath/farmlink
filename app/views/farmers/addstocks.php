@@ -43,6 +43,16 @@ $vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper"
     </script>
 
     <div class="form-group">
+      <label for="category">Category: <sup>*</sup></label>
+      <select name="category" class="form-control form-control-lg" required>
+        <option value="" disabled selected>Select a category...</option>
+        <option value="fruit">Fruits</option>
+        <option value="vege">Vegetables</option>
+        <option value="dairy">Dairy</option>
+      </select>
+    </div>
+
+    <div class="form-group">
       <label for="quantity">Quantity: <sup>*</sup></label>
       <input type="number" name="quantity" class="form-control form-control-lg" required>
     </div>
@@ -80,7 +90,5 @@ $vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper"
 </div>
 
 <br><br>
-
-
 
 <?php require APPROOT . '/views/farmers/inc/footer.php'; ?>
