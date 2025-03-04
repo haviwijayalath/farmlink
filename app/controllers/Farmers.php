@@ -670,4 +670,13 @@
       
       $this->view('farmers/viewsales');
     }
+
+    public function expstock() {
+      if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
+        redirect('users/login');
+      }
+      
+      $data = $this->farmerModel->getExpiredStocks();
+      $this->view('farmers/expstock', $data);
+    }
 }
