@@ -4,10 +4,10 @@
 
 <!-- Search and the Filter -->
 <div class="search-filter-container">
-  <form action="<?= URLROOT ?>/buyer/products/search" method="GET" class="form-inline">
-    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search products">
+  <form action="<?= URLROOT ?>/buyercontrollers/browseproducts" method="GET" class="form-inline">
+    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search products" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
     <button type="submit" class="btn btn-primary">Search</button>
-  </form>
+
   <form action="<?= URLROOT ?>/buyercontrollers/browseproducts" method="GET" class="form-inline">
     <select name="category" class="form-control mr-sm-2">
       <option value="">Select Category</option>
