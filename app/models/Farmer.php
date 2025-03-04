@@ -240,4 +240,14 @@ class Farmer
       return false;
     }
   }
+
+  // Get expired stocks
+  public function getExpiredStocks()
+  {
+    $this->db->query('SELECT * FROM exp_products');
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
 }
