@@ -412,6 +412,7 @@ class Buyercontrollers extends Controller {
         }
 
         $filter_variables = [
+            'search' => $_GET['search'] ?? '',
             'category' => $_GET['category'] ?? '',
             'price' => $_GET['price'] ?? '',
             'stock' => $_GET['stock'] ?? '',

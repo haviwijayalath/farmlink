@@ -124,11 +124,17 @@ class Buyer extends Database{
         
         $query = 'SELECT * FROM fproducts';
         $orderBy = [];
+        $whereConditions = [];
 
         if (!empty($filter_vars)) {
             // Handle the category condition
             if (!empty($filter_vars['category'])) {
-                $whereCondition = "type = '" . $filter_vars['category'] . "'";
+                $whereConditions[] = "type = '" . $filter_vars['category'] . "'";
+            }
+
+            // Handle the search condition
+            if (!empty($filter_vars['search'])) {
+                $whereConditions[] = "(name LIKE '%" . $filter_vars['search'] . "%' OR description LIKE '%" . $filter_vars['search'] . "%')";
             }
 
             // Handle ORDER BY clauses
@@ -145,8 +151,8 @@ class Buyer extends Database{
             }
 
             // Add WHERE clause if conditions exist
-            if (!empty($whereCondition)) {
-                $query .= ' WHERE ' . $whereCondition;
+            if (!empty($whereConditions)) {
+                $query .= ' WHERE ' . implode(' AND ', $whereConditions);
             }
 
             // Add ORDER BY clause if ordering exists
