@@ -359,6 +359,8 @@
       if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
         redirect('users/login');
       }
+
+      $this->farmerModel->removeExpiredStocks();
       
       $data = $this->farmerModel->getStocks();
       $this->view('farmers/managestocks', $data);

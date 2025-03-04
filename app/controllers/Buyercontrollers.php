@@ -3,9 +3,11 @@
 class Buyercontrollers extends Controller {
 
     private $buyerModel;
+    private $farmerModel;
 
     public function __construct() {
         $this->buyerModel = $this->model('Buyer'); 
+        $this->farmerModel = $this->model('Farmer');
     }
 
     public function register(){
@@ -445,6 +447,9 @@ class Buyercontrollers extends Controller {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
         }
+
+        // update the databse by removing the expired products
+        $this->farmerModel->removeExpiredStocks();
 
         $filter_variables = [
             'search' => $_GET['search'] ?? '',
