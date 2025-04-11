@@ -29,20 +29,20 @@
                         <div class="cell"><?= htmlspecialchars($data['orders']->fphone); ?></div>
 
                         <div class="cell title">Buyer Contact</div>
-                        <div class="cell"><?= htmlspecialchars($data['orders']->bphone); ?></div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->mobileNo); ?></div>
                     </div>
 
                     <div class="row">
                         <div class="cell title">Pick-up Address</div>
-                        <div class="cell"><?= htmlspecialchars($data['orders']->pickupAddr); ?></div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->pickupAddress); ?></div>
 
                         <div class="cell title">Drop-off Address</div>
-                        <div class="cell"><?= htmlspecialchars($data['orders']->dropoffAddr); ?></div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->dropoff_address); ?></div>
                     </div>
 
                     <div class="row">
                         <div class="cell title">Capacity</div>
-                        <div class="cell"><?= htmlspecialchars($data['orders']->capacity); ?></div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->quantity); ?></div>
 
                         <div class="cell title">Amount</div>
                         <div class="cell"><?= htmlspecialchars($data['orders']->amount); ?></div>

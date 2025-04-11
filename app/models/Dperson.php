@@ -214,7 +214,7 @@ class Dperson extends Database{
 
     public function savePickupImages($orderId, $deliveryId,  $pickupAddr, $pickupImagePath) {
         // Insert image paths into the delivery_info table
-        $this->db->query('INSERT INTO delivery_info (order_id, delivery_person_id	,location, pic_before) VALUES (:orderId, :deliveryId, :pickupaddr, :pic_before)');
+        $this->db->query('INSERT INTO delivery_info (order_id, delivery_person_id	,pickupAddress, pic_before) VALUES (:orderId, :deliveryId, :pickupaddr, :pic_before)');
         $this->db->bind(':orderId', $orderId);
         $this->db->bind(':deliveryId', $deliveryId);
         $this->db->bind(':pickupaddr', $pickupAddr);
@@ -284,32 +284,34 @@ class Dperson extends Database{
         public function getorder($deliveryArea, $order_id) {
             $this->db->query('
                 SELECT 
-                    farmer_buyer_orders.id,
-                    farmers.location AS pickup_address,
-                    farmer_buyer_orders.address,
-                    farmer_buyer_orders.capacity,
-                    buyers.name as buyer,
-                    farmer_buyer_orders.amount,
-                    farmer_buyer_orders.date,
+                    order_success.orderID,
+                    CONCAT(address.number, ", ", address.Street, ", ", address.City) AS pickup_address,
+                    CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address,
+                    order_success.quantity,
+                    CONCAT(order_buyer.fname, " ", order_buyer.lname) AS buyer,
+                    order_success.deliveryFee AS amount,
+                    order_success.orderDate,
                     fproducts.name,
                     farmers.name as farmer,
-                    buyers.phone,
+                    order_buyer.mobileNo,
                     farmers.phone as fphone
       
                 FROM 
-                    farmer_buyer_orders
+                    order_success
                 INNER JOIN 
-                    farmers ON farmer_buyer_orders.farmer_id = farmers.id
+                    fproducts ON fproducts.fproduct_id = order_success.productID
                 INNER JOIN 
-                    address AS farmer_addresses ON farmers.address_id = farmer_addresses.address_id
+                    farmers ON fproducts.farmer_id = farmers.id
                 INNER JOIN 
-                    buyers ON farmer_buyer_orders.buyer_id = buyers.id
+                    address address ON farmers.address_id = address.address_id
                 INNER JOIN 
-                      fproducts ON fproducts.fproduct_id = farmer_buyer_orders.fproduct_id
+                    order_buyer ON order_buyer.order_buyerID = order_success.buyerID
+                INNER JOIN 
+                    order_buyer_addr ON order_buyer_addr.address_id = order_buyer.address_id
                 WHERE 
                     farmers.location = :deliveryArea 
-                    AND farmer_buyer_orders.status = "new"
-                    AND farmer_buyer_orders.id = :order_id
+                    AND order_success.status = "new"
+                    AND order_success.orderID = :order_id
             ');
             
             $this->db->bind(':deliveryArea', $deliveryArea);
@@ -350,29 +352,33 @@ class Dperson extends Database{
             SELECT delivery_info.order_id,
                 delivery_info.date,
                 delivery_info.amount,
-                buyers.name as buyer,
+                CONCAT(order_buyer.fname, " ", order_buyer.lname) AS buyer,
                 fproducts.name as productName,
                 delivery_info.delivery_id,
-                delivery_info.location as dropoffAddr,
+                delivery_info.pickupAddress,
                 delivery_info.pic_before,
                 delivery_info.pic_after,
                 farmers.name as farmer,
                 farmers.phone as fphone,
-                buyers.phone as bphone,
-                farmer_buyer_orders.capacity,
-                farmers.location as pickupAddr
+                order_buyer.mobileNo,
+                order_success.quantity,
+                CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address
             FROM
                 delivery_info
             INNER JOIN
-                farmer_buyer_orders on farmer_buyer_orders.id = delivery_info.order_id
+                order_success on order_success.orderID = delivery_info.order_id
             INNER JOIN 
-                buyers on farmer_buyer_orders.buyer_id = buyers.id
+                order_buyer on order_buyer.order_buyerID = order_success.buyerID
             INNER JOIN
-                fproducts on farmer_buyer_orders.fproduct_id = fproducts.fproduct_id
+                fproducts on order_success.productID = fproducts.fproduct_id
             INNER JOIN
-                farmers on farmer_buyer_orders.farmer_id = farmers.id
+                farmers on fproducts.farmer_id = farmers.id
+            INNER JOIN 
+                order_buyer_addr ON order_buyer_addr.address_id = order_buyer.address_id
             WHERE
                 delivery_info.delivery_person_id = :id
+                AND
+                order_success.status = "delivered"
             ');
 
         $this->db->bind(':id', $id);
@@ -383,30 +389,33 @@ class Dperson extends Database{
 
     public function getOrderHistoryById($id){
         $this->db->query('
-            SELECT delivery_info.order_id,
+            SELECT 
+                delivery_info.order_id,
                 delivery_info.date,
                 delivery_info.amount,
-                buyers.name as buyer,
+                CONCAT(order_buyer.fname, " ", order_buyer.lname) AS buyer,
                 fproducts.name as productName,
                 delivery_info.delivery_id,
-                delivery_info.location as dropoffAddr,
+                delivery_info.pickupAddress,
                 delivery_info.pic_before,
                 delivery_info.pic_after,
                 farmers.name as farmer,
                 farmers.phone as fphone,
-                buyers.phone as bphone,
-                farmer_buyer_orders.capacity,
-                farmers.location as pickupAddr
+                order_buyer.mobileNo,
+                order_success.quantity,
+                CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address
             FROM
                 delivery_info
             INNER JOIN
-                farmer_buyer_orders on farmer_buyer_orders.id = delivery_info.order_id
+                order_success on order_success.orderID = delivery_info.order_id
             INNER JOIN 
-                buyers on farmer_buyer_orders.buyer_id = buyers.id
+                order_buyer on order_buyer.order_buyerID = order_success.buyerID
             INNER JOIN
-                fproducts on farmer_buyer_orders.fproduct_id = fproducts.fproduct_id
+                fproducts on order_success.productID = fproducts.fproduct_id
             INNER JOIN
-                farmers on farmer_buyer_orders.farmer_id = farmers.id
+                farmers on fproducts.farmer_id = farmers.id
+            INNER JOIN 
+                order_buyer_addr ON order_buyer_addr.address_id = order_buyer.address_id
             WHERE
                 delivery_info.order_id = :id
             ');
