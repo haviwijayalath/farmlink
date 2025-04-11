@@ -38,10 +38,16 @@
 
         <!-- Submit Button -->
         <div class="form-group">
-            <input type="submit" value="End the Delivery" class="btn-submit">
+            <input type="submit" value="Upload Drop-off Image" class="btn-submit">
         </div>
     </div>
     </form>
+
+    <!--end delivery by clicking end button -->
+    <form action="<?= URLROOT; ?>/dpersons/endDelivery" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+            <input type="submit" value="End the delivery" class="btn-submit">
+        </div>
 </div>
 
 <!-- Order Summary Modal -->

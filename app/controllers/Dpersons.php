@@ -130,20 +130,6 @@ class Dpersons extends Controller {
 
         $this->view('d_person/ongoing/d_upload',$data);
     }
-
-    public function endDelivery() {
-        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
-            redirect('users/login');
-        }
-    
-        unset($_SESSION['pickup_image']);
-        unset($_SESSION['dropoff_image']);
-        unset($_SESSION['order_id']);
-        unset($_SESSION['delivery_id']);
-    
-        redirect('dpersons/history');
-    }
-    
     
     public function getOrderSummary() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
@@ -206,6 +192,19 @@ class Dpersons extends Controller {
         }
     }
         
+    public function endDelivery() {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+            redirect('users/login');
+        }
+    
+        unset($_SESSION['pickup_image']);
+        unset($_SESSION['dropoff_image']);
+        unset($_SESSION['order_id']);
+        unset($_SESSION['delivery_id']);
+    
+        redirect('dpersons/history');
+    }
+
     public function deliveryUploadDropoff() {
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
@@ -239,7 +238,7 @@ class Dpersons extends Controller {
                 // Save the dropoff image path in the database
                 if ($this->userModel->saveDropoffImage( $_SESSION['delivery_id'], $relativePath)) {
                     $_SESSION['dropoff_image'] = $relativePath; // Store in session variable
-                    $this->endDelivery();
+                    redirect('dpersons/proof');
                 } else {
                     // Error handling if saving image fails
                     echo "Failed to save the dropoff image in the database.";
