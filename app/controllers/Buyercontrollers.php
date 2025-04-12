@@ -253,7 +253,8 @@ class Buyercontrollers extends Controller {
         $data = [
             'cartID' => $cartItems[0]->cart_id,
             'cartItems' => $cartItems,
-            'total' => $total
+            'total' => $total,
+            'productID' => $cartItems[0]->product_id,
         ];
 
         $this->view('buyer/cart/cart', $data);

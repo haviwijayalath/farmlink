@@ -54,7 +54,8 @@
 
     <!-- delivery option button -->
      <?php if(!empty($data['cartItems'])): ?>
-        <a class="btn-delivery" href="<?= URLROOT ?>/Buyercontrollers/deliveryOptions?cart_id=<?= htmlspecialchars($data['cartID']) ?>">Delivery Options</a>
+        <a class="btn-delivery" href="<?= URLROOT ?>/Buyercontrollers/deliveryOptions?cart_id=<?= htmlspecialchars($data['cartID']) ?>&product_id=<?= htmlspecialchars($data['productID']) ?>">Delivery Options</a>
+
     <?php else: ?>
         <button class="btn-delivery" disabled style="background-color: gray; cursor: not-allowed;">Delivery Options</button>
     <?php endif; ?>

@@ -9,17 +9,17 @@
         <h2>CART TOTAL</h2>
         <div class="item">
             <div class="lable">SUB TOTAL</div> 
-            <div class="value">Rs.1750</div>
+            <div class="value">Rs.<?= number_format($data['farmer_fee'], 2) ?></div>
         </div>
         <div class="divider"></div>
         <div class="item">
-            <div class="lable">SHIPPING</div>
-            <div class="value">FREE</div>
+            <div class="lable">DELIVERY FEE</div>
+            <div class="value">Rs.<?= number_format($data['delivery_fee'], 2) ?></div>
         </div>
         <div class="divider"></div>
         <div class="item">
             <div class="lable">TOTAL</div>
-            <div class="value">Rs.1750</div>
+            <div class="value">Rs.<?= number_format($data['farmer_fee'] + $data['delivery_fee'], 2) ?></div>
         </div>
     </div>
 
