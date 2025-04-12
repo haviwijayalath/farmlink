@@ -29,48 +29,45 @@
 </div>
 
 <script>
-    // Get cart ID from URL (assuming it's in the query string)
+    // Get cart ID and product ID from URL
     const urlParams = new URLSearchParams(window.location.search);
     const cartId = urlParams.get('cart_id');
+    const productId = urlParams.get('product_id'); // 👈 NEW
 
     // Function to select delivery options
     function selectOption(optionId) {
-        // Deselect all options
         document.querySelectorAll('.option').forEach(opt => {
             opt.classList.remove('selected');
         });
-        // Select the clicked option
         document.getElementById(optionId).classList.add('selected');
-        // Set the radio input for the selected option
         document.getElementById(optionId + 'Radio').checked = true;
     }
 
-    // Redirect user based on selected delivery option and cartId
+    // Redirect user based on selected delivery option and cartId + productId
     function redirectToPayment() {
         const selectedOption = document.querySelector('input[name="delivery"]:checked');
 
         if (!selectedOption) {
             alert("Please select a delivery option.");
-            return false; // Prevent form submission if no option is selected
+            return false;
         }
 
-        if (!cartId) {
-            alert("Cart ID not found.");
-            return false; // Prevent form submission if cartId is not available
+        if (!cartId || !productId) {
+            alert("Cart ID or Product ID not found.");
+            return false;
         }
 
         if (selectedOption.value === "Home Delivery") {
-            // Redirect to the address filling page with cart ID
-            window.location.href = "<?= URLROOT ?>/orderControllers/address/" + cartId;
-            return false; // Prevent form submission since we're redirecting
+            window.location.href = "<?= URLROOT ?>/orderControllers/address/" + cartId  + "/" + productId;
+            return false;
         } else if (selectedOption.value === "In-Store Pickup") {
-            // Redirect to payment details page with cart ID
-            window.location.href = "<?= URLROOT ?>/buyercontrollers/paymentDetails?cart_id=" + cartId;
-            return false; // Prevent form submission since we're redirecting
+            window.location.href = "<?= URLROOT ?>/buyercontrollers/paymentDetails?cart_id=" + cartId + "/" + productId;
+            return false;
         }
 
-        return true; // In case everything is fine and form should be submitted
+        return true;
     }
 </script>
+
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

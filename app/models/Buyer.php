@@ -75,7 +75,7 @@ class Buyer extends Database{
 
     public function getCartItems(){
         $this->db->query('
-            SELECT c.cart_id, c.quantity, c.price, p.name,  p.price 
+            SELECT c.cart_id, c.quantity, c.price, p.name,  p.price, c.product_id 
             FROM buyer_carts c
             JOIN fproducts p ON c.product_id = p.fproduct_id
             WHERE c.buyer_id = :buyer_id

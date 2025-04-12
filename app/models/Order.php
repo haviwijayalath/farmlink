@@ -41,18 +41,21 @@ class Order extends Database{
             $this->db->query('SELECT buyer_id, product_id, quantity, price FROM buyer_carts WHERE cart_id = :cartid LIMIT 1');
             $this->db->bind(':cartid', $data['cartId']);
             $cartItem = $this->db->single(); // Fetch one cart item
+            $data['farmer_fee'] = $cartItem->price;
         
             // Check if a cart item was found
             if ($cartItem) {
                 // Insert into order_process table
-                $this->db->query('INSERT INTO order_process (cartID, buyerID, productId, quantity, farmerFee) 
-                                  VALUES (:cartid, :buyerid, :productid, :quantity, :farmerfee)');
+                $this->db->query('INSERT INTO order_process (cartID, buyerID, productID, quantity, deliveryFee, farmerFee, dropAddress)
+                                  VALUES (:cartid, :buyerid, :productid, :quantity, :fee, :farmerfee, :drop_addr)');
                 
                 $this->db->bind(':cartid', $data['cartId']);
                 $this->db->bind(':buyerid',  $cartItem->buyer_id);
                 $this->db->bind(':productid', $cartItem->product_id);
                 $this->db->bind(':quantity', $cartItem->quantity);
                 $this->db->bind(':farmerfee', $cartItem->price);
+                $this->db->bind(':fee', $data['delivery_fee']);
+                $this->db->bind(':drop_addr', $data['drop_addr']);
         
                 if (!$this->db->execute()) {
                     return false;  // Return false if insertion fails
@@ -61,10 +64,23 @@ class Order extends Database{
                 return false; // Return false if no cart item found
             }
         
-            return true; // Success
+            return $data; // Success
         }
         
 
     return false;  // If order_buyer insertion fails
 }
+
+public function getFarmerPickupAddressByProduct($productId) {
+    $this->db->query("SELECT a.number, a.street, a.city 
+                      FROM address a
+                      INNER JOIN farmers f ON a.address_id = f.address_id
+                      INNER JOIN fproducts p ON p.farmer_id = f.id
+                      WHERE p.fproduct_id = :product_id");
+
+    $this->db->bind(':product_id', $productId);
+
+    return $this->db->single(); // fetch one result
+}
+
 }
