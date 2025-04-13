@@ -10,7 +10,8 @@ class Dpaccounts extends Controller {
     }
 
       $this->userModel = $this->model('Dperson');
-  }
+      $this->earningsModel = $this->model('Dpaccount');
+    }
 
   public function index(){
     echo("invalid");
@@ -261,18 +262,61 @@ class Dpaccounts extends Controller {
     public function confirmdelete($id) {
         $this->view('d_person/accounts/confirmation', $id);
     }
-    
 
-    public function revenueCheck()
-    {
+
+    public function revenueCheck() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
-          }
-
-        $deliveryId = $_SESSION['user_id'] ?? null;
-        $this->view('d_person/accounts/revenue');
-
+        }
+    
+        $deliveryPersonId = $_SESSION['user_id'];
+    
+        // Earnings summary
+        $currentMonth = $this->earningsModel->getMonthlyEarnings($deliveryPersonId, 0);
+        $lastMonth = $this->earningsModel->getMonthlyEarnings($deliveryPersonId, 1);
+        $yearly = $this->earningsModel->getYearlyEarnings($deliveryPersonId);
+        $trendData = $this->earningsModel->getMonthlyTrend($deliveryPersonId);
+    
+        $monthlyEarnings = array_fill(1, 12, 0);
+        foreach ($trendData as $row) {
+            $monthlyEarnings[(int)$row->month] = (float)$row->total;
+        }
+    
+        // Default: No filters
+        $orderIdFilter = '';
+        $dateFilter = '';
+        $earnings = [];
+    
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $orderIdFilter = trim($_POST['order_id'] ?? '');
+            $dateFilter = trim($_POST['date'] ?? '');
+    
+            // If the form is submitted without filters (reset)
+            if ($orderIdFilter === '' && $dateFilter === '') {
+                $earnings = $this->earningsModel->getFilteredEarnings($deliveryPersonId);
+            } else {
+                // User submitted filters
+                $earnings = $this->earningsModel->getFilteredEarnings($deliveryPersonId, $orderIdFilter, $dateFilter);
+            }
+        } else {
+            // First load (no filters applied)
+            $earnings = $this->earningsModel->getFilteredEarnings($deliveryPersonId);
+        }
+    
+        // Set the data for the view
+        $data = [
+            'currentMonth' => $currentMonth,
+            'lastMonth' => $lastMonth,
+            'yearly' => $yearly,
+            'monthlyTrend' => $monthlyEarnings,
+            'earnings' => $earnings,
+            'order_id' => $orderIdFilter, // This will be empty on reset
+            'date' => $dateFilter         // This will be empty on reset
+        ];
+    
+        $this->view('d_person/accounts/revenue', $data);
     }
+    
 
-    }
+}
 
