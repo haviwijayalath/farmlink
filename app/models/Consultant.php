@@ -166,8 +166,27 @@ public function deleteAnswer($ans_id) {
 }
 
 public function getConsultants() {
-  $this->db->query("SELECT * FROM consultants ORDER BY name ASC");
+  $this->db->query("SELECT id, name, email, specialization, experience, image FROM consultants ORDER BY name ASC");
   return $this->db->resultSet();
+}
+
+public function getAvailability($consultant_id) {
+  $this->db->query("SELECT available_date FROM consultant_availability WHERE consultant_id = :consultant_id");
+  $this->db->bind(':consultant_id', $consultant_id);
+  return $this->db->resultSet();
+}
+
+public function deleteAvailability($consultant_id) {
+  $this->db->query("DELETE FROM consultant_availability WHERE consultant_id = :consultant_id");
+  $this->db->bind(':consultant_id', $consultant_id);
+  return $this->db->execute();
+}
+
+public function addAvailability($consultant_id, $date) {
+  $this->db->query("INSERT INTO consultant_availability (consultant_id, available_date) VALUES (:consultant_id, :available_date)");
+  $this->db->bind(':consultant_id', $consultant_id);
+  $this->db->bind(':available_date', $date);
+  return $this->db->execute();
 }
   
 }

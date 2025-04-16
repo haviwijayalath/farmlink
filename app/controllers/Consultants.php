@@ -112,36 +112,27 @@ class Consultants extends Controller {
     $this->view('consultant/index', $data);
   }
 
-  public function viewprofile($id = null) {
+  public function viewprofile() {
     if (!isLoggedIn()) {
-        redirect('users/login');
+      redirect('users/login');
     }
-
-    // If no ID is provided, default to the logged-in consultant
-    if ($id === null) {
-        $id = $_SESSION['user_id'];
-    }
-    
-    $consultant = $this->consultantModel->getConsultantById($id);
-
+  
+    $consultant = $this->consultantModel->getConsultantbyId($_SESSION['user_id']);
+  
     if ($consultant) { // Check if consultant data is found
       $data = [
           'name' => $consultant->name,
-          'specialization' => $consultant->specialization,
-          'experience' => $consultant->experience,
+          'specialization' => $consultant->specialization, // Add specialization
+          'experience' => $consultant->experience,         // Add experience
           'phone' => $consultant->phone,
           'email' => $consultant->email,
           'image' => $consultant->image
       ];
-      
+  
       $this->view('consultant/viewprofile', $data);
-    } else {
-      flash('profile_error', 'Consultant not found', 'alert alert-danger');
-      redirect('farmers/bookconsultant');
     }
-}
-
-
+  }
+  
   public function editprofile() {
     if (!isLoggedIn()) {
         redirect('users/login');
@@ -255,5 +246,78 @@ class Consultants extends Controller {
         $this->view('consultant/editprofile', $data);
     }
 }
+
+public function publicProfile($id) {
+  if (!isLoggedIn()) {
+      redirect('users/login');
+  }
+  
+  $consultant = $this->consultantModel->getConsultantById($id);
+  if (!$consultant) {
+      flash('profile_error', 'Consultant not found', 'alert alert-danger');
+      redirect('farmers/bookconsultant');
+  }
+  
+  // Retrieve consultant's availability
+  $availability = $this->consultantModel->getAvailability($id);
+  $preselectedDates = [];
+  foreach ($availability as $slot) {
+      // Ensure that available_date is in the format "YYYY-MM-DD"
+      $preselectedDates[] = $slot->available_date;
+  }
+  
+  // Add the JSON encoded array of dates to the data array.
+  $data = [
+      'id' => $consultant->id,
+      'name' => $consultant->name,
+      'email' => $consultant->email,
+      'specialization' => $consultant->specialization,
+      'experience' => $consultant->experience,
+      'phone' => $consultant->phone,
+      'image' => $consultant->image,
+      'availability' => json_encode($preselectedDates)  // Pass availability as JSON
+  ];
+  
+  $this->view('consultant/publicProfile', $data);
+}
+
+public function setAvailability() {
+  if (!isLoggedIn()) {
+      redirect('users/login');
+  }
+
+  // On POST: process the submitted dates.
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST data
+      $datesJson = isset($_POST['dates']) ? $_POST['dates'] : '[]';
+      $dates = json_decode($datesJson, true);
+
+      // Delete previous availability if you want to fully reset the calendar:
+      $this->consultantModel->deleteAvailability($_SESSION['user_id']);
+
+      if (!empty($dates)) {
+          foreach ($dates as $date) {
+              $this->consultantModel->addAvailability($_SESSION['user_id'], $date);
+          }
+          flash('availability_success', 'Availability updated successfully');
+          redirect('consultants/setAvailability'); // Or whichever page you prefer
+      } else {
+          flash('availability_error', 'No dates selected', 'alert alert-danger');
+          redirect('consultants/setAvailability');
+      }
+  } else {
+      // On GET, simply load the view with the calendar interface.
+      // Optionally, load existing availability to preselect dates in the calendar.
+      $availability = $this->consultantModel->getAvailability($_SESSION['user_id']);
+      $preselectedDates = [];
+      foreach ($availability as $slot) {
+          // Assuming available_date is stored in format 'Y-m-d'
+          $preselectedDates[] = $slot->available_date;
+      }
+      $data = [ 'preselected' => json_encode($preselectedDates) ];
+      $this->view('consultant/availability', $data);
+  }
+}
+
 
 }

@@ -9,7 +9,7 @@
         <div class="card">
           <img src="<?= URLROOT ?>/public/uploads/consultants/<?= !empty($consultant->image) ? $consultant->image : 'placeholder.png' ?>" alt="<?= htmlspecialchars($consultant->name) ?>">
           <h3>
-            <a href="<?= URLROOT ?>/consultants/viewprofile/<?= $consultant->id ?>">
+            <a href="<?= URLROOT ?>/consultants/publicProfile/<?= $consultant->id ?>">
               <?= htmlspecialchars($consultant->name) ?>
             </a>
           </h3>
