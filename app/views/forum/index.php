@@ -247,8 +247,8 @@
     display: inline-block;
   }
   
-  .btn-primary { background-color: #007BFF; color: #fff; }
-  .btn-secondary { background-color: #6c757d; color: #fff; }
+  .btn-primary { background-color:rgb(31, 156, 38); color: #fff; border: none; }
+  .btn-secondary { background-color:rgb(255, 193, 7); color: #fff; }
   .btn-danger { background-color: #dc3545; color: #fff; }
   .btn-warning { background-color: #ffc107; color: #212529; }
   
