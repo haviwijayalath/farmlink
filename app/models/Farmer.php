@@ -188,7 +188,8 @@ class Farmer
     }
   }
 
-  public function updateStock($id, $data) {
+  public function updateStock($id, $data) 
+  {
     $this->db->query('UPDATE fproducts SET name = :name, description = :description, price = :price, stock = :stock, exp_date = :exp_date, image = :image WHERE fproduct_id = :id');
     // Bind values
     $this->db->bind(':id', $id);
@@ -220,5 +221,33 @@ class Farmer
     } else {
       return false;
     }
+  }
+
+  // remove expired stocks
+  public function removeExpiredStocks()
+  {
+    // Move expired stocks to exp_products table
+    $this->db->query('INSERT INTO exp_products (fproduct_id, farmer_id, name, type, price, stock, exp_date) SELECT fproduct_id, farmer_id, name, type, price, stock, exp_date FROM fproducts WHERE exp_date < CURDATE()');
+    if ($this->db->execute()) {
+      // Delete expired stocks from fproducts table
+      $this->db->query('DELETE FROM fproducts WHERE exp_date < CURDATE()');
+      if ($this->db->execute()) {
+        return true;
+      } else {
+        return false;
+      }
+    } else {
+      return false;
+    }
+  }
+
+  // Get expired stocks
+  public function getExpiredStocks()
+  {
+    $this->db->query('SELECT * FROM exp_products');
+
+    $results = $this->db->resultSet();
+
+    return $results;
   }
 }
