@@ -68,8 +68,8 @@ class Order extends Database{
         }
         
 
-    return false;  // If order_buyer insertion fails
-}
+        return false;  // If order_buyer insertion fails
+    }
 
 public function getFarmerPickupAddressByProduct($productId) {
     $this->db->query("SELECT a.number, a.street, a.city 
@@ -81,6 +81,33 @@ public function getFarmerPickupAddressByProduct($productId) {
     $this->db->bind(':product_id', $productId);
 
     return $this->db->single(); // fetch one result
-}
+    }
+
+public function submitComplaint($userId, $role, $orderId, $description) {
+    $time = date('Y-m-d H:i:s');
+    $this->db->query("INSERT INTO complaints (order_id, description, user_id, role, date_submitted, status) 
+                  VALUES (:order_id, :description, :user_id, :role, :date_submitted, 'new')");
+
+    $this->db->bind(':user_id', $userId);
+    $this->db->bind(':role', $role);
+    $this->db->bind(':order_id', $orderId);
+    $this->db->bind(':description', $description);
+    $this->db->bind(':date_submitted', $time);
+
+
+    return $this->db->execute();
+    }
+
+
+public function getComplaints($userId, $role) {
+    $this->db->query("SELECT * FROM complaints 
+                      WHERE user_id = :user_id AND role = :role
+                      ORDER BY date_submitted DESC");
+
+    $this->db->bind(':user_id', $userId);
+    $this->db->bind(':role', $role);
+
+    return $this->db->resultSet(); // fetch all results
+    }
 
 }
