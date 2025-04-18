@@ -1,228 +1,175 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/publicProfile.css">
 <?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
-<div class="profile-and-calendar-container">
-  <!-- Consultant Details Column (Smaller) -->
-  <div class="profile-container">
-    <h1>Consultant Profile</h1>
+<div class="profile-calendar">
+  <!-- PROFILE PANEL -->
+  <div class="profile-panel">
     <div class="profile-card">
-      <div class="profile-image">
-        <img src="<?= URLROOT ?>/public/uploads/consultants/<?= !empty($data['image']) ? $data['image'] : 'placeholder.png' ?>" alt="<?= htmlspecialchars($data['name']) ?>">
+      <!-- Rating Display -->
+      <div class="profile-rating">
+        <div class="stars">
+          <?php 
+            $rating = round($data['avg_rating'] ?? 0, 1);
+            $fullStars = floor($rating);
+            $halfStar = $rating - $fullStars >= 0.5;
+            for ($i = 0; $i < $fullStars; $i++) echo '<i class="fa fa-star"></i>';
+            if ($halfStar) echo '<i class="fa fa-star-half-alt"></i>';
+            for ($i = $fullStars + $halfStar; $i < 5; $i++) echo '<i class="far fa-star"></i>';
+          ?>
+        </div>
+        <span><?= $rating ?>/5</span>
       </div>
-      <div class="profile-details">
+
+      <!-- Profile Info -->
+      <img 
+        src="<?= URLROOT ?>/public/uploads/consultants/<?= 
+          !empty($data['image']) ? htmlspecialchars($data['image']) : 'placeholder.png' 
+        ?>" 
+        alt="<?= htmlspecialchars($data['name']) ?>" 
+        class="profile-pic"
+      >
+      <div class="profile-info">
         <h2><?= htmlspecialchars($data['name']) ?></h2>
         <p><strong>Email:</strong> <?= htmlspecialchars($data['email']) ?></p>
         <p><strong>Specialization:</strong> <?= htmlspecialchars($data['specialization']) ?></p>
         <p><strong>Experience:</strong> <?= htmlspecialchars($data['experience']) ?> years</p>
         <p><strong>Phone:</strong> <?= htmlspecialchars($data['phone']) ?></p>
-        <!-- Make Appointment Button -->
-        <a href="<?= URLROOT ?>/appointments/book/<?= $data['id'] ?>" class="btn-appointment">Make Appointment</a>
+        <a href="<?= URLROOT ?>/appointments/book/<?= $data['id'] ?>" class="btn-appointment">
+          Make Appointment
+        </a>
+      </div>
+
+      <!-- Rating Form -->
+      <div class="rate-box">
+        <form method="POST" action="<?= URLROOT ?>/consultants/rate">
+          <div class="star-rating">
+            <?php for ($i = 5; $i >= 1; $i--): ?>
+              <input type="radio" id="star<?= $i ?>" name="rating" value="<?= $i ?>">
+              <label for="star<?= $i ?>"><i class="fa fa-star"></i></label>
+            <?php endfor; ?>
+          </div>
+          <input type="hidden" name="consultant_id" value="<?= $data['id'] ?>">
+          <button type="submit" class="btn-rate">Rate</button>
+        </form>
       </div>
     </div>
   </div>
-  
-  <!-- Availability Calendar Column (Larger and with more top margin) -->
-  <div class="availability-container">
-    <h2>Availability Calendar</h2>
-    <!-- Navigation for months -->
+
+  <!-- CALENDAR PANEL -->
+  <div class="calendar-panel">
     <div id="public-calendar-header">
-      <button type="button" id="prevMonth" class="nav-btn">&lt;</button>
+      <button id="prevMonth" class="nav-btn">&lt;</button>
       <span id="currentMonthYear"></span>
-      <button type="button" id="nextMonth" class="nav-btn">&gt;</button>
+      <button id="nextMonth" class="nav-btn">&gt;</button>
     </div>
-    <div id="public-calendar" class="calendar"></div>
+    <div id="public-calendar" class="calendar-grid"></div>
+    <div class="calendar-footer-note">Available dates</div>
   </div>
 </div>
 
-<style>
-  /* Flex container for profile details and calendar */
-  .profile-and-calendar-container {
-    display: flex;
-    gap: 20px;
-    margin-left: 220px; /* space for the sidebar */
-    padding: 20px;
-    align-items: flex-start;
-  }
-  
-  /* Left column: consultant details – a bit smaller */
-  .profile-container {
-    flex: 0 0 55%;
-  }
-  
-  .profile-card {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-    padding: 15px;
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-  }
-  .profile-image img {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    object-fit: cover;
-    margin-right: 15px;
-  }
-  .profile-details h2 {
-    font-size: 1.5rem;
-    margin-bottom: 8px;
-  }
-  .profile-details p {
-    font-size: 16px;
-    margin: 4px 0;
-    color: #555;
-  }
-  /* Make Appointment Button */
-  .btn-appointment {
-    display: inline-block;
-    padding: 8px 16px;
-    background-color: #007bff;
-    color: #fff;
-    text-decoration: none;
-    border-radius: 4px;
-    margin-top: 10px;
-    transition: background-color 0.3s ease;
-  }
-  .btn-appointment:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Right column: availability calendar – larger */
-  .availability-container {
-    flex: 1;
-    max-width: 600px;
-    padding: 10px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    margin-top: 90px; /* increased top margin */
-  }
-  
-  /* Month navigation styling */
-  #public-calendar-header {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-  }
-  .nav-btn {
-    background-color: #007bff;
-    color: #fff;
-    border: none;
-    padding: 6px 10px;
-    cursor: default;
-    border-radius: 4px;
-    margin: 0 10px;
-    font-size: 1rem;
-  }
-  #currentMonthYear {
-    font-size: 1.2rem;
-    font-weight: bold;
-  }
-  
-  /* Calendar grid */
-  .calendar {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 3px;
-    max-width: 600px;
-    margin: 0 auto;
-    border: 1px solid #ccc;
-  }
-  .calendar-header, .calendar-day {
-    padding: 8px;
-    text-align: center;
-    border: 1px solid #ddd;
-    font-size: 0.9rem;
-  }
-  .calendar-header {
-    background-color: #f5f5f5;
-    font-weight: bold;
-  }
-  .calendar-day {
-    cursor: default;
-  }
-  .calendar-day.inactive {
-    background-color: #f9f9f9;
-    color: #ccc;
-  }
-  .calendar-day.selected {
-    background-color: #28a745;
-    color: #fff;
-  }
-</style>
+<!-- POSTS FEED -->
+<div class="posts-feed">
+  <h3>Latest Posts</h3>
+  <?php if (!empty($data['posts'])): ?>
+    <?php foreach ($data['posts'] as $post): ?>
+      <div class="post-item">
+        <div class="post-header">
+          <img 
+            src="<?= URLROOT ?>/public/uploads/consultants/<?= 
+                  !empty($data['image']) ? htmlspecialchars($data['image']) : 'placeholder.png' 
+                ?>" 
+            class="avatar" alt="Avatar"
+          >
+          <div class="poster-info">
+            <strong><?= htmlspecialchars($data['name']); ?></strong><br>
+            <small><?= date('M d, Y H:i', strtotime($post->created_at)); ?></small>
+          </div>
+        </div>
+        <p class="post-content"><?= nl2br(htmlspecialchars($post->content)); ?></p>
+        <?php if (!empty($post->attachments)): ?>
+          <div class="post-attachments">
+            <?php foreach ($post->attachments as $att): ?>
+              <?php if (strpos($att->mime_type, 'image/') === 0): ?>
+                <img 
+                  src="<?= URLROOT ?>/public/uploads/consultants/posts/<?= htmlspecialchars($att->filename) ?>"
+                  class="post-img" alt="Attachment"
+                >
+              <?php else: ?>
+                <a 
+                  href="<?= URLROOT ?>/public/uploads/consultants/posts/<?= htmlspecialchars($att->filename) ?>"
+                  class="post-file" target="_blank"
+                >
+                  <?= htmlspecialchars($att->filename) ?>
+                </a>
+              <?php endif; ?>
+            <?php endforeach; ?>
+          </div>
+        <?php endif; ?>
+      </div>
+    <?php endforeach; ?>
+  <?php else: ?>
+    <p class="no-posts">No posts yet.</p>
+  <?php endif; ?>
+</div>
 
+<!-- corrected calendar script -->
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-  // Ensure availability data is parsed properly as an array of dates
-  let selectedDates = JSON.parse('<?= isset($data['availability']) ? $data['availability'] : '[]' ?>');
-  
-  let calendarEl = document.getElementById('public-calendar');
-  let currentMonthYearEl = document.getElementById('currentMonthYear');
-  
-  // Set currentDate using first available date (if any) or today
-  let currentDate = selectedDates.length > 0 ? new Date(selectedDates[0]) : new Date();
-  
-  function renderCalendar(year, month) {
-    calendarEl.innerHTML = ''; // Clear the calendar
-    
-    const monthNames = [
-      "January", "February", "March", "April", "May", "June",
-      "July", "August", "September", "October", "November", "December"
-    ];
-    currentMonthYearEl.textContent = `${monthNames[month]} ${year}`;
-    
-    // Create weekday headers
-    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    weekdays.forEach(day => {
-      let header = document.createElement('div');
-      header.classList.add('calendar-header');
-      header.textContent = day;
-      calendarEl.appendChild(header);
+document.addEventListener('DOMContentLoaded', () => {
+  const selectedDates = <?= isset($data['availability']) ? $data['availability'] : '[]' ?>;
+  let current = selectedDates.length 
+    ? new Date(selectedDates[0]) 
+    : new Date();
+
+  const calEl = document.getElementById('public-calendar');
+  const hdrEl = document.getElementById('currentMonthYear');
+
+  function draw(year, month) {
+    calEl.innerHTML = '';
+    const names = [ "Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec" ];
+    hdrEl.textContent = `${names[month]} ${year}`;
+
+    ["Sun","Mon","Tue","Wed","Thu","Fri","Sat"].forEach(day => {
+      const h = document.createElement('div');
+      h.className = 'calendar-header';
+      h.textContent = day;
+      calEl.appendChild(h);
     });
-    
-    let firstDayIndex = new Date(year, month, 1).getDay();
-    let lastDate = new Date(year, month + 1, 0).getDate();
-    let prevLastDate = new Date(year, month, 0).getDate();
-    
-    // Fill in blanks for previous month
-    for (let i = 0; i < firstDayIndex; i++) {
-      let blank = document.createElement('div');
-      blank.classList.add('calendar-day', 'inactive');
-      blank.textContent = prevLastDate - firstDayIndex + i + 1;
-      calendarEl.appendChild(blank);
+
+    const firstDay = new Date(year, month, 1).getDay();
+    const prevLast = new Date(year, month, 0).getDate();
+    for (let i = 0; i < firstDay; i++) {
+      const blank = document.createElement('div');
+      blank.className = 'calendar-day inactive';
+      blank.textContent = prevLast - firstDay + i + 1;
+      calEl.appendChild(blank);
     }
-    
-    // Populate current month days
+
+    const lastDate = new Date(year, month + 1, 0).getDate();
     for (let d = 1; d <= lastDate; d++) {
-      let dayEl = document.createElement('div');
-      dayEl.classList.add('calendar-day');
-      dayEl.textContent = d;
-      
-      let dateStr = year + '-' + String(month + 1).padStart(2, '0') + '-' + String(d).padStart(2, '0');
-      dayEl.dataset.date = dateStr;
-      
-      if (selectedDates.indexOf(dateStr) !== -1) {
-        dayEl.classList.add('selected');
-      }
-      
-      calendarEl.appendChild(dayEl);
+      const cell = document.createElement('div');
+      cell.className = 'calendar-day';
+      cell.textContent = d;
+      const ds = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+      if (selectedDates.includes(ds)) cell.classList.add('selected');
+      calEl.appendChild(cell);
     }
   }
-  
-  document.getElementById('prevMonth').addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() - 1);
-    renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
-  });
-  
-  document.getElementById('nextMonth').addEventListener('click', function() {
-    currentDate.setMonth(currentDate.getMonth() + 1);
-    renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
-  });
-  
-  renderCalendar(currentDate.getFullYear(), currentDate.getMonth());
+
+  document.getElementById('prevMonth').onclick = () => {
+    current.setMonth(current.getMonth() - 1);
+    draw(current.getFullYear(), current.getMonth());
+  };
+  document.getElementById('nextMonth').onclick = () => {
+    current.setMonth(current.getMonth() + 1);
+    draw(current.getFullYear(), current.getMonth());
+  };
+
+  draw(current.getFullYear(), current.getMonth());
 });
 </script>
+
+<!-- Font Awesome for star icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

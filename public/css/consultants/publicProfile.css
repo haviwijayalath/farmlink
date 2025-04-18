@@ -1,0 +1,314 @@
+/* ==== Wrapper ==== */
+.profile-calendar {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 30px;
+  margin-left: 240px;
+  margin-top: 70px;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
+/* ==== PROFILE PANEL ==== */
+.profile-panel {
+  flex: 0 0 60%;
+  max-width: 60%;
+  margin-top: 30px;
+  box-sizing: border-box;
+}
+
+.profile-card {
+  display: flex;
+  position: relative;
+  background: #fff;
+  border: 1px solid #ddd;
+  border-radius: 6px;
+  padding: 16px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+/* Star Rating Display */
+.profile-rating {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 1.2rem;
+  color: #f5a623;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.profile-rating .stars i {
+  color: #f5a623;
+  margin-right: 2px;
+}
+
+.profile-pic {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 50%;
+  margin-right: 16px;
+}
+
+.profile-info h2 {
+  margin: 0 0 8px;
+  font-size: 1.4rem;
+  color: #333;
+}
+
+.profile-info p {
+  margin: 4px 0;
+  font-size: 0.95rem;
+  color: #555;
+}
+
+.btn-appointment {
+  display: inline-block;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background: #007bff;
+  color: #fff;
+  text-decoration: none;
+  border-radius: 4px;
+  font-size: 0.9rem;
+  transition: background 0.2s ease;
+}
+
+.btn-appointment:hover {
+  background: #0056b3;
+}
+
+/* ==== Rating Form ==== */
+.rate-box {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  flex-direction: column;
+  margin-left: auto;
+  text-align: right;
+}
+
+.star-rating {
+  display: flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  font-size: 1.5rem;
+  margin-bottom: 5px; /* spacing between stars and button */
+}
+
+.star-rating input {
+  display: none;
+}
+
+.star-rating label {
+  color: #ccc;
+  cursor: pointer;
+}
+
+.star-rating input:checked ~ label,
+.star-rating label:hover,
+.star-rating label:hover ~ label {
+  color: #f5a623;
+}
+
+.btn-rate {
+  margin-top: 5px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 3px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+/* ==== CALENDAR PANEL ==== */
+.calendar-panel {
+  flex: 0 0 37%;
+  max-width: 37%;
+  margin-top: 15px;
+  box-sizing: border-box;
+}
+
+#public-calendar-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.nav-btn {
+  background: #e6b518;
+  color: #fff;
+  border: none;
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-size: 0.85rem;
+  cursor: pointer;
+}
+
+#currentMonthYear {
+  margin: 0 8px;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+/* ==== CALENDAR GRID ==== */
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 2px;
+  border: 1px solid #ccc;
+  padding: 2px;
+  box-sizing: border-box;
+}
+
+.calendar-grid .calendar-header,
+.calendar-grid .calendar-day {
+  text-align: center;
+  padding: 6px 0;
+  font-size: 0.8rem;
+  border: 1px solid #ddd;
+}
+
+.calendar-header {
+  background: #f5f5f5;
+  font-weight: bold;
+}
+
+.calendar-day.inactive {
+  background: #f9f9f9;
+  color: #ccc;
+}
+
+.calendar-day.selected {
+  background: #28a745;
+  color: #fff;
+}
+
+.calendar-footer-note {
+  margin-top: 8px;
+  text-align: center;
+  font-size: 0.75rem;
+  font-style: italic;
+  color: #555;
+}
+
+/* ==== POSTS FEED ==== */
+.posts-feed {
+  margin-left: 240px;
+  padding: 20px;
+  max-width: 800px;
+  box-sizing: border-box;
+}
+
+.posts-feed h3 {
+  margin-top: 20px;
+  margin-bottom: 12px;
+  font-size: 1.3rem;
+  color: #333;
+}
+
+.post-item {
+  background: #fff;
+  border: 1px solid #eee;
+  border-radius: 6px;
+  padding: 12px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  box-sizing: border-box;
+}
+
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  object-fit: cover;
+  margin-right: 10px;
+}
+
+.poster-info .poster-name {
+  font-weight: bold;
+  color: #333;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.poster-info small {
+  display: block;
+  font-size: 0.75rem;
+  color: #777;
+}
+
+.post-content {
+  margin: 8px 0;
+  line-height: 1.4;
+  font-size: 0.95rem;
+}
+
+.post-attachments {
+  margin-top: 12px;
+}
+
+.post-attachments img.post-img {
+  max-width: 100%;
+  border-radius: 4px;
+  margin-bottom: 8px;
+}
+
+.post-attachments a.post-file {
+  display: inline-block;
+  margin-right: 8px;
+  color: #007bff;
+  text-decoration: none;
+  font-size: 0.85rem;
+}
+
+.no-posts {
+  color: #555;
+  font-style: italic;
+  margin-top: 16px;
+}
+
+/* ==== Responsive ==== */
+@media (max-width: 768px) {
+  .profile-calendar,
+  .posts-feed {
+      margin-left: 0;
+      padding: 10px;
+  }
+
+  .profile-panel,
+  .calendar-panel {
+      flex: 0 0 100%;
+      max-width: 100%;
+  }
+
+  .profile-card {
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+  }
+
+  .profile-pic {
+      margin-bottom: 12px;
+  }
+
+  .rate-box {
+      text-align: center;
+      margin-top: 20px;
+  }
+
+  .star-rating {
+      justify-content: center;
+  }
+}

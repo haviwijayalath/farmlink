@@ -4,7 +4,7 @@
 
 <div class="sidebar">
   <ul>
-    <li><a href="<?= URLROOT ?>/consultants/viewprofile"><i class="fas fa-user"></i>View Profile</a></li>
+    <li><a href="<?= URLROOT ?>/consultants/viewprofile"><i class="fas fa-user"></i>My Profile</a></li>
     <li><a href="<?= URLROOT ?>/consultants/editprofile"><i class="fas fa-edit"></i>Edit Profile</a></li>
     <li><a href="<?= URLROOT ?>/consultants/setAvailability"><i class="fas fa-calendar-alt"></i>Availability</a></li>
     <li><a href="<?= URLROOT ?>/forums/index"><i class="fa-solid fa-comment"></i>Forum</a></li>

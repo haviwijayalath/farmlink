@@ -188,5 +188,82 @@ public function addAvailability($consultant_id, $date) {
   $this->db->bind(':available_date', $date);
   return $this->db->execute();
 }
+
+public function addPost($data) {
+    // Insert post
+    $this->db->query("INSERT INTO posts (consultant_id, content) VALUES (:c_id, :content)");
+    $this->db->bind(':c_id',     $data['consultant_id']);
+    $this->db->bind(':content',  $data['content']);
+    if (!$this->db->execute()) return false;
+
+    $post_id = $this->db->lastInsertId();
+
+    // Handle file uploads if any
+    if (!empty($data['attachments'])) {
+      foreach ($data['attachments'] as $file) {
+          $raw = file_get_contents($file['tmp_name']);
+        
+          $this->db->query("
+            INSERT INTO post_attachments 
+              (post_id, filename, mime_type, file_data) 
+            VALUES 
+              (:post_id, :fname, :mime, :fdata)
+          ");
+          $this->db->bind(':post_id', $post_id);
+          $this->db->bind(':fname',   $file['name']);
+          $this->db->bind(':mime',   $file['type']);
+          $this->db->bind(':fdata', $raw, PDO::PARAM_LOB);
+          $this->db->execute();
+        
+      }
+    }
+
+    return true;
+  }
+
+// fetch all posts by this consultant
+public function getPostsByConsultant($consultant_id) {
+  $this->db->query("
+    SELECT post_id, content, created_at
+      FROM posts
+      WHERE consultant_id = :cid
+      ORDER BY created_at DESC
+  ");
+  $this->db->bind(':cid',$consultant_id);
+  return $this->db->resultSet();
+}
+
+// fetch attachments for a given post
+public function getPostAttachments($post_id) {
+  $this->db->query("
+    SELECT filename, mime_type, file_data
+      FROM post_attachments
+      WHERE post_id = :pid
+  ");
+  $this->db->bind(':pid',$post_id);
+  return $this->db->resultSet();
+}
+
+public function getAverageRating($consultantId) {
+  $this->db->query("SELECT AVG(rating) AS avg_rating FROM consultant_ratings WHERE consultant_id = :id");
+  $this->db->bind(':id', $consultantId);
+  return $this->db->single()->avg_rating ?? 0;
+}
+
+public function getUserRating($consultantId, $farmerId) {
+  $this->db->query("SELECT rating FROM consultant_ratings WHERE consultant_id = :cid AND farmer_id = :fid");
+  $this->db->bind(':cid', $consultantId);
+  $this->db->bind(':fid', $farmerId);
+  $row = $this->db->single();
+  return $row ? $row->rating : 0;
+}
+
+public function rateConsultant($consultantId, $farmerId, $rating) {
+  $this->db->query("REPLACE INTO consultant_ratings (consultant_id, farmer_id, rating) VALUES (:cid, :fid, :rating)");
+  $this->db->bind(':cid', $consultantId);
+  $this->db->bind(':fid', $farmerId);
+  $this->db->bind(':rating', $rating);
+  return $this->db->execute();
+}
   
 }

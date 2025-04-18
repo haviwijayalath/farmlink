@@ -113,24 +113,55 @@ class Consultants extends Controller {
   }
 
   public function viewprofile() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
-    }
-  
-    $consultant = $this->consultantModel->getConsultantbyId($_SESSION['user_id']);
-  
-    if ($consultant) { // Check if consultant data is found
-      $data = [
-          'name' => $consultant->name,
-          'specialization' => $consultant->specialization, // Add specialization
-          'experience' => $consultant->experience,         // Add experience
-          'phone' => $consultant->phone,
-          'email' => $consultant->email,
-          'image' => $consultant->image
+    if (!isLoggedIn()) redirect('users/login');
+
+    // 1) If POST → save a new post
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      // sanitize text only
+      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+      $content = trim($_POST['content']);
+
+      // collect files
+      $attachments = [];
+      if (!empty($_FILES['attachments']['name'][0])) {
+        foreach ($_FILES['attachments']['name'] as $i => $name) {
+          $attachments[] = [
+            'tmp_name' => $_FILES['attachments']['tmp_name'][$i],
+            'name'     => $_FILES['attachments']['name'][$i],
+            'type'     => $_FILES['attachments']['type'][$i],
+          ];
+        }
+      }
+
+      $postData = [
+        'consultant_id'=> $_SESSION['user_id'],
+        'content'      => $content,
+        'attachments'  => $attachments
       ];
-  
-      $this->view('consultant/viewprofile', $data);
+
+      if ($this->consultantModel->addPost($postData)) {
+        flash('post_message', 'Post published!', 'flash-success');
+        redirect('consultants/viewprofile');
+      } else {
+        flash('post_message', 'Failed to publish.', 'flash-danger');
+        redirect('consultants/viewprofile');
+      }
     }
+
+    // 2) On GET, just load profile + posts
+    $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+    $posts      = $this->consultantModel->getPostsByConsultant($_SESSION['user_id']);
+
+    $data = [
+      'name'           => $consultant->name,
+      'specialization' => $consultant->specialization,
+      'experience'     => $consultant->experience,
+      'phone'          => $consultant->phone,
+      'email'          => $consultant->email,
+      'image'          => $consultant->image,
+      'posts'          => $posts
+    ];
+    $this->view('consultant/viewprofile', $data);
   }
   
   public function editprofile() {
@@ -257,28 +288,51 @@ public function publicProfile($id) {
       flash('profile_error', 'Consultant not found', 'alert alert-danger');
       redirect('farmers/bookconsultant');
   }
-  
+
+  $posts = $this->consultantModel->getPostsByConsultant($id);
+  foreach ($posts as $post) {
+    $post->attachments = $this->consultantModel->getPostAttachments($post->post_id);
+  }
+
   // Retrieve consultant's availability
   $availability = $this->consultantModel->getAvailability($id);
   $preselectedDates = [];
   foreach ($availability as $slot) {
-      // Ensure that available_date is in the format "YYYY-MM-DD"
       $preselectedDates[] = $slot->available_date;
   }
-  
-  // Add the JSON encoded array of dates to the data array.
+
+  // NEW: Retrieve average rating
+  $averageRating = $this->consultantModel->getAverageRating($id); // Implement in model if not already
+
+  // Add data to view
   $data = [
-      'id' => $consultant->id,
-      'name' => $consultant->name,
-      'email' => $consultant->email,
+      'id'             => $consultant->id,
+      'name'           => $consultant->name,
+      'email'          => $consultant->email,
       'specialization' => $consultant->specialization,
-      'experience' => $consultant->experience,
-      'phone' => $consultant->phone,
-      'image' => $consultant->image,
-      'availability' => json_encode($preselectedDates)  // Pass availability as JSON
+      'experience'     => $consultant->experience,
+      'phone'          => $consultant->phone,
+      'image'          => $consultant->image,
+      'availability'   => json_encode($preselectedDates),
+      'posts'          => $posts,
+      'avg_rating'     => $averageRating // Pass it to view
   ];
   
   $this->view('consultant/publicProfile', $data);
+}
+
+public function rate() {
+  if (!isLoggedIn() || $_SESSION['user_type']!=='farmer') redirect('users/login');
+
+  if ($_SERVER['REQUEST_METHOD']==='POST') {
+    $cid    = (int) ($_POST['consultant_id'] ?? 0);
+    $rating = (int) ($_POST['rating']        ?? 0);
+
+    // … validation …
+    $this->consultantModel->rateConsultant($cid, $_SESSION['user_id'], $rating);
+    flash('rating_success','Thanks','flash-success');
+  }
+  redirect("consultants/publicProfile/{$cid}");
 }
 
 public function setAvailability() {
