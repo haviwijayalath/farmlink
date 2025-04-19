@@ -47,14 +47,26 @@ class Users extends Controller {
             //Check and set logged in user
             $loggedInUser = $this->userModel->login($data['email'], $data['password']);
 
-            if($loggedInUser){
-                //Create session
-               $this->createUserSession($loggedInUser);
-            } else {
-                $data['password_err'] = 'Password incorrect';
-
+            if ($loggedInUser === 'pending') {
+                $data['email_err'] = 'Your account is pending admin approval.';
+                flash('log in failed', 'Your account is pending admin approval.');
                 $this->view('users/login', $data);
             }
+            elseif ($loggedInUser === 'suspended') {
+                $data['email_err'] = 'Your account has been suspended. Please contact support.';
+                flash('log in failed', 'Your account has been suspended. Please contact support.');
+                $this->view('users/login', $data);
+            }
+            elseif ($loggedInUser) {
+                // Approved and valid — create session
+                $this->createUserSession($loggedInUser);
+            }
+            else {
+                $data['password_err'] = 'Invalid email or password.';
+                $this->view('users/login', $data);
+            }
+            
+
 
         } else {
             //Load the view with errors

@@ -32,7 +32,7 @@ class Consultant
     // Saving the address before saving the consultant
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
-    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image,specialization,experience) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience)');
+    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image,specialization,experience, status) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience, :status)');
     // Bind values
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
@@ -42,6 +42,7 @@ class Consultant
     $this->db->bind(':address_id', $address_id);
     $this->db->bind(':specialization', $data['specialization']);
     $this->db->bind(':experience', $data['experience']);
+    $this->db->bind(':status', 'pending');
 
     // Execute
     if ($this->db->execute()) {
