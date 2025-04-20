@@ -1,0 +1,32 @@
+<?php
+
+/**
+ * Notification Helper
+ *
+ * This helper class is responsible for sending notifications.
+ *
+ * Place the send notification function inside controller methods where you need to send any notifications as,
+ *    send_notification($from_type, $from_id, $to_type, $to_id, $content, $url, $msg_type)
+ *    from_type: Type of the sender ( f - farmer, b - buyer, d - dperson, c - consultant )
+ *    from_id: ID of the sender
+ *    to_type: Type of the receiver ( f - farmer, b - buyer, d - dperson, c - consultant )
+ *    to_id: ID of the receiver
+ *    content: Content of the notification
+ *    url: URL associated with the notification
+ *    msg_type: Type of the message (e.g., 'info', 'warning', 'error')
+ * 
+ *    This function sends a notification based on the provided parameters.
+ */
+
+class NotificationHelper {
+  private $notification;
+  public function __construct() {
+    $this->notification = new Notification();
+  }
+
+  public function send_notification($from_type, $from_id, $to_type, $to_id, $content, $url, $msg_type) {
+    return $this->notification->addNotification($from_type, $from_id, $to_type, $to_id, $content, $url, $msg_type);
+  }
+
+
+}
