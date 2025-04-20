@@ -1,9 +1,11 @@
 <?php
   class Farmers extends Controller {
     private $farmerModel;
+    private $notificationHelper;
 
     public function __construct() {
       $this->farmerModel = $this->model('Farmer');
+      $this->notificationHelper = new NotificationHelper();
     }
 
     public function register() {
@@ -464,6 +466,7 @@
           // Add stock to the database
           if ($this->farmerModel->addStock($data)) {
             flash('stock_message', 'Stock Added');
+            $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'f', $_SESSION['user_id'], 'New stock added', 'farmers/managestocks', 'stock');
             redirect('farmers/managestocks');
           } else {
             die('Something went wrong');
