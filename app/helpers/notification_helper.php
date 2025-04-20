@@ -31,6 +31,6 @@ class NotificationHelper {
   }
 
   public function get_notifications($to_type, $to_id) {
-    return $this->notification->getNotifications($to_type, $to_id);
+    return json_encode($this->notification->getNotifications($to_type, $to_id));
   }
 }

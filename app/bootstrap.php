@@ -10,6 +10,5 @@
 
   // autoload core libraries
   spl_autoload_register(function($className) {
-    echo "Loading class: " . $className . "\n";
     require_once 'libraries/'. $className .'.php';
   });
