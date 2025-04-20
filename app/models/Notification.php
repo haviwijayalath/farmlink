@@ -63,4 +63,46 @@ class Notification
     return $this->db->resultSet();
   }
   
+  // Mark a notification as read
+  public function markAsRead($notificationId, $to_type)
+  {
+    $tableName = $this->getTableName($to_type);
+    if (!$tableName) {
+      return false;
+    }
+    
+    $this->db->query("UPDATE {$tableName} SET status = 'read' WHERE id = :id");
+    $this->db->bind(':id', $notificationId);
+    return $this->db->execute();
+  }
+
+  // Mark all notifications as read for a user
+  public function markAllAsRead($to_type, $to_id)
+  {
+    $tableName = $this->getTableName($to_type);
+    if (!$tableName) {
+      return false;
+    }
+    
+    $this->db->query("UPDATE {$tableName} SET status = 'read' WHERE to_id = :to_id AND status = 'unread'");
+    $this->db->bind(':to_id', $to_id);
+    return $this->db->execute();
+  }
+  
+  // Helper method to get table name from type
+  private function getTableName($type)
+  {
+    switch ($type) {
+      case 'f':
+        return 'notify_farmer';
+      case 'b':
+        return 'notify_buyer';
+      case 'd':
+        return 'notify_dperson';
+      case 'c':
+        return 'notify_consultant';
+      default:
+        return false;
+    }
+  }
 }
