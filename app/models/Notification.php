@@ -12,22 +12,13 @@ class Notification
   // Add a new notification
   public function addNotification($from_type, $from_id, $to_type, $to_id, $subject, $content, $url, $msg_type)
   {
-    switch ($to_type) {
-      case 'f':
-        $this->db->query('INSERT INTO notify_farmer (from_type, from_id, to_id, subject, content, url, msg_type, date_time, status) VALUES (:from_type, :from_id, :to_id, :subject, :content, :url, :msg_type, :date_time, :status)');
-        break;
-      case 'b':
-        $this->db->query('INSERT INTO notify_buyer (from_type, from_id, to_id, subject, content, url, msg_type, date_time, status) VALUES (:from_type, :from_id, :to_id, :subject, :content, :url, :msg_type, :date_time, :status)');
-        break;
-      case 'd': 
-        $this->db->query('INSERT INTO notify_dperson (from_type, from_id, to_id, subject, content, url, msg_type, date_time, status) VALUES (:from_type, :from_id, :to_id, :subject, :content, :url, :msg_type, :date_time, :status)');
-        break;
-      case 'c':
-        $this->db->query('INSERT INTO notify_consultant (from_type, from_id, to_id, subject, content, url, msg_type, date_time, status) VALUES (:from_type, :from_id, :to_id, :subject, :content, :url, :msg_type, :date_time, :status)');
-        break;
-      default:
-        return false; // Invalid to_type
+    $tableName = $this->getTableName($to_type);
+    if (!$tableName) {
+      return false; // Invalid to_type
     }
+    $this->db->query("INSERT INTO {$tableName} (from_type, from_id, to_id, subject, content, url, msg_type, date_time, status) VALUES (:from_type, :from_id, :to_id, :subject, :content, :url, :msg_type, :date_time, :status)");
+
+    // Bind parameters
     $this->db->bind(':from_type', $from_type);
     $this->db->bind(':from_id', $from_id);
     $this->db->bind(':to_id', $to_id);
@@ -43,22 +34,11 @@ class Notification
   // Get notifications for a specific user
   public function getNotifications($to_type, $to_id)
   {
-    switch ($to_type) {
-      case 'f':
-        $this->db->query('SELECT * FROM notify_farmer WHERE to_id = :to_id ORDER BY date_time DESC');
-        break;
-      case 'b':
-        $this->db->query('SELECT * FROM notify_buyer WHERE to_id = :to_id ORDER BY date_time DESC');
-        break;
-      case 'd': 
-        $this->db->query('SELECT * FROM notify_dperson WHERE to_id = :to_id ORDER BY date_time DESC');
-        break;
-      case 'c':
-        $this->db->query('SELECT * FROM notify_consultant WHERE to_id = :to_id ORDER BY date_time DESC');
-        break;
-      default:
-        return false; // Invalid to_type
+    $tableName = $this->getTableName($to_type);
+    if (!$tableName) {
+      return false; // Invalid to_type
     }
+    $this->db->query("SELECT * FROM {$tableName} WHERE to_id = :to_id ORDER BY date_time DESC");
     $this->db->bind(':to_id', $to_id);
     return $this->db->resultSet();
   }

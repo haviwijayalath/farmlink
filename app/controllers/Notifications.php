@@ -20,8 +20,8 @@ class Notifications extends Controller {
     // Get notifications for the current user
     public function getNotifications() {
         // Determine user type and ID
-        $userType = $this->getUserType();
-        $userId = $this->getUserId();
+        $userType = getUserType();
+        $userId = getUserId();
         
         if (!$userType || !$userId) {
             http_response_code(400);
@@ -63,8 +63,8 @@ class Notifications extends Controller {
             exit;
         }
         
-        $userType = $this->getUserType();
-        $userId = $this->getUserId();
+        $userType = getUserType();
+        $userId = getUserId();
         
         if (!$userType || !$userId) {
             http_response_code(400);
@@ -78,32 +78,4 @@ class Notifications extends Controller {
         echo json_encode(['success' => (bool)$result]);
     }
     
-    // Helper method to determine user type
-    private function getUserType() {
-        if (isset($_SESSION['user_role'])) {
-            switch ($_SESSION['user_role']) {
-                case 'farmer':
-                    return 'f';
-                case 'buyer':
-                    return 'b';
-                case 'delivery_person':
-                case 'delivery':
-                    return 'd';
-                case 'consultant':
-                    return 'c';
-                default:
-                    return null;
-            }
-        } else if (isset($_SESSION['user_type'])) {
-            // If user_type is stored directly
-            return $_SESSION['user_type'];
-        }
-        return null;
-    }
-    
-    // Helper method to get user ID
-    private function getUserId() {
-        return isset($_SESSION['user_id']) ? $_SESSION['user_id'] : 
-               (isset($_SESSION['admin_id']) ? $_SESSION['admin_id'] : null);
-    }
 }

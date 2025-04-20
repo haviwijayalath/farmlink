@@ -34,3 +34,35 @@ class NotificationHelper {
     return json_encode($this->notification->getNotifications($to_type, $to_id));
   }
 }
+
+
+function getUserId() {
+  if (isset($_SESSION['user_id'])) {
+    return $_SESSION['user_id'];
+  } elseif (isset($_SESSION['admin_id'])) {
+    return $_SESSION['admin_id'];
+  }
+  return null;
+}
+
+function getUserType() {
+  if (isset($_SESSION['user_role'])) {
+    switch ($_SESSION['user_role']) {
+      case 'farmer':
+          return 'f';
+      case 'buyer':
+          return 'b';
+      case 'delivery_person':
+      case 'delivery':
+          return 'd';
+      case 'consultant':
+          return 'c';
+      default:
+          return null;
+    }
+  } else if (isset($_SESSION['user_type'])) {
+    // If user_type is stored directly
+    return $_SESSION['user_type'];
+  }
+  return null;
+}
