@@ -25,12 +25,12 @@
 
     <div class="payment-option">
         
-        <div class="payment-details">
+        <!-- <div class="payment-details">
         <input placeholder="Card holder name" type="text"/>
             <input placeholder="Card number" type="text"/>
             <input placeholder="Expiry date" type="text"/>
             <input placeholder="Security code(CVV)" type="text"/>
-        </div>
+        </div> -->
 
         <div class="review-order">
             <h2>
