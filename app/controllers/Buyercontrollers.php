@@ -248,11 +248,20 @@ class Buyercontrollers extends Controller {
             $total += $item->price * $item->quantity;
         }
     
+        if(!empty($cartItems)){
         $data = [
             'cartID' => $cartItems[0]->cart_id,
             'cartItems' => $cartItems,
             'total' => $total
         ];
+    } else {
+        //handle the cart when cart is empty
+        $data = [
+            'cartID' => null,
+            'cartItems' => [],
+            'total' => 0
+        ];
+    }
 
         $this->view('buyer/cart/cart', $data);
     }
