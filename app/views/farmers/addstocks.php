@@ -51,7 +51,7 @@ $vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper"
         <option value="dairy">Dairy</option>
       </select>
     </div>
-    
+
     <div class="form-group">
       <label for="quantity">Quantity: <sup>*</sup></label>
       <input type="number" name="quantity" class="form-control form-control-lg" required>
