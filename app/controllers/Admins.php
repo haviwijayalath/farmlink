@@ -1,6 +1,7 @@
 <?php
   class Admins extends Controller {
     private $adminModel;
+    private $complaintModel;
     
     public function __construct() {
       if (!isAdmin()) {
