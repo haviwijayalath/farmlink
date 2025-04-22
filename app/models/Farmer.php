@@ -1,24 +1,17 @@
 <?php
-
-class Farmer
-{
+class Farmer {
   private $db;
 
-  public function __construct()
-  {
+  public function __construct() {
     $this->db = new Database;
   }
 
-  // Saving the address
-  public function saveAddress($no, $street, $city)
-  {
+  // Save address and return inserted address ID.
+  public function saveAddress($no, $street, $city) {
     $this->db->query('INSERT INTO address (number, Street, City) VALUES(:number, :street, :city)');
-    // Bind values
     $this->db->bind(':number', $no);
     $this->db->bind(':street', $street);
     $this->db->bind(':city', $city);
-
-    // Execute
     if ($this->db->execute()) {
       return $this->db->lastInsertId();
     } else {
@@ -26,10 +19,8 @@ class Farmer
     }
   }
 
-  // Register farmer
-  public function register($data)
-  {
-    // Saving the address before saving the farmer
+  // Register farmer.
+  public function register($data) {
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
     $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image, rate, status) VALUES(:name, :password, :email, :address_id, :phone, :image, :rate, :status)');
@@ -106,45 +97,81 @@ class Farmer
   public function findFarmerByEmail($email)
   {
     $this->db->query('SELECT * FROM farmers WHERE email = :email');
-    // Bind value
     $this->db->bind(':email', $email);
-
     $row = $this->db->single();
-
-    // Check row
-    if ($this->db->rowCount() > 0) {
-      return true;
-    } else {
-      return false;
-    }
+    return $this->db->rowCount() > 0;
   }
 
-  // Login farmer
-  public function login($email, $password)
-  {
+  // Login farmer.
+  public function login($email, $password) {
     $this->db->query('SELECT * FROM farmers WHERE email = :email');
     $this->db->bind(':email', $email);
-
     $row = $this->db->single();
-    $hashed_password = $row->password;
-
-    if (password_verify($password, $hashed_password)) {
+    if ($row && password_verify($password, $row->password)) {
       return $row;
     } else {
       return false;
     }
   }
 
-  // Get farmer by id
-  public function getFarmerById($id)
-  {
+  // Get farmer by id.
+  public function getFarmerById($id) {
     $this->db->query('SELECT * FROM farmers WHERE id = :id');
     $this->db->bind(':id', $id);
-
-    $row = $this->db->single();
-
-    return $row;
+    return $this->db->single();
   }
+
+  
+  // --- Forum Functionality (for questions) ---
+  // Store a question asked by a farmer.
+  public function storeQuestion($data) {
+    // Assuming the logged-in farmer's ID is in $_SESSION['user_id']
+    $this->db->query("
+      INSERT INTO forum_questions (farmer_id, questions, createdAt)
+      VALUES (:farmer_id, :questions, NOW())
+    ");
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+    $this->db->bind(':questions', $data['question']);
+    return $this->db->execute();
+  }
+
+  public function fetchQuestions() {
+    $this->db->query("
+      SELECT 
+        fq.q_id AS id, 
+        fq.questions AS question, 
+        fq.createdAt, 
+        fq.farmer_id,
+        f.name AS farmer_name
+      FROM forum_questions fq
+      LEFT JOIN farmers f ON fq.farmer_id = f.id
+      ORDER BY fq.createdAt DESC
+    ");
+    return $this->db->resultSet();
+  }
+
+  // Fetch a single question by ID
+  public function getQuestionById($q_id) {
+    $this->db->query("SELECT q_id AS id, farmer_id, questions AS question, createdAt FROM forum_questions WHERE q_id = :q_id");
+    $this->db->bind(':q_id', $q_id);
+    return $this->db->single();
+}
+
+
+// Update a question (only updates the question text)
+public function updateQuestion($q_id, $data) {
+  $this->db->query("UPDATE forum_questions SET questions = :question WHERE q_id = :q_id");
+  $this->db->bind(':question', $data['question']);
+  $this->db->bind(':q_id', $q_id);
+  return $this->db->execute();
+}
+
+// Delete a question
+public function deleteQuestion($q_id) {
+  $this->db->query("DELETE FROM forum_questions WHERE q_id = :q_id");
+  $this->db->bind(':q_id', $q_id);
+  return $this->db->execute();
+}
 
   // list stocks
   public function getStocks()

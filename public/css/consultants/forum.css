@@ -1,0 +1,122 @@
+/* forum.css */
+
+/* Container */
+.container {
+    max-width: 800px;
+    margin: 0 auto;
+    margin-left: 250px;
+    padding: 20px;
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    background-color: #ffffff;
+  }
+  
+  /* Headings */
+  h1,
+  h2 {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  
+  /* Buttons */
+  .btn {
+    padding: 8px 12px;
+    text-decoration: none;
+    background-color: #007BFF;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    display: inline-block;
+    font-size: 14px;
+  }
+  
+  .btn:hover {
+    background-color: #0056b3;
+  }
+  
+  .btn-secondary {
+    background-color: #6c757d;
+  }
+  
+  .btn-secondary:hover {
+    background-color: #565e64;
+  }
+  
+  /* Form Groups */
+  .form-group {
+    margin-bottom: 15px;
+  }
+  
+  /* Textareas */
+  textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+    resize: vertical;
+  }
+  
+  /* Lists */
+  .questions-list,
+  .answers-list {
+    list-style: none;
+    padding: 0;
+  }
+  
+  /* List Items */
+  .question-item,
+  .answer-item {
+    background: #fff;
+    padding: 15px;
+    border: 1px solid #ddd;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  }
+  
+  /* Invalid Feedback */
+  .invalid-feedback {
+    color: red;
+    font-size: 0.9em;
+    margin-top: 5px;
+  }
+  
+  /* Alert Messages */
+  .alert {
+    padding: 10px;
+    margin-bottom: 15px;
+    border-radius: 4px;
+    text-align: center;
+  }
+  
+  .alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+  }
+  
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+  }
+  
+  /* Section spacing */
+  section {
+    margin-bottom: 40px;
+  }
+  
+  /* Responsive adjustments */
+  @media (max-width: 600px) {
+    .container {
+      padding: 10px;
+    }
+    
+    .btn {
+      width: 100%;
+      text-align: center;
+    }
+  }
+  

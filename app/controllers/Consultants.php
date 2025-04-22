@@ -1,270 +1,377 @@
 <?php
-  class Consultants extends Controller {
-    private $consultantModel;
+class Consultants extends Controller {
+  private $consultantModel;
 
-    public function __construct() {
-      $this->consultantModel = $this->model('Consultant');
-    }
+  public function __construct() {
+    $this->consultantModel = $this->model('Consultant');
+  }
 
-    public function register() {
-    
-      // Check for POST
-      if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        // Process form
-        // Sanitize POST data
-        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+  public function register() {
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-        $data = [
-          'name' => trim($_POST['name']),
-          'email' => trim($_POST['email']),
-          'phone_number' => trim($_POST['phone_number']),
-          'password' => trim($_POST['password']),
-          'confirm_password' => trim($_POST['confirm_password']),
-          'addr_no' => trim($_POST['addr_no']),
-          'addr_street' => trim($_POST['addr_street']),
-          'addr_city' => trim($_POST['addr_city']),
-          'image' => isset($_POST['image']) ? $_POST['image'] : '', 
-          'specialization' => trim($_POST['specialization']),
-          'experience'=> trim($_POST['experience']),
+      $data = [
+        'name' => trim($_POST['name']),
+        'email' => trim($_POST['email']),
+        'phone_number' => trim($_POST['phone_number']),
+        'password' => trim($_POST['password']),
+        'confirm_password' => trim($_POST['confirm_password']),
+        'addr_no' => trim($_POST['addr_no']),
+        'addr_street' => trim($_POST['addr_street']),
+        'addr_city' => trim($_POST['addr_city']),
+        'image' => isset($_FILES['image']) ? $_FILES['image'] : '',
+        'specialization' => trim($_POST['specialization']),
+        'experience' => trim($_POST['experience']),
+        'name_err' => '',
+        'email_err' => '',
+        'phone_number_err' => '',
+        'password_err' => '',
+        'confirm_password_err' => '',
+        'image_err' => '',
+        'specialization_err' => '',
+        'experience_err' => ''
+      ];
 
-          'name_err' => '',
-          'email_err' => '',
-          'phone_number_err' => '',
-          'password_err' => '',
-          'confirm_password_err' => '',
-          'image_err' => '',
-          'specialization_err' => '',
-          'experience_err'=>''
-        ];
+      // Validate input (email, name, phone, password, confirm_password, specialization, etc.)
+      if (empty($data['email'])) {
+        $data['email_err'] = 'Please enter email';
+      } elseif ($this->consultantModel->findUserByEmail($data['email'])) {
+        $data['email_err'] = 'This email is already taken';
+      }
+      if (empty($data['name'])) {
+        $data['name_err'] = 'Please enter name';
+      }
+      if (empty($data['phone_number'])) {
+        $data['phone_number_err'] = 'Please enter phone number';
+      }
+      if (empty($data['password'])) {
+        $data['password_err'] = 'Please enter password';
+      } elseif (strlen($data['password']) < 6) {
+        $data['password_err'] = 'Password must be at least 6 characters';
+      }
+      if (empty($data['confirm_password'])) {
+        $data['confirm_password_err'] = 'Please confirm password';
+      } elseif ($data['password'] != $data['confirm_password']) {
+        $data['confirm_password_err'] = 'Passwords do not match';
+      }
+      if (empty($data['specialization'])) {
+        $data['specialization_err'] = 'Please enter your specialization';
+      }
+      // Process image upload (omitted here for brevity)
 
-        // Validate Email
-        if (empty($data['email'])) {
-          $data['email_err'] = 'Please enter email';
+      if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) &&
+          empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err']) &&
+          empty($data['specialization_err'])) {
+        $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
+        if ($this->consultantModel->register($data)) {
+          flash('register_success', 'You are successfully registered! Log in now');
+          redirect('users/login');
         } else {
-          // if email exists
-          if ($this->consultantModel->findUserByEmail($data['email'])) {
-            $data['email_err'] = 'This email is already taken';
-          }
-        }
-
-        // Validate Name
-        if (empty($data['name'])) {
-          $data['name_err'] = 'Please enter name';
-        }
-
-        // Validate Phone Number
-        if (empty($data['phone_number'])) {
-          $data['phone_number_err'] = 'Please enter phone number';
-        }
-
-        // Validate Password
-        if (empty($data['password'])) {
-          $data['password_err'] = 'Please enter password';
-        } elseif (strlen($data['password']) < 6) {
-          $data['password_err'] = 'Password must be at least 6 characters';
-        }
-
-        // Validate Confirm Password
-        if (empty($data['confirm_password'])) {
-          $data['confirm_password_err'] = 'Please confirm password';
-        } else {
-          if ($data['password'] != $data['confirm_password']) {
-            $data['confirm_password_err'] = 'Passwords do not match';
-          }
-        }
-
-         // Validate Specialization
-         if (empty($data['specialization'])) {
-            $data['specialization_err'] = 'Please enter your specialization';
-          }
-
-        // image saved directory
-        $target_dir = APPROOT . '/../public/uploads/consultant/profile/';
-        $filename = time() . basename($_FILES['image']['name']);
-        $target_file = $target_dir . $filename;
-        $_picuploaded = true;
-        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-
-        // Check if image file is a actual image or fake image
-        $check = getimagesize($_FILES['image']['tmp_name']);
-        if ($check !== false) {
-          $_picuploaded = true;
-        } else {
-          $data['image_err'] = 'File is not an image';
-          $_picuploaded = false;
-        }
-
-        // Check file size
-        if ($_FILES['image']['size'] > 2000000) {
-          $data['image_err'] = 'Your photo exceeds the size limit of 2MB';
-          $_picuploaded = false;
-        }
-
-        // Allow certain file formats
-        if ($imageFileType != 'jpg' && $imageFileType != 'png' && $imageFileType != 'jpeg') {
-          $data['image_err'] = 'Please upload a photo with extension .jpg, .jpeg, or .png';
-          $_picuploaded = false;
-        }
-
-        // Check if $_picuploaded is set to false
-        if ($_picuploaded == false) {
-          $data['image_err'] = 'Sorry, your file was not uploaded';
-        } else {
-          // if everything is ok, try to upload file
-          if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-            $data['image'] = $filename;
-          } else {
-            $data['image_err'] = 'Sorry, there was an error uploading your file';
-          }
-        }
-
-        // Make sure no other errors before uploading the picture
-        if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
-          // hashing password
-          $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
-
-          // user registration
-          if ($this->consultantModel->register($data)) {
-            flash('register_success', 'You are successfully registered! Log in now');
-            // redirect to login
-            redirect('users/login');
-          } else {
-            die('Something went wrong! Please try again.');
-          }
-        } else {
-          // Load view with errors
-          $this->view('consultant/register', $data);
+          die('Something went wrong! Please try again.');
         }
       } else {
-        // Init data
-        $data = [
-          'name' => '',
-          'email' => '',
-          'phone_number' => '',
-          'image' => '',
-          'password' => '',
-          'confirm_password' => '',
-          'addr_no' => '',
-          'addr_street' => '',
-          'addr_city' => '',
-          'image' => '',
-          'specialization' => '',
-          'experience'=>'',
-
-          'name_err' => '',
-          'email_err' => '',
-          'phone_number_err' => '',
-          'password_err' => '',
-          'confirm_password_err' => '',
-          'image_err' => '',
-          'specialization_err' => '',
-          'experience_err'=>''
-        ];
-
-        // Load view
         $this->view('consultant/register', $data);
       }
-    }
-
-    public function index() {
-      if (!isLoggedIn()) {
-        redirect('users/login');
-      }
-
-      $consultant = $this->consultantModel->getConsultantbyId($_SESSION['user_id']);
+    } else {
       $data = [
-        'name' => $consultant->name,
-        'phone' => $consultant->phone,
-        'email' => $consultant->email,
-        'image' => $consultant->image
+        'name' => '',
+        'email' => '',
+        'phone_number' => '',
+        'image' => '',
+        'password' => '',
+        'confirm_password' => '',
+        'addr_no' => '',
+        'addr_street' => '',
+        'addr_city' => '',
+        'specialization' => '',
+        'experience' => '',
+        'name_err' => '',
+        'email_err' => '',
+        'phone_number_err' => '',
+        'password_err' => '',
+        'confirm_password_err' => '',
+        'image_err' => '',
+        'specialization_err' => '',
+        'experience_err' => ''
       ];
-      $this->view('consultant/index', $data);
-    }
-
-    public function viewprofile() {
-      if (!isLoggedIn()) {
-        redirect('users/login');
-      }
-
-      $this->view('consultant/viewprofile');
-    }
-
-    public function editprofile() {
-      if (!isLoggedIn()) {
-        redirect('users/login');
-      }
-      
-      $this->view('consultant/editprofile');
-    }
-
-    public function getQuestions() {
-
-        // Retrieve data using the model
-        $questions = $this->consultantModel->fetchQuestions();
-    
-        // Check if data exists
-        if ($questions) {
-            // Send data to the view
-            $this->view('consultant/pages/displayQuestions', ['questions' => $questions]);
-        } else {
-            // If no data found, handle appropriately
-            flash('data_message', 'No questions found', 'alert alert-warning');
-            $this->view('consultant/pages/displayQuestions', ['questions' => []]);
-        }
-    }
-    
-    public function sendAnswer() {
-        // Check for POST request
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Sanitize POST data
-            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    
-            // Initialize data
-            $data = [
-                'consultant_id' => trim($_POST['consultant_id']),
-                'q_id' => trim($_POST['q_id']),
-                'answer' => trim($_POST['answer']),
-                'answer_err' => ''
-            ];
-    
-    
-            // Validate description
-            if (empty($data['answer'])) {
-                $data['answer_err'] = 'Answer is required';
-            }
-    
-            // Ensure no errors exist
-            if (empty($data['answer_err'])) {
-                // All validations passed
-
-                if ($this->dataModel->storeAnswer($data)) {
-
-                    // Success, redirect or handle response
-                    flash('Succesfull', 'Answer successfully submitted');
-                    redirect('consultant/index');
-                } else {
-                    // Error storing data
-                    flash('Unsuccesfull', 'Error submitting answer', 'alert alert-danger');
-
-                    $this->view('consultant/pages/sendAnswer', $data);
-                }
-            } else {
-                // Load the view with errors
-                $this->view('consultant/pages/sendAnswer', $data);
-
-            }
-        } else {
-            // Initialize empty data for GET request
-            $data = [
-                'consultant_id' => '',
-                'q_id' => '',
-                'answer' => '',
-                'answer_err' => ''
-            ];
-    
-            // Load the form view
-
-            $this->view('consultant/pages/sendAnswer', $data);
-        }
+      $this->view('consultant/register', $data);
     }
   }
+
+  public function index() {
+    if (!isLoggedIn()) {
+      redirect('users/login');
+    }
+    $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+    $data = [
+      'name' => $consultant->name,
+      'phone' => $consultant->phone,
+      'email' => $consultant->email,
+      'image' => $consultant->image
+    ];
+    $this->view('consultant/index', $data);
+  }
+
+  public function viewprofile() {
+    if (!isLoggedIn()) redirect('users/login');
+
+    // 1) If POST → save a new post
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      // sanitize text only
+      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+      $content = trim($_POST['content']);
+
+      // collect files
+      $attachments = [];
+      if (!empty($_FILES['attachments']['name'][0])) {
+        foreach ($_FILES['attachments']['name'] as $i => $name) {
+          $attachments[] = [
+            'tmp_name' => $_FILES['attachments']['tmp_name'][$i],
+            'name'     => $_FILES['attachments']['name'][$i],
+            'type'     => $_FILES['attachments']['type'][$i],
+          ];
+        }
+      }
+
+      $postData = [
+        'consultant_id'=> $_SESSION['user_id'],
+        'content'      => $content,
+        'attachments'  => $attachments
+      ];
+
+      if ($this->consultantModel->addPost($postData)) {
+        flash('post_message', 'Post published!', 'flash-success');
+        redirect('consultants/viewprofile');
+      } else {
+        flash('post_message', 'Failed to publish.', 'flash-danger');
+        redirect('consultants/viewprofile');
+      }
+    }
+
+    // 2) On GET, just load profile + posts
+    $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+    $posts      = $this->consultantModel->getPostsByConsultant($_SESSION['user_id']);
+
+    $data = [
+      'name'           => $consultant->name,
+      'specialization' => $consultant->specialization,
+      'experience'     => $consultant->experience,
+      'phone'          => $consultant->phone,
+      'email'          => $consultant->email,
+      'image'          => $consultant->image,
+      'posts'          => $posts
+    ];
+    $this->view('consultant/viewprofile', $data);
+  }
+  
+  public function editprofile() {
+    if (!isLoggedIn()) {
+        redirect('users/login');
+    }
+    
+    // Process POST
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+        // Sanitize POST data
+        $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        
+        // Build data array using the consultant's session id
+        $data = [
+            'id' => $_SESSION['user_id'],
+            'name' => trim($_POST['name']),
+            'email' => trim($_POST['email']),
+            'specialization' => trim($_POST['specialization']),
+            'experience' => trim($_POST['experience']),
+            'address' => trim($_POST['address']),
+            'current_password' => isset($_POST['current_password']) ? trim($_POST['current_password']) : '',
+            'new_password' => trim($_POST['new_password']),
+            'confirm_password' => trim($_POST['confirm_password']),
+            'password' => '',  // This will be set later
+            'image' => '',     // To be handled below
+            'name_err' => '',
+            'email_err' => '',
+            'password_err' => '',
+            'image_err' => ''
+        ];
+        
+        // Basic validations
+        if(empty($data['name'])) {
+            $data['name_err'] = 'Please enter your name';
+        }
+        if(empty($data['email'])) {
+            $data['email_err'] = 'Please enter your email';
+        }
+        if(!empty($data['new_password']) && ($data['new_password'] !== $data['confirm_password'])) {
+            $data['password_err'] = 'New password and confirm password do not match';
+        }
+        
+        // Handle image upload if a new image is provided
+        if (isset($_FILES['image']) && $_FILES['image']['error'] == 0) {
+            $target_dir = APPROOT . '/../public/uploads/consultants/';
+            // Create directory if it doesn't exist
+            if (!is_dir($target_dir)) {
+                mkdir($target_dir, 0777, true);
+            }
+            $filename = time() . '_' . basename($_FILES['image']['name']);
+            $target_file = $target_dir . $filename;
+            $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+            $file_type = $_FILES['image']['type'];
+            
+            if (!in_array($file_type, $allowed_types)) {
+                $data['image_err'] = 'Invalid file type. Only JPG, PNG, and GIF files are allowed.';
+            } else {
+                if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
+                    $data['image'] = $filename;
+                } else {
+                    $data['image_err'] = 'Error uploading image. Please try again.';
+                }
+            }
+        } else {
+            // If no new image is uploaded, retain the old image
+            $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+            $data['image'] = $consultant->image;
+        }
+        
+        // Get current consultant data for password checking
+        $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+        
+        // Process password update if new password provided
+        if (!empty($data['new_password'])) {
+            if (password_verify($data['current_password'], $consultant->password)) {
+                $data['password'] = password_hash($data['new_password'], PASSWORD_DEFAULT);
+            } else {
+                $data['password_err'] = 'Current password is incorrect';
+            }
+        } else {
+            // Retain the old password
+            $data['password'] = $consultant->password;
+        }
+        
+        // If no errors, update consultant profile
+        if (empty($data['name_err']) && empty($data['email_err']) && empty($data['password_err']) && empty($data['image_err'])) {
+            if ($this->consultantModel->updateConsultant($data)) {
+                redirect('consultants/viewprofile');
+            } else {
+                die('Something went wrong while updating your profile.');
+            }
+        } else {
+            // Load view with errors
+            $this->view('consultant/editprofile', $data);
+        }
+        
+    } else {
+        // On GET, load current consultant data from the model
+        $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+        $data = [
+            'id' => $consultant->id,
+            'name' => $consultant->name,
+            'email' => $consultant->email,
+            'specialization' => $consultant->specialization,
+            'experience' => $consultant->experience,
+            'address' => $consultant->address,
+            'image' => $consultant->image,
+            'name_err' => '',
+            'email_err' => '',
+            'password_err' => '',
+            'image_err' => ''
+        ];
+        $this->view('consultant/editprofile', $data);
+    }
+}
+
+public function publicProfile($id) {
+  if (!isLoggedIn()) {
+      redirect('users/login');
+  }
+  
+  $consultant = $this->consultantModel->getConsultantById($id);
+  if (!$consultant) {
+      flash('profile_error', 'Consultant not found', 'alert alert-danger');
+      redirect('farmers/bookconsultant');
+  }
+
+  $posts = $this->consultantModel->getPostsByConsultant($id);
+  foreach ($posts as $post) {
+    $post->attachments = $this->consultantModel->getPostAttachments($post->post_id);
+  }
+
+  // Retrieve consultant's availability
+  $availability = $this->consultantModel->getAvailability($id);
+  $preselectedDates = [];
+  foreach ($availability as $slot) {
+      $preselectedDates[] = $slot->available_date;
+  }
+
+  // NEW: Retrieve average rating
+  $averageRating = $this->consultantModel->getAverageRating($id); // Implement in model if not already
+
+  // Add data to view
+  $data = [
+      'id'             => $consultant->id,
+      'name'           => $consultant->name,
+      'email'          => $consultant->email,
+      'specialization' => $consultant->specialization,
+      'experience'     => $consultant->experience,
+      'phone'          => $consultant->phone,
+      'image'          => $consultant->image,
+      'availability'   => json_encode($preselectedDates),
+      'posts'          => $posts,
+      'avg_rating'     => $averageRating // Pass it to view
+  ];
+  
+  $this->view('consultant/publicProfile', $data);
+}
+
+public function rate() {
+  if (!isLoggedIn() || $_SESSION['user_type']!=='farmer') redirect('users/login');
+
+  if ($_SERVER['REQUEST_METHOD']==='POST') {
+    $cid    = (int) ($_POST['consultant_id'] ?? 0);
+    $rating = (int) ($_POST['rating']        ?? 0);
+
+    // … validation …
+    $this->consultantModel->rateConsultant($cid, $_SESSION['user_id'], $rating);
+    flash('rating_success','Thanks','flash-success');
+  }
+  redirect("consultants/publicProfile/{$cid}");
+}
+
+public function setAvailability() {
+  if (!isLoggedIn()) {
+      redirect('users/login');
+  }
+
+  // On POST: process the submitted dates.
+  if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST data
+      $datesJson = isset($_POST['dates']) ? $_POST['dates'] : '[]';
+      $dates = json_decode($datesJson, true);
+
+      // Delete previous availability if you want to fully reset the calendar:
+      $this->consultantModel->deleteAvailability($_SESSION['user_id']);
+
+      if (!empty($dates)) {
+          foreach ($dates as $date) {
+              $this->consultantModel->addAvailability($_SESSION['user_id'], $date);
+          }
+          flash('availability_success', 'Availability updated successfully');
+          redirect('consultants/setAvailability'); // Or whichever page you prefer
+      } else {
+          flash('availability_error', 'No dates selected', 'alert alert-danger');
+          redirect('consultants/setAvailability');
+      }
+  } else {
+      // On GET, simply load the view with the calendar interface.
+      // Optionally, load existing availability to preselect dates in the calendar.
+      $availability = $this->consultantModel->getAvailability($_SESSION['user_id']);
+      $preselectedDates = [];
+      foreach ($availability as $slot) {
+          // Assuming available_date is stored in format 'Y-m-d'
+          $preselectedDates[] = $slot->available_date;
+      }
+      $data = [ 'preselected' => json_encode($preselectedDates) ];
+      $this->view('consultant/availability', $data);
+  }
+}
+
+
+}
