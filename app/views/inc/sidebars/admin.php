@@ -5,7 +5,7 @@
         <li><a href="<?php echo URLROOT ?>/Admins/index">
             <i class="fas fa-tachometer-alt"></i> Dashboard
         </a></li>
-        <li><a href="<?php echo URLROOT ?>/Admins/users">
+        <li><a href="<?php echo URLROOT ?>/AdminControllers/index">
             <i class="fas fa-users"></i> Users
         </a></li>
         <li><a href="<?php echo URLROOT ?>/Admins/viewProducts">
