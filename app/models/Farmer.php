@@ -287,4 +287,25 @@ class Farmer
 
     return $results;
   }
+
+  // Get orders
+  public function getOrders()
+  {
+    $this->db->query('
+      SELECT os.*, fp.name AS product_name, f.name AS farmer_name, b.name AS buyer_name, d.name AS dperson_name
+      FROM order_success os
+      INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+      INNER JOIN buyers b ON os.buyerID = b.id
+      INNER JOIN delivery_persons d ON os.dperson_id = d.id
+      INNER JOIN farmers f ON fp.farmer_id = f.id
+      WHERE f.id = :farmer_id
+      ORDER BY os.orderDate DESC
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+  
 }

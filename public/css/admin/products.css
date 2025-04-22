@@ -127,6 +127,31 @@ tbody tr:hover {
   box-shadow: 0 0 5px rgba(217, 83, 79, 0.8);
 }
 
+.ready-btn {
+  background-color: #5cb85c; /* Green color for success action */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.ready-btn:hover {
+  background-color: #4cae4c; /* Darker green for hover effect */
+}
+
+.ready-btn:active {
+  background-color: #449d44; /* Even darker green when clicked */
+}
+
+.ready-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(92, 184, 92, 0.8);
+}
+
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {

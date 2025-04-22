@@ -6,9 +6,9 @@
 <div class="admin-container">
   <!-- Header -->
   <header class="admin-header">
-    <h2>Products</h2>
+    <h2>Orders</h2>
     <div class="header-actions">
-      <input type="text" class="search-bar" id="searchBar" placeholder="Search by Product ID">
+      <input type="text" class="search-bar" id="searchBar" placeholder="Search by ID, buyer, or product">
       <button class="search-icon-btn">Search</button>
     </div>
   </header>
@@ -18,27 +18,37 @@
     <table id="productTable">
       <thead>
         <tr>
-          <th>ProductID</th>
+          <th>Order ID</th>
+          <th>Buyer</th>
           <th>Product</th>
-          <th>Price</th>
-          <th>Stock</th>
-          <th>Expired At</th>
-          <th>Actions</th>
+          <th>Quantity</th>
+          <th>Amount</th>
+          <th>Delivery Address</th>
+          <th>Ordered Date</th>
+          <th>Delivery Person</th>
+          <th>Action</th>
         </tr>
       </thead>
       <tbody>
-      <?php foreach ($data['products'] as $product) : ?>
-        <tr id="row-<?= $product->fproduct_id ?>">
-          <td><a href="<?= URLROOT ?>/admins/productDetails/<?= $product->fproduct_id ?>"><?= $product->fproduct_id ?></a></td>
-          <td><?= htmlspecialchars($product->name) ?></td>
-          <td>Rs <?= number_format($product->price, 2) ?></td>
-          <td><?= $product->stock !== null ? $product->stock : '--' ?></td>
-          <td><?= date('M d, Y h:i A', strtotime($product->exp_date)) ?></td>
+      <?php foreach ($data as $order) : ?>
+        <tr id="row-<?= $order->orderID ?>">
+          <td><?= htmlspecialchars($order->orderID) ?></td>
+          <td><?= htmlspecialchars($order->buyer_name) ?></td>
+          <td><?= htmlspecialchars($order->product) ?></td>
+          <td><?= htmlspecialchars($order->quantity) ?></td>
+          <td>Rs <?= number_format($order->famersFee, 2) ?></td>
+          <td><?= htmlspecialchars($order->dropAddress) ?></td>
+          <td><?= date('M d, Y h:i A', strtotime($order->orderDate)) ?></td>
+          <td><?= htmlspecialchars($order->dperson_name) ?></td>
           <td>
-            <form action="<?= URLROOT ?>/admins/rejectProduct" method="POST">
-              <input type="hidden" name="product_id" value="<?= $product->fproduct_id ?>">
-              <button type="submit" class="reject-btn">Reject</button>
-            </form>
+            <?php if ($order->status == 'processing') : ?>
+              <form action="<?= URLROOT ?>/farmers/orderready" method="POST">
+                <input type="hidden" name="product_id" value="<?= $order->orderID ?>">
+                <button type="submit" class="ready-btn">Order Ready</button>
+              </form>
+            <?php else: ?>
+              <button class="status-confirmed" style="padding: 8px 12px;" disabled>Confirmed</button>
+            <?php endif; ?>
           </td>
         </tr>
       <?php endforeach; ?>
@@ -55,32 +65,14 @@
     const tableRows = document.querySelectorAll('#productTable tbody tr');
 
     tableRows.forEach(row => {
-      const productId = row.querySelector('td a').textContent.toLowerCase();
-      row.style.display = productId.includes(searchValue) ? '' : 'none';
-    });
-  });
+      const orderId = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+      const buyerName = row.querySelector('td:nth-child(2)').textContent.toLowerCase();
+      const product = row.querySelector('td:nth-child(3)').textContent.toLowerCase();
 
-  // Reject Product Functionality (AJAX)
-  document.querySelectorAll('.reject-btn').forEach(button => {
-    button.addEventListener('click', function () {
-      const productId = this.dataset.id;
-
-      if (confirm('Are you sure you want to reject this product?')) {
-        fetch("<?= URLROOT ?>/admins/rejectProduct", {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ productId })
-        })
-        .then(response => response.json())
-        .then(data => {
-          if (data.success) {
-            document.getElementById(`row-${productId}`).remove();
-            alert('Product has been rejected.');
-          } else {
-            alert('Failed to reject the product.');
-          }
-        })
-        .catch(error => console.error('Error:', error));
+      if (orderId.includes(searchValue) || buyerName.includes(searchValue) || product.includes(searchValue)) {
+        row.style.display = '';
+      } else {
+        row.style.display = 'none';
       }
     });
   });

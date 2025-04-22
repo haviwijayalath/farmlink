@@ -669,11 +669,13 @@ class Farmers extends Controller
 
   public function manageorders()
   {
-    if (!isLoggedIn()) {
+    if (!isLoggedIn()  || $_SESSION['user_role'] != 'farmer') {
       redirect('users/login');
     }
 
-    $this->view('farmers/manageorders');
+    $data = $this->farmerModel->getOrders();
+
+    $this->view('farmers/manageorders', $data);
   }
 
   public function viewsales()
@@ -694,6 +696,7 @@ class Farmers extends Controller
     $data = $this->farmerModel->getExpiredStocks();
     $this->view('farmers/expstock', $data);
   }
+  
   public function bookconsultant()
   {
     if (!isLoggedIn()) {
