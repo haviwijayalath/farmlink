@@ -466,7 +466,7 @@
           // Add stock to the database
           if ($this->farmerModel->addStock($data)) {
             flash('stock_message', 'Stock Added');
-            $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'f', $_SESSION['user_id'], 'New stock added', 'New stock ' . $data['stock'] . ' of ' . $data['name'] . ' added', '/farmlink/farmers/managestocks', 'stock');
+            $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'f', $_SESSION['user_id'], 'New stock added', 'New stock ' . $data['stock'] . 'kg of ' . $data['name'] . ' added', '/farmlink/farmers/managestocks', 'stock');
             redirect('farmers/managestocks');
           } else {
             die('Something went wrong');
