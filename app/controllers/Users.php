@@ -187,6 +187,7 @@ class Users extends Controller {
                 unset($_SESSION['user_v_capacity']);
                 unset($_SESSION['user_v_image']);
                 unset($_SESSION['user_role']);
+                unset($_SESSION['user_vehicle_id']);
                 session_destroy();
                 redirect('users/login');
                 break;

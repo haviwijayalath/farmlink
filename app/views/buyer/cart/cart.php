@@ -6,42 +6,60 @@
 
 <div class="cart-container">
     <h1>Shopping Cart</h1>
+
+      <!-- Display Flash Messages -->
+      <?php flash('error'); ?>
+
     <table class="cart-table">
         <thead>
             <tr>
                 <th>Product</th>
-                <th>Price</th>
+                <th>Unit Price</th>
                 <th>Qty (Kg)</th>
                 <th>Subtotal</th>
                 <th>Action</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($data['cartItems'] as $item): ?>
+            <?php if (!empty($data['cartItems'])) : ?>
+                <?php foreach ($data['cartItems'] as $item): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($item->name) ?></td>
+                        <td>Rs.<?= number_format($item->price, 2) ?></td>
+                        <td>
+                            <form action="<?= URLROOT ?>/Buyercontrollers/updateCartItem" method="POST" style="display: inline;">
+                                <input type="hidden" name="cart_id" value="<?= $item->cart_id ?>">
+                                <input type="number" name="quantity" value="<?= $item->quantity ?>" min="1" required>
+                                <button type="submit">Update</button>
+                            </form>
+                        </td>
+                        <td>Rs.<?= number_format($item->price * $item->quantity, 2) ?></td>
+                        <td>
+                            <!-- Trigger the confirmation popup -->
+                            <a href="javascript:void(0)" class="btn-remove" onclick="showPopup(<?= $item->cart_id ?>)">Remove</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            <?php else: ?>
                 <tr>
-                    <td><?= htmlspecialchars($item->name) ?></td>
-                    <td>Rs.<?= number_format($item->price, 2) ?></td>
-                    <td>
-                        <form action="<?= URLROOT ?>/Buyercontrollers/updateCartItem" method="POST" style="display: inline;">
-                            <input type="hidden" name="cart_id" value="<?= $item->cart_id ?>">
-                            <input type="number" name="quantity" value="<?= $item->quantity ?>" min="1" required>
-                            <button type="submit">Update</button>
-                        </form>
-                    </td>
-                    <td>Rs.<?= number_format($item->price * $item->quantity, 2) ?></td>
-                    <td>
-                        <!-- Trigger the confirmation popup -->
-                        <a href="javascript:void(0)" class="btn-remove" onclick="showPopup(<?= $item->cart_id ?>)">Remove</a>
-                    </td>
+                    <td colspan="5" class="empty-cart-message">Your cart is empty.</td>
                 </tr>
-            <?php endforeach; ?>
+            <?php endif; ?>
         </tbody>
     </table>
     <div class="tot_value">
         <span>Total:</span>
         <span class="total-amount">Rs.<?= number_format($data['total'], 2) ?></span>
     </div>
-    <a class="btn-delivery" href="<?= URLROOT ?>/Buyercontrollers/deliveryOptions">Delivery Options</a>
+
+    <!-- delivery option button -->
+     <?php if(!empty($data['cartItems'])): ?>
+        <a class="btn-delivery" href="<?= URLROOT ?>/Buyercontrollers/deliveryOptions?cart_id=<?= htmlspecialchars($data['cartID']) ?>&product_id=<?= htmlspecialchars($data['productID']) ?>">Delivery Options</a>
+
+    <?php else: ?>
+        <button class="btn-delivery" disabled style="background-color: gray; cursor: not-allowed;">Delivery Options</button>
+    <?php endif; ?>
+
 </div>
 
 <!-- Confirmation Popup -->

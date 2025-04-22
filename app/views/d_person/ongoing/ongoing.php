@@ -6,55 +6,52 @@
 
 <div class="ongoingorder-container">
     <h2>Ongoing</h2>
-    <table class="ongoingorders-table">
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>Pick-Up</th>
-                <th>Drop-Off</th>
-                <th>Buyer</th>
-                <th></th>
-                <th></th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php if (!empty($data['orders'])): ?>
-            <?php foreach ($data['orders'] as $index => $order): ?>
+
+    <?php if (!empty($data['orders'])): ?>
+
+        <table class="ongoingorders-table">
+            <thead>
                 <tr>
-                    <td>
-                        <a href="<?= URLROOT ?>/dpersons/getongoing/<?= htmlspecialchars($order->id) ?>" class="ongoing-idbtn">
-                            <?= htmlspecialchars($order->id) ?>
-                        </a>
-                    </td>
-                    <td><?= htmlspecialchars($order->pickup_address) ?></td>
-                    <td><?= htmlspecialchars($order->dropoff_address) ?></td>
-                    <td><?= htmlspecialchars($order->buyer) ?></td>
-                    <td>
-                        <a href="<?= URLROOT ?>/dpersons/proof" class="ongoingbtn ongoingbtn-route">Proofs ➤</a>
-                    </td>
-                    <td>
-                        <a href="<?= URLROOT ?>/dpersons/tracking" class="tracking-btn">Track Order</a>
-                    </td>
-                    
+                    <th>#</th>
+                    <th>Pick-Up</th>
+                    <th>Drop-Off</th>
+                    <th>Buyer</th>
+                    <th></th>
                 </tr>
-                
-            <?php endforeach; ?>
-        <?php else: ?>
-            <tr>
-                <td colspan="4">No ongoing orders available.</td>
-            </tr>
-        <?php endif; ?>
-        </tbody>
-    </table>
+            </thead>
+            <tbody>
+                <?php foreach ($data['orders'] as $index => $order): ?>
+                    <tr>
+                        <td>
+                            <a href="<?= URLROOT ?>/dpersons/getongoing/<?= htmlspecialchars($order->orderID) ?>" class="ongoing-idbtn">
+                                <?= htmlspecialchars($order->orderID) ?>
+                            </a>
+                        </td>
+                        <td><?= htmlspecialchars($order->pickup_address) ?></td>
+                        <td><?= htmlspecialchars($order->dropoff_address) ?></td>
+                        <td><?= htmlspecialchars($order->buyer) ?></td>
+                        <td>
+                            <a href="<?= URLROOT ?>/dpersons/proof" class="ongoingbtn ongoingbtn-route">Proofs ➤</a>
+                        </td>
+                        <td>
+                            <a href="<?= URLROOT ?>/dpersons/tracking" class="tracking-btn">Track Order</a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
-    
-    <div id="info" style="margin-top: 20px;">
-    <p><strong>Distance:</strong> <span id="distance"></span></p>
-    <p><strong>Delivery Fee:</strong> <span id="fee"></span></p>
-    </div>
-<!-- Map container -->
-<div id="map" style="height: 500px; width: 100%; margin-bottom: 60px; margin-top: 60px;"></div>
+        <!-- Ongoing Order Info -->
+        <div id="info" style="margin-bottom: 20px;">
+            <p><strong>Distance:</strong> <span id="distance"></span></p>
+            <p><strong>Delivery Fee:</strong> Rs.<?= htmlspecialchars($order->amount) ?></p>
+        </div>
 
+        <!-- Map Container -->
+        <div id="map" style="height: 500px; width: 100%; margin-bottom: 60px; margin-top: 60px;"></div>
+    <?php else: ?>
+        <p>No ongoing orders available.</p>
+    <?php endif; ?>
 </div>
 
 

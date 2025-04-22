@@ -83,3 +83,136 @@ a{
     padding: 5px 10px;
   }
 }
+
+/* Notification Styles */
+.notification-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+#notification-bell {
+  position: relative;
+  padding: 0 5px;
+  cursor: pointer;
+}
+
+.notification-badge {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  background-color: #ff4444;
+  color: white;
+  font-size: 12px;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.notification-dropdown {
+  position: absolute;
+  top: 40px;
+  right: -100px;
+  width: 320px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  z-index: 1000;
+  max-height: 400px;
+  overflow-y: auto;
+  display: none;
+}
+
+.notification-dropdown.show {
+  display: block;
+}
+
+.notification-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+}
+
+.notification-header h3 {
+  margin: 0;
+  color: #333;
+  font-size: 16px;
+}
+
+.mark-all-read {
+  color: #4CAF50;
+  font-size: 12px;
+}
+
+.notification-list {
+  padding: 0;
+}
+
+.notification-item {
+  padding: 15px;
+  border-bottom: 1px solid #eee;
+  display: flex;
+  transition: background-color 0.3s;
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background-color: #f9f9f9;
+}
+
+.notification-item.unread {
+  background-color: #f0f7ff;
+}
+
+.notification-content {
+  flex: 1;
+}
+
+.notification-title {
+  font-weight: 600;
+  color: #333;
+  font-size: 14px;
+  margin-bottom: 5px;
+}
+
+.notification-message {
+  color: #666;
+  font-size: 13px;
+  margin-bottom: 5px;
+}
+
+.notification-time {
+  color: #999;
+  font-size: 11px;
+}
+
+.no-notifications {
+  padding: 20px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
+
+/* Responsive adjustments for notification dropdown */
+@media (max-width: 768px) {
+  .notification-dropdown {
+    width: 280px;
+    right: -70px;
+  }
+}
+
+@media (max-width: 480px) {
+  .notification-dropdown {
+    width: 250px;
+    right: -50px;
+  }
+  
+  .notification-header h3 {
+    font-size: 14px;
+  }
+}

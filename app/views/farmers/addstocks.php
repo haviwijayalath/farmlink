@@ -1,6 +1,12 @@
 <?php require APPROOT . '/views/farmers/inc/header.php'; ?>
 <?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
+<?php
+$vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper", "Lettuce", "Potato", "Onion", "Garlic",
+
+'Persimmon', 'Strawberry', 'Banana', 'Tomato', 'Pear', 'Durian', 'Blackberry', 'Lingonberry', 'Kiwi', 'Lychee', 'Pineapple', 'Fig', 'Gooseberry', 'Passionfruit', 'Plum', 'Orange', 'GreenApple', 'Raspberry', 'Watermelon', 'Lemon', 'Mango', 'Blueberry', 'Apple', 'Guava', 'Apricot', 'Melon', 'Tangerine', 'Pitahaya', 'Lime', 'Pomegranate', 'Dragonfruit', 'Grape', 'Morus', 'Feijoa', 'Avocado', 'Kiwifruit', 'Cranberry', 'Cherry', 'Peach', 'Jackfruit', 'Horned Melon', 'Hazelnut', 'Pomelo', 'Mangosteen', 'Pumpkin', 'Japanese Persimmon', 'Papaya', 'Annona', 'Ceylon Gooseberry'];
+?>
+
 <link rel="stylesheet" href="<?php echo URLROOT; ?>/public/css/farmers/addstocks.css?version=1">
 
 <br><br>
@@ -14,7 +20,36 @@
 
     <div class="form-group">
       <label for="product_name">Product Name: <sup>*</sup></label>
-      <input type="text" name="product_name" class="form-control form-control-lg" required>
+      <select name="product_name" id="product_name" class="form-control form-control-lg" required>
+      <option value="" disabled selected>Select a product...</option>
+      <?php foreach ($vegesNfruits as $item) : ?>
+      <option value="<?php echo $item; ?>"><?php echo $item; ?></option>
+      <?php endforeach; ?>
+      </select>
+    </div>
+
+    <!-- Include jQuery and Select2 -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
+    <script>
+      $(document).ready(function() {
+      $('#product_name').select2({
+        placeholder: "Search for a product...",
+        allowClear: true
+      });
+      });
+    </script>
+
+    <div class="form-group">
+      <label for="category">Category: <sup>*</sup></label>
+      <select name="category" class="form-control form-control-lg" required>
+        <option value="" disabled selected>Select a category...</option>
+        <option value="fruit">Fruits</option>
+        <option value="vege">Vegetables</option>
+        <option value="dairy">Dairy</option>
+      </select>
     </div>
 
     <div class="form-group">
@@ -23,7 +58,7 @@
     </div>
 
     <div class="form-group">
-      <label for="price">Price: <sup>*</sup></label>
+      <label for="price">Price per unit: (kg) <sup>*</sup></label>
       <input type="text" name="price" class="form-control form-control-lg" required>
     </div>
 
@@ -55,14 +90,5 @@
 </div>
 
 <br><br>
-
-<script>
-  function previewImage(event) {
-    const imagePreview = document.getElementById('output');
-    imagePreview.src = URL.createObjectURL(event.target.files[0]);
-    imagePreview.style.display = 'block';
-    imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
-  }
-</script>
 
 <?php require APPROOT . '/views/farmers/inc/footer.php'; ?>

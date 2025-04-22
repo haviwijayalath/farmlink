@@ -46,7 +46,36 @@ class Dpersons extends Controller {
   }
 
     // Confirm an order and redirect to new orders page
-    public function confirm($orderId) {
+    // public function confirm($orderId) {
+
+    //     if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+    //         redirect('users/login');
+    //       }
+
+    //     $deliveryPersonId = $_SESSION['user_id'];
+    //     $orderId = $_SESSION['order_id'];
+
+    //     // Fetch delivery details
+    //     $deliveryData = $this->userModel->getDeliveryEarnings($orderId, $deliveryPersonId);
+
+    //     if (!$deliveryData) {
+    //         die("Error: Unable to fetch earnings.");
+    //     }
+    
+    //     // Store in session for popup display
+    //     $_SESSION['summary'] = [
+    //         'order_id' => $orderId,
+    //         'earnings' => $deliveryData->amount,
+    //         'total_earnings' => $deliveryData->totearnings
+    //     ];
+    //     if ($this->userModel->confirmOrder($orderId)) {
+    //         header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
+    //     } else {
+    //         die('Something went wrong.');
+    //     }
+    // }
+
+    public function confirmNewOrder($orderId) {
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
@@ -70,7 +99,7 @@ class Dpersons extends Controller {
         $orders = $this->userModel->getOrdersByArea($deliveryArea);
 
         if (!empty($orders)) {
-            $_SESSION['order_id'] = $orders[0]->id;
+            $_SESSION['order_id'] = $orders[0]->orderID;
             $_SESSION['pickup_address'] = $orders[0]->pickup_address;
         } else {
             // Handle case where no ongoing deliveries are found
@@ -99,23 +128,32 @@ class Dpersons extends Controller {
                 'dropoff_image' => $_SESSION['dropoff_image'] ?? null, // Ensure dropoff is null initially
             ];
 
-        $this->view('d_person/ongoing/d_upload');
+        $this->view('d_person/ongoing/d_upload',$data);
     }
-
-    public function endDelivery() {
-
-        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
-            redirect('users/login');
-          }
-
-        // Clear session variables related to delivery images
-        unset($_SESSION['pickup_image']);
-        unset($_SESSION['dropoff_image']);
-        unset($_SESSION['delivery_id']);
     
-        // Redirect to the desired page
-        redirect('dpersons/ongoingDeliveries');
+    public function getOrderSummary() {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+            echo json_encode(["error" => "Unauthorized"]);
+            return;
+        }
+    
+        $orderId = $_SESSION['order_id'];
+        $deliveryPersonId = $_SESSION['user_id'];
+    
+        $earnings = $this->userModel->getDeliveryEarnings($orderId, $deliveryPersonId);
+    
+        if (!$earnings) {
+            echo json_encode(["error" => "Earnings not found"]);
+            return;
+        }
+    
+        echo json_encode([
+            "orderId" => $orderId,
+            "earnings" => $earnings->totearnings ?? "0.00",  // Ensure it doesn't crash if null
+            "amount" => $earnings->amount
+        ]);
     }
+    
     
 
     public function deliveryUploadPickup() {
@@ -154,6 +192,19 @@ class Dpersons extends Controller {
         }
     }
         
+    public function endDelivery() {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
+            redirect('users/login');
+        }
+    
+        unset($_SESSION['pickup_image']);
+        unset($_SESSION['dropoff_image']);
+        unset($_SESSION['order_id']);
+        unset($_SESSION['delivery_id']);
+    
+        redirect('dpersons/history');
+    }
+
     public function deliveryUploadDropoff() {
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
@@ -187,7 +238,7 @@ class Dpersons extends Controller {
                 // Save the dropoff image path in the database
                 if ($this->userModel->saveDropoffImage( $_SESSION['delivery_id'], $relativePath)) {
                     $_SESSION['dropoff_image'] = $relativePath; // Store in session variable
-                    $this->endDelivery();
+                    redirect('dpersons/proof');
                 } else {
                     // Error handling if saving image fails
                     echo "Failed to save the dropoff image in the database.";
@@ -205,7 +256,7 @@ class Dpersons extends Controller {
         }
     }
         
-        
+           
     public function history(){
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {

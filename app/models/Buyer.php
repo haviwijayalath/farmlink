@@ -75,10 +75,12 @@ class Buyer extends Database{
 
     public function getCartItems(){
         $this->db->query('
-            SELECT c.cart_id, c.quantity, p.name,  p.price 
+            SELECT c.cart_id, c.quantity, c.price, p.name,  p.price, c.product_id 
             FROM buyer_carts c
             JOIN fproducts p ON c.product_id = p.fproduct_id
             WHERE c.buyer_id = :buyer_id
+            order by c.cart_id desc
+            limit 1
         ');
 
         $this->db->bind(':buyer_id', $_SESSION['user_id']);
@@ -86,28 +88,80 @@ class Buyer extends Database{
     }
 
     public function addCartItem($data){
-        $this->db->query('
-            INSERT INTO buyer_carts (buyer_id,product_id,quantity) 
-            VALUES (:buyer_id,:product_id,:quantity)
-        '); 
-        
-        $this->db->bind(':buyer_id',$data['buyer_id']);
+ 
+        $this->db->query('select price from fproducts where fproduct_id = :product_id');
         $this->db->bind(':product_id',$data['product_id']);
-        $this->db->bind(':quantity',$data['quantity']);
 
+        $product = $this->db->single();
+
+        if (!$product) {
+            return false; // Product not found
+        }
+
+        // cheack buyer already has an item in the cart
+        $this->db->query('
+            select cart_id from buyer_carts where buyer_id = :buyer_id
+        ');
+
+        $this->db->bind(':buyer_id' , $data['buyer_id']);
+        $existingCartItem = $this->db->single();
+
+        if($existingCartItem){
+            // If an item exists, update it instead of adding a new one
+            $this->db->query('
+            UPDATE buyer_carts 
+            SET product_id = :product_id, quantity = :quantity, price = :price 
+            WHERE buyer_id = :buyer_id
+            ');
+
+            $this->db->bind(':product_id', $data['product_id']);
+            $this->db->bind(':quantity', $data['quantity']);
+            $this->db->bind(':buyer_id', $data['buyer_id']);
+            $this->db->bind(':price', $product->price);
+
+        } else {
+            // If no item exists, insert a new one
+        $this->db->query('
+            INSERT INTO buyer_carts (buyer_id, product_id, quantity, price) 
+            VALUES (:buyer_id, :product_id, :quantity, :price)
+            ');
+
+            $this->db->bind(':buyer_id', $data['buyer_id']);
+            $this->db->bind(':product_id', $data['product_id']);
+            $this->db->bind(':quantity', $data['quantity']);
+            $this->db->bind(':price',$product->price);
+        }
+        
         print_r($data);
 
         return $this->db->execute();
     }
 
     public function updateCartItem($data){
+
+        // fetch the current unit price
+        $this->db->query('
+            select price from fproducts where fproduct_id = (select product_id from buyer_carts where cart_id = :cart_id)
+        ');
+        $this->db->bind(':cart_id',$data['cart_id']);
+        $product = $this->db->single();
+
+        if (!$product) {
+            return false; // Product not found
+        }
+
+        // recalculate the price
+        $newPrice = $product->price * $data['quantity'];
+
         $this->db->query('
             UPDATE buyer_carts 
-            SET quantity = :quantity 
+            SET quantity = :quantity ,price = :price
             WHERE cart_id = :cart_id
         ');
+
         $this->db->bind(':cart_id', $data['cart_id']);
         $this->db->bind(':quantity', $data['quantity']);
+        $this->db->bind(':price', $newPrice);
         return $this->db->execute();
     }
 
@@ -120,8 +174,48 @@ class Buyer extends Database{
         return $this->db->execute();
     }
 
-    public function getProducts() {
-        $this->db->query('SELECT * FROM fproducts');
+    public function getProducts($filter_vars) {
+        
+        $query = 'SELECT * FROM fproducts';
+        $orderBy = [];
+        $whereConditions = [];
+
+        if (!empty($filter_vars)) {
+            // Handle the category condition
+            if (!empty($filter_vars['category'])) {
+                $whereConditions[] = "type = '" . $filter_vars['category'] . "'";
+            }
+
+            // Handle the search condition
+            if (!empty($filter_vars['search'])) {
+                $whereConditions[] = "(name LIKE '%" . $filter_vars['search'] . "%' OR description LIKE '%" . $filter_vars['search'] . "%')";
+            }
+
+            // Handle ORDER BY clauses
+            if (!empty($filter_vars['price'])) {
+                $orderBy[] = 'price ' . ($filter_vars['price'] === 'ASC' ? 'ASC' : 'DESC');
+            }
+            
+            if (!empty($filter_vars['stock'])) {
+                $orderBy[] = 'stock ' . ($filter_vars['stock'] === 'ASC' ? 'ASC' : 'DESC');
+            }
+            
+            if (!empty($filter_vars['exp_date'])) {
+                $orderBy[] = 'exp_date ' . ($filter_vars['exp_date'] === 'ASC' ? 'ASC' : 'DESC');
+            }
+
+            // Add WHERE clause if conditions exist
+            if (!empty($whereConditions)) {
+                $query .= ' WHERE ' . implode(' AND ', $whereConditions);
+            }
+
+            // Add ORDER BY clause if ordering exists
+            if (!empty($orderBy)) {
+                $query .= ' ORDER BY ' . implode(', ', $orderBy);
+            }
+        }
+
+        $this->db->query($query);
 
         $results = $this->db->resultSet();
 
@@ -172,6 +266,23 @@ class Buyer extends Database{
         $this->db->bind(':id', $id);
 
         return $this->db->execute();
+    }
+
+    public function getSuccessOrderDetails(){
+        $buyer_id = $_SESSION['user_id'];
+
+        $this->db->query('
+            select product,quantity,dropAddress,orderDate,status from order_success
+            where buyerID = :id
+        ');
+
+        $this->db->bind(':id', $buyer_id);
+
+        // Fetch all results
+        $results = $this->db->resultSet();
+
+        // Return the results (empty array if no orders exist)
+        return $results ?: [];
     }
            
 }

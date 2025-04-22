@@ -18,20 +18,32 @@
                 </tr>
             </thead>
             <tbody>
-                <tr>
-                    <td>Carrot</td>
-                    <td>50 kg</td>
-                    <td>123-B, 2nd Lane, Embilipitiya</td>
-                    <td>2024-11-25</td>
-                    <td>Delivered</td>
-                </tr>
-                <tr>
-                    <td>Gova</td>
-                    <td>100 kg</td>
-                    <td>456-A, Green Street, Matara</td>
-                    <td>2024-11-20</td>
-                    <td>On Going</td>
-                </tr>
+            <?php if (!empty($data['orderItems'])): ?>
+                <?php foreach ($data['orderItems'] as $item): ?>
+                    <tr>
+                        <td>
+                            <?= $item->product ?>
+                        </td>
+                        <td>
+                            <?= $item->quantity ?>
+                        </td>
+                        <td>
+                            <?= $item->dropAddress ?>
+                        </td>
+                        <td>
+                            <?= $item->orderDate ?>
+                        </td>
+                        <td>
+                            <?= $item->status ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                
+                <?php else: ?>
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No orders found.</td>
+                    </tr>
+                <?php endif; ?>
             </tbody>
         </table>
     </div>

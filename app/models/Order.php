@@ -35,9 +35,79 @@ class Order extends Database{
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':address_id', $addressId);
 
-        // Execute the delivery person insertion
-        return $this->db->execute();
+        // Execute the buyer insertion
+        if ($this->db->execute()) {
+            // Fetch a single product ID and quantity from buyer_cart using cartId
+            $this->db->query('SELECT buyer_id, product_id, quantity, price FROM buyer_carts WHERE cart_id = :cartid LIMIT 1');
+            $this->db->bind(':cartid', $data['cartId']);
+            $cartItem = $this->db->single(); // Fetch one cart item
+            $data['farmer_fee'] = $cartItem->price;
+        
+            // Check if a cart item was found
+            if ($cartItem) {
+                // Insert into order_process table
+                $this->db->query('INSERT INTO order_process (cartID, buyerID, productID, quantity, deliveryFee, farmerFee, dropAddress)
+                                  VALUES (:cartid, :buyerid, :productid, :quantity, :fee, :farmerfee, :drop_addr)');
+                
+                $this->db->bind(':cartid', $data['cartId']);
+                $this->db->bind(':buyerid',  $cartItem->buyer_id);
+                $this->db->bind(':productid', $cartItem->product_id);
+                $this->db->bind(':quantity', $cartItem->quantity);
+                $this->db->bind(':farmerfee', $cartItem->price);
+                $this->db->bind(':fee', $data['delivery_fee']);
+                $this->db->bind(':drop_addr', $data['drop_addr']);
+        
+                if (!$this->db->execute()) {
+                    return false;  // Return false if insertion fails
+                }
+            } else {
+                return false; // Return false if no cart item found
+            }
+        
+            return $data; // Success
+        }
+        
 
-}
+        return false;  // If order_buyer insertion fails
+    }
+
+public function getFarmerPickupAddressByProduct($productId) {
+    $this->db->query("SELECT a.number, a.street, a.city 
+                      FROM address a
+                      INNER JOIN farmers f ON a.address_id = f.address_id
+                      INNER JOIN fproducts p ON p.farmer_id = f.id
+                      WHERE p.fproduct_id = :product_id");
+
+    $this->db->bind(':product_id', $productId);
+
+    return $this->db->single(); // fetch one result
+    }
+
+public function submitComplaint($userId, $role, $orderId, $description) {
+    $time = date('Y-m-d H:i:s');
+    $this->db->query("INSERT INTO complaints (order_id, description, user_id, role, date_submitted, status) 
+                  VALUES (:order_id, :description, :user_id, :role, :date_submitted, 'new')");
+
+    $this->db->bind(':user_id', $userId);
+    $this->db->bind(':role', $role);
+    $this->db->bind(':order_id', $orderId);
+    $this->db->bind(':description', $description);
+    $this->db->bind(':date_submitted', $time);
+
+
+    return $this->db->execute();
+    }
+
+
+public function getComplaints($userId, $role) {
+    $this->db->query("SELECT * FROM complaints 
+                      WHERE user_id = :user_id AND role = :role
+                      ORDER BY date_submitted DESC");
+
+    $this->db->bind(':user_id', $userId);
+    $this->db->bind(':role', $role);
+
+    return $this->db->resultSet(); // fetch all results
+    }
 
 }

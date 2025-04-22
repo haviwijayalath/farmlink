@@ -1,5 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
+
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/vehicleinfo.css">
 
 <?php require APPROOT . '/views/inc/sidebars/d_person.php'; ?>
@@ -8,7 +9,7 @@
     <div class="vehicleinfo-content-area">
         <h2>Vehicle</h2>
 
-        <?php if (!empty($data['type'])): ?>
+        <?php if (!empty($data['type'])):?>
             <div class="vehicle-info">
                 <img src="<?= URLROOT ?>/public/uploads/<?= htmlspecialchars($data['v_image']) ?>" alt="Vehicle Image" class="vehicle-image">
 
@@ -30,11 +31,14 @@
             <p>No vehicle to display...</p>
             <div class="add-vehicle-container">
                 <a href="<?= URLROOT ?>/dpaccounts/addvehicle/" class="add-vehicle-btn">Add New Vehicle</a>
+                
+
             </div>
         <?php endif; ?>
 
         
     </div>
 </div>
+
 
 <?php require APPROOT . '/views/inc/footer.php'; ?> 

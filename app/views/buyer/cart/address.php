@@ -20,8 +20,8 @@
         <label>Last Name *</label>
         <input type="text" name="last_name" required>
 
-        <label>House number *</label>
-        <input type="text" name="number" placeholder="House number" required>
+        <label>House number</label>
+        <input type="text" name="number" placeholder="House number">
 
         <label>Street Address *</label>
         <input type="text" name="street_address" placeholder="Street name" required>
@@ -31,7 +31,15 @@
             <option value="">Select a city</option>
             <option value="Colombo">Colombo</option>
             <option value="Kandy">Kandy</option>
+            <option value="Kegalle">Kegalle</option>
+            <option value="Matale">Matale</option>
+            <option value="Nuwaraeliya">Nuwaraeliya</option>
+            <option value="Ratnapura">Ratnapura</option>
+            <option value="Gampaha">Gampaha</option>
+            <option value="Kalutara">Kalutara</option>
             <option value="Galle">Galle</option>
+            <option value="Kurunagala">Kurunagala</option>
+            <option value="Badulla">Badulla</option>
         </select>
 
         <label>Country *</label>
@@ -42,6 +50,8 @@
 
         <label>Email *</label>
         <input type="email" name="email" placeholder="Enter your email" required>
+
+        <input type="hidden" name="cart_id" value="<?= htmlspecialchars($data['cartID']); ?>">
 
         <button type="submit">Submit</button>
     </form>

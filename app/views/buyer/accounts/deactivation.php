@@ -1,6 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 
-<link rel="stylesheet" href="<?= URLROOT ?>/public/css/d_person/deactivation.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/deactivation.css">
 
 <div class="confirmation-container">
     <h1 class="confirmation-message">Your account has been deactivated successfully.</h1>

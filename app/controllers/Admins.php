@@ -6,6 +6,8 @@
       if (!isAdmin()) {
         redirect('users/login');
     }
+
+    $this->adminModel = $this->model('Admin'); 
     
     }
 
@@ -47,8 +49,28 @@
 
     public function viewProducts() { 
       
-      $this->view('admin/products');
+      $products = $this->adminModel->getProducts();
 
+        $data = [
+            'products' => $products
+        ];
+
+        $this->view('admin/products', $data);
+    }
+
+    public function productDetails($id) {
+      // Fetch a single product by ID
+      $product = $this->adminModel->getProductById($id);
+  
+      if (!$product) {
+          die("Product not found"); // Handle error appropriately
+      }
+  
+      $data = [
+          'product' => $product
+      ];
+  
+      $this->view('admin/productDetails', $data);
     }
 
     public function account() { 

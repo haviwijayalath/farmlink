@@ -3,9 +3,11 @@
 class Buyercontrollers extends Controller {
 
     private $buyerModel;
+    private $farmerModel;
 
     public function __construct() {
         $this->buyerModel = $this->model('Buyer'); 
+        $this->farmerModel = $this->model('Farmer');
     }
 
     public function register(){
@@ -242,17 +244,27 @@ class Buyercontrollers extends Controller {
 
         // get the cart items from database
         $cartItems = $this->buyerModel->getCartItems(); 
-        $cartItems = $this->buyerModel->getCartItems(); 
         $total = 0;
 
         foreach ($cartItems as $item) {
             $total += $item->price * $item->quantity;
         }
     
+        if(!empty($cartItems)){
         $data = [
+            'cartID' => $cartItems[0]->cart_id,
             'cartItems' => $cartItems,
-            'total' => $total
+            'total' => $total,
+            'productID' => $cartItems[0]->product_id,
         ];
+    } else {
+        //handle the cart when cart is empty
+        $data = [
+            'cartID' => null,
+            'cartItems' => [],
+            'total' => 0
+        ];
+    }
 
         $this->view('buyer/cart/cart', $data);
     }
@@ -269,7 +281,7 @@ class Buyercontrollers extends Controller {
                 'buyer_id' => $_SESSION['user_id'],
                 'buyer_id' => $_SESSION['user_id'],
                 'product_id' => $_POST['product_id'],
-                'quantity' => $_POST['quantity']
+                'quantity' => $_POST['quantity'],
             ];
 
             if(empty($data['product_id'])){
@@ -333,18 +345,46 @@ class Buyercontrollers extends Controller {
     public function deliveryOptions(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
-          }
-
-        $this->view('buyer/cart/delivery_details');
+        }
+    
+        // Check if 'cart_id' is passed in the URL
+        if (isset($_GET['cart_id'])) {
+            $cart_id = $_GET['cart_id']; // Retrieve the cart ID from the URL
+            $data = [
+                'cartID' => $cart_id
+            ];
+        } else {
+            // Handle the case where cart_id is not provided
+            echo "Cart ID is missing!";
+            return;
+        }
+    
+        // check if cart is empty
+        $cartItems = $this->buyerModel->getCartItems();
+    
+        if (empty($cartItems)) {
+            flash('Error', 'Your cart is empty. Please add products before proceeding to delivery options.');
+            redirect('Buyercontrollers/cartDetails');
+        }
+    
+        // Pass data to the view
+        $this->view('buyer/cart/delivery_details', $data);
     }
-
-    public function paymentDetails(){
+    
+    
+    public function paymentDetails() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
-          }
-
-        $this->view('buyer/cart/payment');
+        }
+    
+        // Get cart_id from GET request
+        $cart_id = $_GET['cart_id'] ?? null;  // Optional: handle missing cart_id gracefully
+    
+        // Pass the cart_id to the view
+        $data = ['cartID' => $cart_id];
+        $this->view('buyer/cart/payment', $data);
     }
+    
 
     public function orderConfirm(){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
@@ -358,8 +398,14 @@ class Buyercontrollers extends Controller {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
           }
+        
+        $orderItem = $this->buyerModel->getSuccessOrderDetails();
 
-        $this->view('buyer/cart/buyerOrders');
+        $data = [
+            'orderItems' => $orderItem
+        ];
+          
+        $this->view('buyer/cart/buyerOrders', $data);
     }
 
     public function wishlistDetails(){
@@ -370,6 +416,7 @@ class Buyercontrollers extends Controller {
           // get the wislist item from database
           $wishlistItem = $this->buyerModel->getWishlistItem();
 
+          //pass the data to view
           $data = [
             'wishlistItems' => $wishlistItem
           ];
@@ -405,13 +452,24 @@ class Buyercontrollers extends Controller {
         
     }
 
-      // Function to display all products
-      public function browseproducts() {
+    // Function to display all products and filter products
+    public function browseproducts() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
-          }
+        }
 
-        $data = $this->buyerModel->getProducts();
+        // update the databse by removing the expired products
+        $this->farmerModel->removeExpiredStocks();
+
+        $filter_variables = [
+            'search' => $_GET['search'] ?? '',
+            'category' => $_GET['category'] ?? '',
+            'price' => $_GET['price'] ?? '',
+            'stock' => $_GET['stock'] ?? '',
+            'exp_date' => $_GET['exp_date'] ?? ''
+        ];
+
+        $data = $this->buyerModel->getProducts($filter_variables);
         $this->view('buyer/products/browse_products', $data);
     }
 
@@ -446,6 +504,7 @@ class Buyercontrollers extends Controller {
     }
 
     public function payhereProcess(){
+
         $amount = 3000;
         $merchant_id = "1229272";
         $merchant_secret = "Mjg0OTYwNzA0MjU4NDUzNDYyODMxOTIzMzMzNDczNzY5MzI1NzM3" ;

@@ -20,17 +20,17 @@
                 <?php foreach($data['orders'] as $index => $order): ?>
                     <tr>
                         <td>
-                            <a href="<?= URLROOT ?>/dpersons/orderdetails/<?= htmlspecialchars($order->id) ?>" class="newbtn newbtn-delete">
-                                <?= htmlspecialchars($order->id) ?>
+                            <a href="<?= URLROOT ?>/dpersons/orderdetails/<?= htmlspecialchars($order->orderID) ?>" class="newbtn newbtn-delete">
+                                <?= htmlspecialchars($order->orderID) ?>
                             </a>
                         </td>
                         <td><?= htmlspecialchars($order->pickup_address) ?></td>
                         <td><?= htmlspecialchars($order->dropoff_address) ?></td>
-                        <td><?= htmlspecialchars($order->capacity) ?></td>
+                        <td><?= htmlspecialchars($order->quantity) ?></td>
                         <td>
                             <a href="#" 
                                class="newbtn newbtn-confirm" 
-                               data-url="<?= URLROOT ?>/dpersons/confirm/<?= htmlspecialchars($order->id) ?>" 
+                               data-url="<?= URLROOT ?>/dpersons/confirmNewOrder/<?= htmlspecialchars($order->orderID) ?>" 
                                onclick="showPopup2(this)">Confirm</a>
                         </td>
                     </tr>

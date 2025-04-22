@@ -36,7 +36,7 @@
         <div class="change-password-overlay" id="overlay"></div>
     <div class="change-password-container" id="change-password-modal">
         <h2>Change Password</h2>
-        <form>
+        <form action="<?php echo URLROOT; ?>/farmers/changepassword" method="POST">
             <div class="form-group">
                 <label for="current-password">Current Password:</label>
                 <input type="password" id="current-password" name="current-password">
@@ -59,29 +59,35 @@
     <div class="edit-profile-overlay" id="edit-overlay"></div>
 <div class="edit-profile-container" id="edit-profile-modal">
     <h2>Edit Your Profile</h2>
-    <form action="" method="POST" enctype="multipart/form-data">
+    <form action="<?php echo URLROOT; ?>/farmers/editprofile" method="POST" enctype="multipart/form-data">
 
         <input type="hidden" name="address_id">
 
         <div class="form-group">
             <label for="name">Name</label>
-            <input type="text" name="name" id="name" placeholder="Enter your name">
+            <input type="text" name="name" id="name" placeholder="Enter your name" value="<?php echo $data['name']; ?>">
         </div>
         <div class="form-group">
             <label for="email">Email</label>
-            <input type="email" name="email" id="email" placeholder="Enter your email">
+            <input type="email" name="email" id="email" placeholder="Enter your email" value="<?php echo $data['email']; ?>">
+        </div>
+
+        <div class="form-group">
+            <label for="phone">Phone</label>
+            <input type="text" name="phone" id="phone" placeholder="Enter your phone number" value="<?php echo $data['phone']; ?>">
         </div>
 
         <div class="form-group">
             <label for="image">Upload Image</label>
             <div class="image-upload-section">
-                <div class="current-image">
-                    <img src="<?= URLROOT ?>/public/images/adminProPic.png" alt="Profile Picture" class="profile-pic">
-                </div>
-                <div class="upload-container">
-                    <input type="file" id="image" name="image" onchange="replaceCurrentImage(event)">
-                </div>
+                <input type="file" id="image" name="image" class="form-control form-control-lg" onchange="previewImage(event)">
             </div>
+
+            <div id="image-preview" style="margin-top: 15px;">
+                <img id="output" src="<?php echo URLROOT . '/public/uploads/farmer/profile/' . $data['image']; ?>" alt="Image Preview" style="max-width: 200px; <?php echo empty($data['image']) ? 'display: none;' : ''; ?>">
+                <span style="color: red;"><?php echo $data['image_err']; ?></span>
+            </div>
+                
         </div>
 
         <div class="form-buttons">
@@ -133,6 +139,13 @@
         document.body.classList.remove('modal-open'); // Enable scrolling
     }
 
+    // Preview image
+    function previewImage(event) {
+        const imagePreview = document.getElementById('output');
+        imagePreview.src = URL.createObjectURL(event.target.files[0]);
+        imagePreview.style.display = 'block';
+        imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
+    }
 </script>
 
 <?php require APPROOT . '/views/farmers/inc/footer.php'; ?>

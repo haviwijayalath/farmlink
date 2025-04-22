@@ -102,6 +102,32 @@ tbody tr:hover {
   color: #555;
 }
 
+.reject-btn {
+  background-color: #d9534f; /* Red color for danger action */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.reject-btn:hover {
+  background-color: #c9302c; /* Darker red for hover effect */
+}
+
+.reject-btn:active {
+  background-color: #ac2925; /* Even darker red when clicked */
+}
+
+.reject-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(217, 83, 79, 0.8);
+}
+
+
 /* Responsive Design */
 @media screen and (max-width: 768px) {
   .search-bar {

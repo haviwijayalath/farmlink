@@ -16,6 +16,7 @@
             </tr>
         </thead>
         <tbody>
+        <?php if (!empty($data['wishlistItems'])): ?>
             <?php foreach ($data['wishlistItems'] as $item): ?>
                 <tr>
                     <td class="product-name">
@@ -44,6 +45,12 @@
                     </td>
                 </tr>
             <?php endforeach; ?>
+
+            <?php else: ?>
+                    <tr>
+                        <td colspan="5" style="text-align: center;">No Wishlist item found.</td>
+                    </tr>
+            <?php endif; ?>
         </tbody>
     </table>
 </div>
