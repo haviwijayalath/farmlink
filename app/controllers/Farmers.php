@@ -282,80 +282,80 @@
     }
 
     // In here all the data chexking is done by the controller. This should be done by using JS in front end. It should be done in the view file.
-    // public function changepassword() {
-    //   if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
-    //     redirect('users/login');
-    //   }
+    public function changepassword() {
+      //   if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
+      //     redirect('users/login');
+      //   }
 
-    //   // Check for POST
-    //   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    //     // Process form
-    //     // Sanitize POST data
-    //     $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+      //   // Check for POST
+      //   if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      //     // Process form
+      //     // Sanitize POST data
+      //     $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-    //     $data = [
-    //       'current_password' => trim($_POST['current-password']),
-    //       'new_password' => trim($_POST['new-password']),
-    //       'confirm_password' => trim($_POST['confirm-password']),
+      //     $data = [
+      //       'current_password' => trim($_POST['current-password']),
+      //       'new_password' => trim($_POST['new-password']),
+      //       'confirm_password' => trim($_POST['confirm-password']),
 
-    //       'current_password_err' => '',
-    //       'new_password_err' => '',
-    //       'confirm_password_err' => ''
-    //     ];
+      //       'current_password_err' => '',
+      //       'new_password_err' => '',
+      //       'confirm_password_err' => ''
+      //     ];
 
-    //     // Validate Current Password
-    //     if (empty($data['current_password'])) {
-    //       $data['current_password_err'] = 'Please enter current password';
-    //     } elseif (!$this->farmerModel->verifyPassword($data['current_password'], $_SESSION['user_id'])) {
-    //       $data['current_password_err'] = 'Incorrect password';
-    //     }
+      //     // Validate Current Password
+      //     if (empty($data['current_password'])) {
+      //       $data['current_password_err'] = 'Please enter current password';
+      //     } elseif (!$this->farmerModel->verifyPassword($data['current_password'], $_SESSION['user_id'])) {
+      //       $data['current_password_err'] = 'Incorrect password';
+      //     }
 
-    //     // Validate New Password
-    //     if (empty($data['new_password'])) {
-    //       $data['new_password_err'] = 'Please enter new password';
-    //     } elseif (strlen($data['new_password']) < 6) {
-    //       $data['new_password_err'] = 'Password must be at least 6 characters';
-    //     }
+      //     // Validate New Password
+      //     if (empty($data['new_password'])) {
+      //       $data['new_password_err'] = 'Please enter new password';
+      //     } elseif (strlen($data['new_password']) < 6) {
+      //       $data['new_password_err'] = 'Password must be at least 6 characters';
+      //     }
 
-    //     // Validate Confirm Password
-    //     if (empty($data['confirm_password'])) {
-    //       $data['confirm_password_err'] = 'Please confirm password';
-    //     } else {
-    //       if ($data['new_password'] != $data['confirm_password']) {
-    //         $data['confirm_password_err'] = 'Passwords do not match';
-    //       }
-    //     }
+      //     // Validate Confirm Password
+      //     if (empty($data['confirm_password'])) {
+      //       $data['confirm_password_err'] = 'Please confirm password';
+      //     } else {
+      //       if ($data['new_password'] != $data['confirm_password']) {
+      //         $data['confirm_password_err'] = 'Passwords do not match';
+      //       }
+      //     }
 
-    //     // Make sure no other errors before uploading the picture
-    //     if (empty($data['current_password_err']) && empty($data['new_password_err']) && empty($data['confirm_password_err'])) {
-    //       // hashing password
-    //       $data['new_password'] = password_hash($data['new_password'], PASSWORD_DEFAULT);
+      //     // Make sure no other errors before uploading the picture
+      //     if (empty($data['current_password_err']) && empty($data['new_password_err']) && empty($data['confirm_password_err'])) {
+      //       // hashing password
+      //       $data['new_password'] = password_hash($data['new_password'], PASSWORD_DEFAULT);
 
-    //       // user registration
-    //       if ($this->farmerModel->changePassword($data['new_password'], $_SESSION['user_id'])) {
-    //         flash('password_changed', 'Password changed successfully');
-    //         // redirect to login
-    //         redirect('farmers/viewprofile');
-    //       } else {
-    //         die('Something went wrong! Please try again.');
-    //       }
-    //     } else {
-    //       // Load view with errors
-    //       redirect('farmers/index', $data);
-    //     }
-    //   } else {
-    //     // Init data
-    //     $data = [
-    //       'current_password' => '',
-    //       'new_password' => '',
-    //       'confirm_password' => '',
+      //       // user registration
+      //       if ($this->farmerModel->changePassword($data['new_password'], $_SESSION['user_id'])) {
+      //         flash('password_changed', 'Password changed successfully');
+      //         // redirect to login
+      //         redirect('farmers/viewprofile');
+      //       } else {
+      //         die('Something went wrong! Please try again.');
+      //       }
+      //     } else {
+      //       // Load view with errors
+      //       redirect('farmers/index', $data);
+      //     }
+      //   } else {
+      //     // Init data
+      //     $data = [
+      //       'current_password' => '',
+      //       'new_password' => '',
+      //       'confirm_password' => '',
 
-    //       'current_password_err' => '',
-    //       'new_password_err' => '',
-    //       'confirm_password_err' => ''
-    //     ];
-    //   }
-    // }
+      //       'current_password_err' => '',
+      //       'new_password_err' => '',
+      //       'confirm_password_err' => ''
+      //     ];
+      //   }
+    }
 
     public function managestocks() {
       if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
