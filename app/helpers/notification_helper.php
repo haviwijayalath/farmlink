@@ -52,8 +52,7 @@ function getUserType() {
           return 'f';
       case 'buyer':
           return 'b';
-      case 'delivery_person':
-      case 'delivery':
+      case 'dperson':
           return 'd';
       case 'consultant':
           return 'c';
