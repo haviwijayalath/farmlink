@@ -175,11 +175,16 @@ class Dperson extends Database{
 
     // Update order status to "ongoing" when confirmed
     public function confirmOrder($orderId) {
+        // Update the order status
         $this->db->query('UPDATE order_success SET status = "ongoing" WHERE orderID = :orderId');
         $this->db->bind(':orderId', $orderId);
-
-        return $this->db->execute();
-    }
+        $this->db->execute();
+    
+        // Retrieve buyer_id and product_name after the update
+        $this->db->query('SELECT buyerID, product FROM order_success WHERE orderID = :orderId');
+        $this->db->bind(':orderId', $orderId);
+        return $this->db->single(); // returns an associative array with buyer_id and product_name
+    }    
 
     // Fetch ongoing orders filtered by delivery area
     public function getOrdersByArea($deliveryArea) {

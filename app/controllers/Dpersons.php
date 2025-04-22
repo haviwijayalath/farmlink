@@ -3,9 +3,11 @@
 class Dpersons extends Controller {
     
     private $userModel;
+    private $notificationHelper;
     
     public function __construct() {
         $this->userModel = $this->model('Dperson'); 
+        $this->notificationHelper = new NotificationHelper();
     }
 
     public function index() {
@@ -81,7 +83,10 @@ class Dpersons extends Controller {
             redirect('users/login');
           }
 
-        if ($this->userModel->confirmOrder($orderId)) {
+        $confirmedOrder = $this->userModel->confirmOrder($orderId);
+
+        if ($confirmedOrder) {
+            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'd', $_SESSION['user_id'], 'Order Confirmed', 'Your ' . $confirmedOrder->product . 'order is confirmed by the delivery ', '/farmlink/dpersons/ongoingDeliveries', 'info');
             header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
         } else {
             die('Something went wrong.');
