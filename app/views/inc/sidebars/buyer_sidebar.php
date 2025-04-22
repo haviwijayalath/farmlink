@@ -8,7 +8,6 @@
         <li><a href="<?php echo URLROOT?>/Buyercontrollers/cartDetails"><i class="fa-solid fa-cart-shopping"></i> <span>Cart</span> </a></li>
         <li><a href="<?php echo URLROOT?>/Buyercontrollers/buyerOrders"><i class="fas fa-history"></i><span> Orders </span></a></li>
         <li><a href="<?php echo URLROOT?>/Buyercontrollers/wishlistDetails"><i class="fa-solid fa-bookmark"></i> <span>Wishlist</span></a></li>
-        <li><a href="<?= URLROOT ?>/orderControllers/show_buyer_complaint"><i class="fa-solid fa-triangle-exclamation"></i><span>Complaints</span></a></li>
         <!-- Logout -->
         <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
       </ul>

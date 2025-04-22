@@ -22,7 +22,9 @@ class Consultant {
   // Register consultant.
   public function register($data) {
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
-    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image, specialization, experience) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience)');
+
+    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image,specialization,experience, status) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience, :status)');
+    // Bind values
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
     $this->db->bind(':phone', $data['phone_number']);
@@ -31,7 +33,14 @@ class Consultant {
     $this->db->bind(':address_id', $address_id);
     $this->db->bind(':specialization', $data['specialization']);
     $this->db->bind(':experience', $data['experience']);
-    return $this->db->execute();
+    $this->db->bind(':status', 'pending');
+
+    // Execute
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
   // Find user by email across several tables.

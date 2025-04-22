@@ -22,7 +22,9 @@ class Farmer {
   // Register farmer.
   public function register($data) {
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
-    $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image) VALUES(:name, :password, :email, :address_id, :phone, :image)');
+
+    $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image, rate, status) VALUES(:name, :password, :email, :address_id, :phone, :image, :rate, :status)');
+    // Bind values
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
     $this->db->bind(':phone', $data['phone_number']);
@@ -30,6 +32,7 @@ class Farmer {
     $this->db->bind(':password', $data['password']);
     $this->db->bind(':address_id', $address_id);
     $this->db->bind(':rate', 0);
+    $this->db->bind(':status', 'pending');
 
     // Execute
     if ($this->db->execute()) {
