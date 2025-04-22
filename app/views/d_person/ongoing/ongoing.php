@@ -16,6 +16,7 @@
                     <th>Pick-Up</th>
                     <th>Drop-Off</th>
                     <th>Buyer</th>
+                    <th>Delivery Fee</th>
                     <th></th>
                 </tr>
             </thead>
@@ -30,11 +31,12 @@
                         <td><?= htmlspecialchars($order->pickup_address) ?></td>
                         <td><?= htmlspecialchars($order->dropoff_address) ?></td>
                         <td><?= htmlspecialchars($order->buyer) ?></td>
+                        <td><?= htmlspecialchars($order->amount) ?></td>
                         <td>
                             <a href="<?= URLROOT ?>/dpersons/proof" class="ongoingbtn ongoingbtn-route">Proofs ➤</a>
                         </td>
                         <td>
-                            <a href="<?= URLROOT ?>/dpersons/tracking" class="tracking-btn">Track Order</a>
+                            <a href="<?= URLROOT ?>/dpersons/tracking/<?= $order->orderID ?>" class="tracking-btn">Track Order</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>

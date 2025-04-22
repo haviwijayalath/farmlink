@@ -119,6 +119,7 @@ class orderControllers extends Controller{
                !empty($data['street']) && !empty($data['city']) && !empty($data['mobile']);
     }
 
+    
     public function showcomplaint() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
@@ -129,18 +130,6 @@ class orderControllers extends Controller{
         $complaints = $this->orderModel->getComplaints($userId, $role);
     
         $this->view('d_person/complaints', ['complaints' => $complaints]);
-    }
-
-    public function show_buyer_complaint() {
-        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
-            redirect('users/login');
-        }
-    
-        $userId = $_SESSION['user_id'];
-        $role = $_SESSION['user_role'];
-        $complaints = $this->orderModel->getComplaints($userId, $role);
-    
-        $this->view('buyer/complaints', ['complaints' => $complaints]);
     }
     
     
@@ -160,24 +149,6 @@ class orderControllers extends Controller{
         } else {
             // Optional: prevent direct access via GET
             redirect('orderControllers/showcomplaint');
-        }
-    }
-
-    public function submitComplaint_buyer() {
-        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            $userId = $_SESSION['user_id'];
-            $role = $_SESSION['user_role'];
-            $orderId = $_POST['order_id'];
-            $description = $_POST['description'];
-    
-            // Save complaint to the database
-            $this->orderModel->submitComplaint($userId, $role, $orderId, $description);
-    
-            // ✅ REDIRECT to avoid form resubmission
-            redirect('orderControllers/show_buyer_complaint');
-        } else {
-            // Optional: prevent direct access via GET
-            redirect('orderControllers/show_buyer_complaint');
         }
     }
     

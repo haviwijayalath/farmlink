@@ -1,0 +1,50 @@
+/* Map Container */
+#map {
+  width: 100%;
+  height: 500px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Soft shadow for map */
+  margin-left: 170px;
+}
+
+.ongoingorder-container {
+  padding: 20px;
+  background-color: #fff;
+  margin-left: 170px;
+  margin-right: 300px;
+  margin-top: 100px;
+}
+
+/* Distance and Fee Info Section */
+.map-info {
+  background-color: #ffffff;
+  padding: 15px 25px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Light shadow for separation */
+  margin-bottom: 20px;
+  font-size: 1rem;
+  color: #333333;
+  border-left: 5px solid #28a745; /* Green accent on the left for the "delivery" vibe */
+  margin-left: 170px;
+}
+
+.map-info p {
+  margin: 10px 0;
+}
+
+.map-info strong {
+  color: #212529;
+  margin-right: 8px;
+  font-weight: bold;
+}
+
+/* Small tweaks for better visual hierarchy */
+#distance {
+  font-weight: bold;
+  color: #007bff;
+}
+
+#fee {
+  font-weight: bold;
+  color: #28a745; /* Make the fee green */
+}
