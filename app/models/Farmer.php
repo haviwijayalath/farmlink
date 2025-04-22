@@ -320,4 +320,13 @@ class Farmer
       return false;
     }
   }
+
+  // Get delivery person id by orderID
+  public function dpersonIdOfOrder($orderID)
+  {
+    $this->db->query('SELECT dperson_id FROM order_success WHERE orderID = :order_id');
+    $this->db->bind(':order_id', $orderID);
+    $row = $this->db->single();
+    return $row->dperson_id;
+  }
 }
