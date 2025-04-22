@@ -139,6 +139,7 @@ class Dperson extends Database{
       $this->db->query('
           SELECT 
               order_success.orderID,
+              order_success.status,
               CONCAT(address.number, ", ", address.Street, ", ", address.City) AS pickup_address,
               CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address,
               order_success.quantity,
@@ -164,7 +165,7 @@ class Dperson extends Database{
               address ON farmers.address_id = address.address_id
           WHERE 
               address.City = :deliveryArea  
-              AND  order_success.status = "new"
+              AND  (order_success.status = "ready" OR order_success.status = "processing")
       ');
       
       $this->db->bind(':deliveryArea', $deliveryArea);
