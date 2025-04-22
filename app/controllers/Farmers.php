@@ -3,11 +3,13 @@ class Farmers extends Controller
 {
   private $farmerModel;
   private $notificationHelper;
+  private $consultantModel;
 
   public function __construct()
   {
     $this->farmerModel = $this->model('Farmer');
     $this->notificationHelper = new NotificationHelper();
+    $this->consultantModel = $this->model('Consultant');
   }
 
   public function register()
