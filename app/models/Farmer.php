@@ -307,5 +307,17 @@ class Farmer
 
     return $results;
   }
-  
+
+  // Marking orders as ready to pick up
+  public function orderReady($orderID)
+  {
+    $this->db->query('UPDATE order_success SET status = :status WHERE orderID = :order_id');
+    $this->db->bind(':status', 'ready');
+    $this->db->bind(':order_id', $orderID);
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
 }

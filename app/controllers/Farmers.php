@@ -678,6 +678,25 @@ class Farmers extends Controller
     $this->view('farmers/manageorders', $data);
   }
 
+  public function orderready()
+  {
+    if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
+      redirect('users/login');
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+      $orderID = trim($_POST['order_id']);
+
+      if ($this->farmerModel->orderReady($orderID)) {
+        // send a notification to the delivery person
+        redirect('farmers/manageorders');
+      } else {
+        die('Something went wrong');
+      }
+    }
+  }
+
   public function viewsales()
   {
     if (!isLoggedIn()) {
@@ -696,7 +715,7 @@ class Farmers extends Controller
     $data = $this->farmerModel->getExpiredStocks();
     $this->view('farmers/expstock', $data);
   }
-  
+
   public function bookconsultant()
   {
     if (!isLoggedIn()) {

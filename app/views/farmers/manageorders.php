@@ -43,7 +43,7 @@
           <td>
             <?php if ($order->status == 'processing') : ?>
               <form action="<?= URLROOT ?>/farmers/orderready" method="POST">
-                <input type="hidden" name="product_id" value="<?= $order->orderID ?>">
+                <input type="hidden" name="order_id" value="<?= $order->orderID ?>">
                 <button type="submit" class="ready-btn">Order Ready</button>
               </form>
             <?php else: ?>
