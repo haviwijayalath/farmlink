@@ -12,67 +12,68 @@ class Users extends Controller {
         // Check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             // Process form
-            // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
-            // Init data
+    
             $data = [
                 'email' => trim($_POST['email']),
                 'password' => trim($_POST['password']),
                 'email_err' => '',
                 'password_err' => ''
             ];
-
-            // Validate email
+    
             if(empty($data['email'])) {
                 $data['email_err'] = 'Please enter your Email';
             }
-
-            // Validate password
+    
             if (empty($data['password'])) {
                 $data['password_err'] = 'Please enter a password';
             }
-
-            // Check for user
+    
             if($this->userModel->findUserByEmail($data['email'])){
                 // User found
             } else {
-                // User not found
                 $data['email_err'] = 'No user found';
             }
-
-            // Make sure errors are empty
+    
             if(empty($data['email_err']) && empty($data['password_err'])){
-                // Validated; check and set logged in user
                 $loggedInUser = $this->userModel->login($data['email'], $data['password']);
-
-                if($loggedInUser){
-                    // Create session (which now also sets user_type)
-                    $this->createUserSession($loggedInUser);
-                } else {
-                    $data['password_err'] = 'Password incorrect';
+    
+                if ($loggedInUser === 'pending') {
+                    $data['email_err'] = 'Your account is pending admin approval.';
+                    flash('log in failed', 'Your account is pending admin approval.');
                     $this->view('users/login', $data);
+                    return;
+                } elseif ($loggedInUser === 'suspended') {
+                    $data['email_err'] = 'Your account has been suspended. Please contact support.';
+                    flash('log in failed', 'Your account has been suspended. Please contact support.');
+                    $this->view('users/login', $data);
+                    return;
+                } elseif ($loggedInUser) {
+                    $this->createUserSession($loggedInUser);
+                    return;
+                } else {
+                    $data['password_err'] = 'Invalid email or password.';
+                    $this->view('users/login', $data);
+                    return;
                 }
-
             } else {
-                // Load the view with errors
                 $this->view('users/login', $data);
+                return;
             }
-
+    
         } else {
-            // Init data
-            $data =[
+            // This part was misaligned earlier
+            $data = [
                 'email' => '',
                 'password' => '',
                 'email_err' => '',
                 'password_err' => ''
             ];
-
-            // Load view
+    
             $this->view('users/login', $data);
         }
     }
-
+    
     public function createUserSession($user){
         // Redirect based on role, and set extra session variable user_type
         switch ($user->role) {
