@@ -7,18 +7,17 @@
 
 .content {
   padding: 2em;
-  margin-left: 400px;
-  margin-top: 40px;
+  margin-left: 375px;
   text-align: center;
   background-color: var(--secondary);
   border-radius: 10px;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
   max-width: 900px;
-  margin-top: 150px;
+  margin-bottom: 50px;
 }
 
 .track {
-  margin-top: 2em;
+  margin-top: 1em;
 }
 
 #progress {

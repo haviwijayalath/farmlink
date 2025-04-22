@@ -276,20 +276,35 @@ class Dpersons extends Controller {
         $this->view('d_person/history', $data);
     }
 
-    public function tracking(){
-
+    public function tracking() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
-          }
-
-        $orderStatus = $this->userModel->fetchOrderStatus($_SESSION['order_id']);
-
-        // Check if we received any status
-        $status = $orderStatus ? $orderStatus[0]->status : 'new';  // Default to 'PLACED' if no status found
-
-        $this->view('d_person/ongoing/tracking',['status' => $status]);
-
-    }
+        }
+    
+        $orderId = $_SESSION['order_id'];
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+    
+        // Fetch order details
+        $order = $this->userModel->getongoingbyID($deliveryArea, $orderId); // You'll need this function in your model
+    
+        if (!$order) {
+            // Handle case if no order found
+            flash('order_error', 'Order not found');
+            redirect('dpersons/ongoing'); // or wherever fits best
+        }
+    
+        // Build data array
+        $data = [
+            'status' => $order->status,
+            'pickup' => $order->pickup_address,
+            'dropoff' => $order->dropoff_address,
+            'fee' => $order->amount,
+            'orderId' => $order->orderID
+        ];
+    
+        // Load view
+        $this->view('d_person/ongoing/tracking', $data);
+    }    
 
 
     public function register() {
