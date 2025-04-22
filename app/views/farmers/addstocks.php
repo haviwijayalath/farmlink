@@ -51,21 +51,7 @@ $vegesNfruits = ["Carrot", "Broccoli", "Spinach", "Tomato", "Cucumber", "Pepper"
         <option value="dairy">Dairy</option>
       </select>
     </div>
-
-    <!-- Include jQuery and Select2 -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
-
-    <script>
-      $(document).ready(function() {
-      $('#product_name').select2({
-        placeholder: "Search for a product...",
-        allowClear: true
-      });
-      });
-    </script>
-
+    
     <div class="form-group">
       <label for="quantity">Quantity: <sup>*</sup></label>
       <input type="number" name="quantity" class="form-control form-control-lg" required>
