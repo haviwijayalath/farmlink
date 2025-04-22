@@ -86,7 +86,7 @@ class Dpersons extends Controller {
         $confirmedOrder = $this->userModel->confirmOrder($orderId);
 
         if ($confirmedOrder) {
-            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'd', $_SESSION['user_id'], 'Order Confirmed', 'Your ' . $confirmedOrder->product . 'order is confirmed by the delivery ', '/farmlink/dpersons/ongoingDeliveries', 'info');
+            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $confirmedOrder->buyerID, 'Order Confirmed', 'Your ' . $confirmedOrder->product . '  order is confirmed by the delivery ', '/farmlink/dpersons/ongoingDeliveries', 'info');
             header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
         } else {
             die('Something went wrong.');

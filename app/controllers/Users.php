@@ -64,20 +64,19 @@ class Users extends Controller {
                 $data['password_err'] = 'Invalid email or password.';
                 $this->view('users/login', $data);
             }
-            
 
+            } else {
+                // Init data
+                $data =[
+                    'email' => '',
+                    'password' => '',
+                    'email_err' => '',
+                    'password_err' => ''
+                ];
 
-        } else {
-            // Init data
-            $data =[
-                'email' => '',
-                'password' => '',
-                'email_err' => '',
-                'password_err' => ''
-            ];
-
-            // Load view
-            $this->view('users/login', $data);
+                // Load view
+                $this->view('users/login', $data);
+            }
         }
     }
 
