@@ -9,9 +9,8 @@ class User extends Database{
 
   public function login($email, $password){
     // List of tables to check for the login
-    $tables = [ 'suppliers', 'delivery_persons', 'farmers', 'consultants', 'buyers', 'admins'];
+    $tables = ['delivery_persons', 'farmers', 'consultants', 'buyers', 'admins'];
     
-    // Loop through each table and attempt to find a matching record
     foreach ($tables as $table) {
         $this->db->query("SELECT * FROM $table WHERE email = :email");
         $this->db->bind(':email', $email);
@@ -19,18 +18,30 @@ class User extends Database{
         $row = $this->db->single();
 
         if ($row) {
-          // User found; now verify the password
-          if (password_verify($password, $row->password)) {
-              // Attach role information to user data for session
-              $row->role = $table; 
-              return $row; // Return user data if password matches
-          } else {
-              return false; // Password mismatch
-          }
+            // Check password
+            if (password_verify($password, $row->password)) {
+                
+                // Skip status check for admins and buyers
+                if ($table !== 'admins' && $table !== 'buyers' && isset($row->status)) {
+                    if ($row->status === 'pending') {
+                        return 'pending';
+                    } elseif ($row->status === 'suspended') {
+                        return 'suspended';
+                    }
+                }
+
+                // Attach role information
+                $row->role = $table;
+                return $row;
+            } else {
+                return false; // Password mismatch
+            }
         }
     }
-    return false; // User not found in any table
-  }
+
+    return false; // User not found
+}
+
 
   //Find user by email
 public function findUserByEmail($email) {
