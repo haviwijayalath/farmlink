@@ -83,7 +83,7 @@ class Dpersons extends Controller {
             redirect('users/login');
           }
 
-        $confirmedOrder = $this->userModel->confirmOrder($orderId);
+        $confirmedOrder = $this->userModel->confirmOrder($_SESSION['user_id'],$orderId);
 
         if ($confirmedOrder) {
             $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $confirmedOrder->buyerID, 'Order Confirmed', 'Your ' . $confirmedOrder->product . '  order is confirmed by the delivery ', '/farmlink/dpersons/ongoingDeliveries', 'info');
