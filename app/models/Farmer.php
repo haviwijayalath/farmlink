@@ -287,4 +287,46 @@ class Farmer
 
     return $results;
   }
+
+  // Get orders
+  public function getOrders()
+  {
+    $this->db->query('
+      SELECT os.*, fp.name AS product_name, f.name AS farmer_name, b.name AS buyer_name, d.name AS dperson_name
+      FROM order_success os
+      INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+      INNER JOIN buyers b ON os.buyerID = b.id
+      INNER JOIN delivery_persons d ON os.dperson_id = d.id
+      INNER JOIN farmers f ON fp.farmer_id = f.id
+      WHERE f.id = :farmer_id
+      ORDER BY os.orderDate DESC
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
+  // Marking orders as ready to pick up
+  public function orderReady($orderID)
+  {
+    $this->db->query('UPDATE order_success SET status = :status WHERE orderID = :order_id');
+    $this->db->bind(':status', 'ready');
+    $this->db->bind(':order_id', $orderID);
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Get delivery person id by orderID
+  public function dpersonIdOfOrder($orderID)
+  {
+    $this->db->query('SELECT dperson_id FROM order_success WHERE orderID = :order_id');
+    $this->db->bind(':order_id', $orderID);
+    $row = $this->db->single();
+    return $row->dperson_id;
+  }
 }

@@ -115,7 +115,7 @@ a{
 .notification-dropdown {
   position: absolute;
   top: 40px;
-  right: -100px;
+  right: 0; /* Changed from -100px to 0 */
   width: 320px;
   background-color: white;
   border-radius: 8px;

@@ -69,6 +69,19 @@ class Notification
     return $this->db->execute();
   }
   
+  // Delete a notification
+  public function dismissNotification($notificationId, $to_type)
+  {
+    $tableName = $this->getTableName($to_type);
+    if (!$tableName) {
+        return false;
+    }
+    
+    $this->db->query("DELETE FROM {$tableName} WHERE id = :id");
+    $this->db->bind(':id', $notificationId);
+    return $this->db->execute();
+  }
+
   // Helper method to get table name from type
   private function getTableName($type)
   {

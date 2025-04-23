@@ -661,6 +661,7 @@ class Farmers extends Controller
 
     if ($this->farmerModel->deleteStock($id)) {
       flash('stock_message', 'Stock Removed');
+      $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'f', $_SESSION['user_id'], 'Stock removed', 'Stock ' . $product->name . ' removed', '/farmlink/farmers/managestocks', 'stock');
       redirect('farmers/managestocks');
     } else {
       die('Something went wrong');
@@ -669,11 +670,34 @@ class Farmers extends Controller
 
   public function manageorders()
   {
-    if (!isLoggedIn()) {
+    if (!isLoggedIn()  || $_SESSION['user_role'] != 'farmer') {
       redirect('users/login');
     }
 
-    $this->view('farmers/manageorders');
+    $data = $this->farmerModel->getOrders();
+
+    $this->view('farmers/manageorders', $data);
+  }
+
+  public function orderready()
+  {
+    if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
+      redirect('users/login');
+    }
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+
+      $orderID = trim($_POST['order_id']);
+
+      if ($this->farmerModel->orderReady($orderID)) {
+        // send a notification to the delivery person
+        $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'd', $this->farmerModel->dpersonIdOfOrder($orderID), 'Order ready', 'Order ' . $orderID . ' is ready for delivery', '/farmlink/deliveryperson/manageorders', 'confirmation');
+        flash('order_message', 'Order marked as ready');
+        redirect('farmers/manageorders');
+      } else {
+        die('Something went wrong');
+      }
+    }
   }
 
   public function viewsales()
@@ -694,6 +718,7 @@ class Farmers extends Controller
     $data = $this->farmerModel->getExpiredStocks();
     $this->view('farmers/expstock', $data);
   }
+
   public function bookconsultant()
   {
     if (!isLoggedIn()) {

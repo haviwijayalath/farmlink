@@ -1,4 +1,36 @@
 document.addEventListener('DOMContentLoaded', function() {
+    // Add CSS for the dismiss button
+    const style = document.createElement('style');
+    style.textContent = `
+        .notification-item {
+            position: relative;
+            transition: opacity 0.3s, height 0.3s;
+        }
+        .notification-dismiss {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #e0e0e0;
+            border: none;
+            font-size: 16px;
+            line-height: 1;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0;
+            opacity: 0.7;
+        }
+        .notification-dismiss:hover {
+            opacity: 1;
+            background: #ccc;
+        }
+    `;
+    document.head.appendChild(style);
+    
     const notificationBell = document.getElementById('notification-bell');
     const notificationDropdown = document.querySelector('.notification-dropdown');
     const notificationBadge = document.querySelector('.notification-badge');
@@ -131,6 +163,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         <div class="notification-message">${notification.content}</div>
                         <div class="notification-time">${timeAgo}</div>
                     </div>
+                    <button class="notification-dismiss" data-id="${notification.id}" title="Dismiss notification">×</button>
                 </div>
             `;
         });
@@ -139,7 +172,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Add click event for each notification
         document.querySelectorAll('.notification-item').forEach(item => {
-            item.addEventListener('click', function() {
+            item.addEventListener('click', function(e) {
+                // Don't trigger if clicking the dismiss button
+                if (e.target.classList.contains('notification-dismiss')) {
+                    return;
+                }
+                
                 const notificationId = this.getAttribute('data-id');
                 const isUnread = this.classList.contains('unread');
                 
@@ -155,6 +193,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (matchingNotification && matchingNotification.url && matchingNotification.url !== '#') {
                     window.location.href = matchingNotification.url;
                 }
+            });
+        });
+        
+        // Add click events for dismiss buttons
+        document.querySelectorAll('.notification-dismiss').forEach(button => {
+            button.addEventListener('click', function(e) {
+                e.stopPropagation(); // Prevent the notification item click
+                const notificationId = this.getAttribute('data-id');
+                dismissNotification(notificationId);
             });
         });
     }
@@ -269,6 +316,59 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error marking all notifications as read:', error);
+        });
+    }
+    
+    // Function to dismiss/delete a notification
+    function dismissNotification(notificationId) {
+        fetch(`${window.location.origin}/farmlink/Notifications/dismissNotification`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Requested-With': 'XMLHttpRequest'
+            },
+            body: JSON.stringify({
+                notification_id: notificationId,
+            })
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            if (data.success) {
+                // Remove the notification from the UI
+                const notificationItem = document.querySelector(`.notification-item[data-id="${notificationId}"]`);
+                if (notificationItem) {
+                    // Check if it was unread
+                    const wasUnread = notificationItem.classList.contains('unread');
+                    
+                    // Remove the item with animation
+                    notificationItem.style.opacity = '0';
+                    notificationItem.style.height = '0';
+                    setTimeout(() => {
+                        notificationItem.remove();
+                        
+                        // If there are no more notifications, show the no notifications message
+                        if (notificationList.children.length === 0) {
+                            notificationList.innerHTML = '<div class="no-notifications">No new notifications</div>';
+                        }
+                        
+                        // Update badge count if it was unread
+                        if (wasUnread) {
+                            const currentCount = parseInt(notificationBadge.textContent);
+                            if (currentCount > 0) {
+                                updateNotificationBadge(currentCount - 1);
+                            }
+                        }
+                    }, 300);
+                }
+            }
+        })
+        .catch(error => {
+            console.error('Error dismissing notification:', error);
         });
     }
     
