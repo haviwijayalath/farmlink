@@ -25,7 +25,7 @@
         </a></li>
         <!-- Logout -->
         <li><a href="javascript:void(0)" onclick="showPopup()">
-            <i class="fas fa-sign-out-alt"></i> Logout
+            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i> Logout
         </a></li>
     </ul>
 </div>
