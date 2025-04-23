@@ -11,11 +11,13 @@
             <thead>
                 <tr>
                     <th>OrderID</th>
+                    <th>OrderID</th>
                     <th>Product</th>
                     <th>Amount</th>
                     <th>Shipping Address</th>
                     <th>Order Date</th>
                     <th>Status</th>
+                    <th>Action</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -30,17 +32,18 @@
                         <td><?= $item->orderDate ?></td>
                         <td><?= $item->status ?></td>
                         <td>
-                        <?php if (strtolower($item->status) === 'delivered'): ?>
-                            <!-- Only show if delivered -->
-                            <a href="<?= URLROOT ?>/orderControllers/review/<?= $item->orderID ?>" class="btn btn-sm btn-primary">Review</a>
+                            <!-- Review Button -->
+                            <a href="<?= URLROOT ?>/reviews/add/<?= $item->orderID ?>" class="btn btn-sm btn-primary">Review</a>
+                            <!-- Complaint Button -->
                             <a href="<?= URLROOT ?>/orderControllers/show_buyer_complaint/<?= $item->orderID ?>" class="btn btn-sm btn-danger">Complaint</a>
-                        <?php else: ?>
-                            <!-- Optional: show disabled or info -->
-                            <button class="btn btn-sm btn-secondary" disabled title="Available after delivery" disabled>Pending</button>
-                        <?php endif; ?>
-                    </td>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
+            <?php else: ?>
+                <tr>
+                    <td colspan="7" style="text-align: center;">No orders found.</td>
+                </tr>
+            <?php endif; ?>
             <?php else: ?>
                 <tr>
                     <td colspan="7" style="text-align: center;">No orders found.</td>
