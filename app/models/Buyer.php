@@ -285,14 +285,26 @@ class Buyer extends Database{
         return $results ?: [];
     }
   
-    public function getOrderID(){
+    // public function getOrderID(){
+    //     $this->db->query('
+    //         SELECT orderProcessID
+    //         FROM order_process
+    //         ORDER BY orderProcessID DESC
+    //         LIMIT 1;
+    //     ');   
+
+    //     $row = $this->db->single(); // Fetch the single result
+    //     return $row ? $row->orderProcessID : null; // Return the orderProcessID or null if no rows exist
+    // }
+
+       // Get the latest order ID
+       public function getOrderID() {
         $this->db->query('
             SELECT orderProcessID
             FROM order_process
             ORDER BY orderProcessID DESC
             LIMIT 1;
-        ');   
-
+        ');
         $row = $this->db->single(); // Fetch the single result
         return $row ? $row->orderProcessID : null; // Return the orderProcessID or null if no rows exist
     }
@@ -339,6 +351,56 @@ class Buyer extends Database{
     $this->db->bind(':cart_id', $cartId);
 
     return $this->db->single(); // Returns object with cart info
+    }
+
+     // Get order details by orderProcessID
+     public function getOrderDetailss($id) {
+        $this->db->query('
+            SELECT op.orderProcessID, op.productId, p.name AS productName, op.quantity, 
+                   op.farmerFee, op.deliveryFee, op.dropAddress
+            FROM order_process op
+            JOIN fproducts p ON op.productId = p.fproduct_id
+            WHERE op.orderProcessID = :id
+        ');
+        $this->db->bind(':id', $id);
+        return $this->db->single(); // Return the single result
+    }
+
+
+    // Save order details to the `order_success` table
+    public function saveOrderSuccess($data) {
+        $this->db->query('INSERT INTO order_success 
+                          (buyerID, productID, product, quantity, famersFee, deliveryFee, dropAddress, status, dperson_id, orderDate) 
+                          VALUES (:buyerID, :productID, :product, :quantity, :famersFee, :deliveryFee, :dropAddress, :status, :dperson_id, now())');
+
+        // Bind values
+        $this->db->bind(':buyerID', $data['buyerID']);
+        $this->db->bind(':productID', $data['productID']);
+        $this->db->bind(':product', $data['product']);
+        $this->db->bind(':quantity', $data['quantity']);
+        $this->db->bind(':famersFee', $data['famersFee']);
+        $this->db->bind(':deliveryFee', $data['deliveryFee']);
+        $this->db->bind(':dropAddress', $data['dropAddress']);
+        $this->db->bind(':status', $data['status']);
+        $this->db->bind(':dperson_id', $data['dperson_id']);
+
+        // Execute the query
+        return $this->db->execute();
+    }
+
+    public function getQuantity($cart_id) {
+        $this->db->query('
+            SELECT fproducts.stock
+            FROM fproducts
+            JOIN buyer_carts ON fproducts.fproduct_id = buyer_carts.product_id
+            WHERE buyer_carts.cart_id = :cart_id
+        ');
+        
+        $this->db->bind(':cart_id', $cart_id);
+        $row = $this->db->single();
+    
+        // Return the stock value or null if no result is found
+        return $row ? $row->stock : null;
     }
 
 }
