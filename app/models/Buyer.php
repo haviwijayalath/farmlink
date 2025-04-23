@@ -284,6 +284,30 @@ class Buyer extends Database{
         // Return the results (empty array if no orders exist)
         return $results ?: [];
     }
+  
+    public function getOrderID(){
+        $this->db->query('
+            SELECT orderProcessID
+            FROM order_process
+            ORDER BY orderProcessID DESC
+            LIMIT 1;
+        ');   
+
+        $row = $this->db->single(); // Fetch the single result
+        return $row ? $row->orderProcessID : null; // Return the orderProcessID or null if no rows exist
+    }
+
+    public function getOrderDetails($id){
+        $this->db->query('
+            select deliveryFee, farmerFee from order_process
+            where orderProcessID = :id
+        ');
+
+        $this->db->bind(':id',$id);
+
+        return $this->db->single(); // Return the single result
+    }
+  
     
     public function insertOrderFromCart($cartId)
     {
@@ -316,27 +340,5 @@ class Buyer extends Database{
 
     return $this->db->single(); // Returns object with cart info
     }
-    
-    public function getOrderID(){
-        $this->db->query('
-            SELECT orderProcessID
-            FROM order_process
-            ORDER BY orderProcessID DESC
-            LIMIT 1;
-        ');   
 
-        $row = $this->db->single(); // Fetch the single result
-        return $row ? $row->orderProcessID : null; // Return the orderProcessID or null if no rows exist
-    }
-
-    public function getOrderDetails($id){
-        $this->db->query('
-            select deliveryFee, farmerFee from order_process
-            where orderProcessID = :id
-        ');
-
-        $this->db->bind(':id',$id);
-
-        return $this->db->single(); // Return the single result
-    }
 }
