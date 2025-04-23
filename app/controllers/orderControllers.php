@@ -180,7 +180,7 @@ class orderControllers extends Controller{
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
         }
-        
+
         $buyerId = $_SESSION['user_id']; // or however you identify the user
         $role = $_SESSION['user_role'];
     

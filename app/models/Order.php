@@ -135,25 +135,6 @@ public function getComplaints($userId, $role) {
     
         return $this->db->execute();
     }
-
-    public function getBuyerAddress($buyerId) {
-        $this->db->query('
-           SELECT 
-            b.name,b.email,b.phone,a.number,a.Street,a.City
-            FROM 
-                buyers b
-            JOIN 
-                address a
-            ON 
-                b.address_id = a.address_id
-            WHERE 
-                b.id = :buyerId; 
-        ');
-
-        $this->db->bind(':buyerId', $buyerId);
-
-        return $this->db->single(); // Fetch a single result
-    }
     
 
 }

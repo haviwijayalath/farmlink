@@ -32,11 +32,15 @@
                         <td><?= $item->orderDate ?></td>
                         <td><?= $item->status ?></td>
                         <td>
-                            <!-- Review Button -->
-                            <a href="<?= URLROOT ?>/reviews/add/<?= $item->orderID ?>" class="btn btn-sm btn-primary">Review</a>
-                            <!-- Complaint Button -->
+                        <?php if (strtolower($item->status) === 'delivered'): ?>
+                            <!-- Only show if delivered -->
+                            <a href="<?= URLROOT ?>/orderControllers/review/<?= $item->orderID ?>" class="btn btn-sm btn-primary">Review</a>
                             <a href="<?= URLROOT ?>/orderControllers/show_buyer_complaint/<?= $item->orderID ?>" class="btn btn-sm btn-danger">Complaint</a>
-                        </td>
+                        <?php else: ?>
+                            <!-- Optional: show disabled or info -->
+                            <button class="btn btn-sm btn-secondary" disabled title="Available after delivery" disabled>Pending</button>
+                        <?php endif; ?>
+                    </td>
                     </tr>
                 <?php endforeach; ?>
             <?php else: ?>
