@@ -165,7 +165,90 @@ class Farmers extends Controller
       redirect('users/login');
     }
 
-    $this->view('farmers/index');
+    // to get total sales and orders
+    $sales = $this->farmerModel->getSales();
+    $monthlySales = $this->calMonthlySales($sales);
+    $totals = $this->calTotalSalesTotalOrders($monthlySales); 
+
+    // to get pending orders, recent orders, top product
+    $orders = $this->farmerModel->getOrders();
+    $pendingOrders = $this->farmerModel->getPendingOrders();
+    $pendingOrdersCount = count($pendingOrders);
+
+    // current stock count
+    $currentStock = $this->farmerModel->getStocks();
+    $currentStockCount = 0;
+    foreach ($currentStock as $stock) {
+      $currentStockCount += $stock->stock;
+    }
+
+    // expiring stock count
+    $expiringStock = $this->farmerModel->getExpiringStocks();
+    $expiringStockCount = 0;
+    foreach ($expiringStock as $stock) {
+      $expiringStockCount += $stock->stock;
+    }
+
+    // top products
+    $topProducts = $this->farmerModel->getTopProducts();
+
+    // total products
+    $totalProducts = $this->farmerModel->getTotalProducts();
+
+    // sales change
+    $salesChange = $this->salesChange();
+
+    $data = [
+      'totalSales' => $totals['totalSales'],
+      'salesChange' => $salesChange['percentage'],
+      'totalOrders' => $totals['totalOrders'],
+      'pendingOrders' => $pendingOrdersCount,
+      'currentStock' => $currentStockCount,
+      'expiringStockCount' => $expiringStockCount,
+      'totalProducts' => $totalProducts,
+      'topProducts' => $topProducts,
+      'recentOrders' => array_slice($orders, 0, 5)
+    ];
+
+    $this->view('farmers/index', $data);
+  }
+
+  public function salesChange()
+  {
+    if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
+      redirect('users/login');
+    }
+
+    $sales = $this->farmerModel->getSales();
+    $monthlySales = $this->calMonthlySales($sales);
+    
+    // Sort monthly sales by date (most recent first)
+    usort($monthlySales, function($a, $b) {
+      return strtotime(date('Y-m', strtotime($b['month']))) - strtotime(date('Y-m', strtotime($a['month'])));
+    });
+    
+    // Calculate percentage change between current and previous month
+    $change = 0;
+    $changePercent = 0;
+    
+    if (count($monthlySales) >= 2) {
+      $currentMonth = $monthlySales[0]['totalFee'];
+      $previousMonth = $monthlySales[1]['totalFee'];
+      
+      $change = $currentMonth - $previousMonth;
+      
+      if ($previousMonth > 0) {
+        $changePercent = ($change / $previousMonth) * 100;
+      } else if ($currentMonth > 0) {
+        $changePercent = 100; // If previous month had 0 sales but current has sales
+      }
+    }
+    
+    return [
+      'change' => $change,
+      'percentage' => round($changePercent, 2),
+      'isPositive' => $change >= 0
+    ];
   }
 
   public function viewprofile()
