@@ -2,6 +2,7 @@
 
 <?php
 $complaints = $data['complaints'];
+$prefilledOrderID = isset($data['selectedOrderID']) ? $data['selectedOrderID'] : '';
 ?>
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
@@ -30,7 +31,7 @@ $complaints = $data['complaints'];
     <h2>Submit a Delivery Complaint</h2>
     <form action="<?php echo URLROOT; ?>/ordercontrollers/submitComplaint_buyer/" method="post">
         <label for="order_id">Order ID:</label>
-        <input type="text" name="order_id" id="order_id" required>
+        <input type="text" name="order_id" id="order_id" value="<?= htmlspecialchars($prefilledOrderID) ?>" required>
 
         <label for="description">Complaint Description:</label>
         <textarea name="description" id="description" rows="4" required></textarea>
@@ -38,6 +39,7 @@ $complaints = $data['complaints'];
         <button type="submit">Submit Complaint</button>
     </form>
 </div>
+
 </div>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
