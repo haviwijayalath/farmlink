@@ -136,7 +136,7 @@ class orderControllers extends Controller{
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
         }
-        
+
         $buyerId = $_SESSION['user_id']; // or however you identify the user
         $role = $_SESSION['user_role'];
     
@@ -183,6 +183,69 @@ class orderControllers extends Controller{
         } else {
             // Optional: prevent direct access via GET
             redirect('orderControllers/show_buyer_complaint');
+        }
+    }
+
+    public function review($orderID) {
+        $orderDetails = $this->orderModel->getOrderDetailsWithFarmer($orderID);
+    
+        if (!$orderDetails) {
+            die('Invalid Order ID');
+        }
+    
+        $data = [
+            'orderID' => $orderID,
+            'buyerID' => $orderDetails->buyerID,
+            'farmerID' => $orderDetails->farmer_id
+        ];
+    
+        $this->view('buyer/review', $data);
+    }
+    
+    public function submitReview() {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $orderID = $_POST['order_id'];
+            $description = $_POST['description'] ?? '';
+            $rating = $_POST['rating'] ?? 0;
+            $images = [];
+    
+            // Handle image upload
+            if (!empty($_FILES['images']['name'][0])) {
+                $uploadDir = 'public/uploads/';
+
+                // Create the directory if it doesn't exist
+                if (!is_dir($uploadDir)) {
+                    mkdir($uploadDir, 0755, true);
+                }
+
+                foreach ($_FILES['images']['name'] as $index => $name) {
+                    $tmpName = $_FILES['images']['tmp_name'][$index];
+                    $newName = uniqid() . '_' . basename($name);
+                    move_uploaded_file($tmpName, $uploadDir . $newName);
+                    $images[] = $newName;
+                }
+            }
+    
+            // Get buyerID and farmerID from DB
+            $orderDetails = $this->orderModel->getOrderDetailsWithFarmer($orderID);
+    
+            $data = [
+                'orderID' => $orderID,
+                'buyerID' => $orderDetails->buyerID,
+                'farmerID' => $orderDetails->farmer_id,
+                'description' => $description,
+                'rating' => $rating,
+                'images' => implode(',', $images)
+            ];
+    
+            if ($this->orderModel->addReview($data)) {
+                flash('review_success', 'Review submitted successfully!');
+                redirect('buyercontrollers/buyerOrders');
+            } else {
+                die("Failed to submit review");
+            }
+        } else {
+            redirect('pages/index');
         }
     }
     
