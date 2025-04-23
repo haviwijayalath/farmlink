@@ -35,8 +35,10 @@
                         </td>
                         <td>Rs.<?= number_format($item->price * $item->quantity, 2) ?></td>
                         <td>
-                            <!-- Trigger the confirmation popup -->
+                            <!-- Trigger the confirmation popup
                             <a href="javascript:void(0)" class="btn-remove" onclick="showPopup(<?= $item->cart_id ?>)">Remove</a>
+                        </td> -->
+                        <a href="javascript:void(0)" class="btn-remove" onclick="showPopup('remove-popup', <?= $item->cart_id ?>)">Remove</a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
@@ -68,7 +70,7 @@
         <h2>Are you sure you want to remove this item?</h2>
         <div class="button-container">
             <a href="javascript:void(0)" id="confirm-remove" class="remove-button">Yes</a>
-            <button onclick="closePopup()" class="cancel-button">Cancel</button>
+            <button onclick="closePopup('remove-popup')" class="cancel-button">Cancel</button>
         </div> 
     </div>
 </div>
@@ -76,23 +78,54 @@
 <?php require APPROOT . '/views/inc/footer.php'; ?>
 
 <script>
+    // let cartIdToRemove = null;
+
+    // // Show the popup when the remove button is clicked
+    // function showPopup(cartId) {
+    //     cartIdToRemove = cartId;
+    //     document.getElementById('remove-popup').style.display = 'flex';
+    // }
+
+    // // Close the popup
+    // function closePopup() {
+    //     document.getElementById('remove-popup').style.display = 'none';
+    // }
+
+    // // Handle confirmation of removal
+    // document.getElementById('confirm-remove').addEventListener('click', function() {
+    //     if (cartIdToRemove !== null) {
+    //         window.location.href = "<?= URLROOT ?>/Buyercontrollers/removeCartItem/" + cartIdToRemove;
+    //     }
+    // });
+
     let cartIdToRemove = null;
 
-    // Show the popup when the remove button is clicked
-    function showPopup(cartId) {
+// Show the popup when the remove button is clicked
+function showPopup(popupId, cartId) {
+    const popup = document.getElementById(popupId);
+    if (popup) {
+        popup.style.display = 'flex';
+        popup.style.alignItems = 'center'; // Ensure popup is centered
+        popup.style.justifyContent = 'center';
+
+        // Store the cart ID for removal confirmation
         cartIdToRemove = cartId;
-        document.getElementById('remove-popup').style.display = 'flex';
     }
+}
 
-    // Close the popup
-    function closePopup() {
-        document.getElementById('remove-popup').style.display = 'none';
+// Close the popup
+function closePopup(popupId) {
+    const popup = document.getElementById(popupId);
+    if (popup) {
+        popup.style.display = 'none';
     }
+}
 
-    // Handle confirmation of removal
-    document.getElementById('confirm-remove').addEventListener('click', function() {
-        if (cartIdToRemove !== null) {
-            window.location.href = "<?= URLROOT ?>/Buyercontrollers/removeCartItem/" + cartIdToRemove;
-        }
-    });
+// Handle confirmation of removal
+document.getElementById('confirm-remove').addEventListener('click', function () {
+    if (cartIdToRemove !== null) {
+        window.location.href = "<?= URLROOT ?>/Buyercontrollers/removeCartItem/" + cartIdToRemove;
+    }
+});
+
 </script>
