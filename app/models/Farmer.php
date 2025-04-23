@@ -288,6 +288,45 @@ class Farmer
     return $results;
   }
 
+  // Get expiring stocks
+  public function getExpiringStocks()
+  {
+    $this->db->query('SELECT * FROM fproducts WHERE exp_date < DATE_ADD(CURDATE(), INTERVAL 2 DAY)');
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
+  // Get total products
+  public function getTotalProducts()
+  {
+    $this->db->query('SELECT COUNT(*) as total FROM fproducts WHERE farmer_id = :farmer_id');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+    
+    $row = $this->db->single();
+    return $row->total;
+  }
+
+  // Get top 5 products
+  public function getTopProducts()
+  {
+    $this->db->query('
+      SELECT fp.*, SUM(os.quantity) as total_quantity
+      FROM fproducts fp
+      LEFT JOIN order_success os ON fp.fproduct_id = os.productID
+      WHERE fp.farmer_id = :farmer_id
+      GROUP BY fp.fproduct_id
+      ORDER BY total_quantity DESC
+      LIMIT 5
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
   // Get orders
   public function getOrders()
   {
@@ -302,6 +341,27 @@ class Farmer
       ORDER BY os.orderDate DESC
     ');
     $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
+  // Get pending orders
+  public function getPendingOrders()
+  {
+    $this->db->query('
+      SELECT os.*, fp.name AS product_name, f.name AS farmer_name, b.name AS buyer_name, d.name AS dperson_name
+      FROM order_success os
+      INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+      INNER JOIN buyers b ON os.buyerID = b.id
+      INNER JOIN delivery_persons d ON os.dperson_id = d.id
+      INNER JOIN farmers f ON fp.farmer_id = f.id
+      WHERE f.id = :farmer_id AND os.status = :status
+      ORDER BY os.orderDate DESC
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+    $this->db->bind(':status', 'pending');
 
     $results = $this->db->resultSet();
 
@@ -328,5 +388,22 @@ class Farmer
     $this->db->bind(':order_id', $orderID);
     $row = $this->db->single();
     return $row->dperson_id;
+  }
+
+  public function getSales()
+  {
+    $this->db->query('
+      SELECT os.*, fp.name AS product_name
+      FROM order_success os
+      INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+      INNER JOIN farmers f ON fp.farmer_id = f.id
+      WHERE f.id = :farmer_id
+      ORDER BY os.orderDate DESC
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
   }
 }

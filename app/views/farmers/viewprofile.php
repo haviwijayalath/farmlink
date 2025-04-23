@@ -1,3 +1,9 @@
+<?php require APPROOT . '/views/farmers/inc/header.php'; ?>
+
+<?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
+
+<center>
+    
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/farmers/viewprofile.css">
 
     <div class="acc-main-content">
@@ -96,6 +102,8 @@
         </div>
     </form>
 </div>
+
+</center>
 
 <script>
     // Get elements
