@@ -77,10 +77,18 @@
           <div class="upload-container">
             <input type="file" id="v_image" name="v_image" <?php echo (!empty($data['v_image_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['v_image']; ?>" onchange="previewVehicleImage(event)">
           </div>
-            
-            <div id="vehicle-image-preview" style="margin-top: 15px;">
+          <div id="vehicle-image-preview" style="margin-top: 15px;">
                 <img id="outputVehicle" src="" alt="Vehicle Image Preview" style="max-width: 200px; display: none;">
                 <span class="error"><?php echo $data['v_image_err']; ?></span>
+            </div>
+
+            <label for="l_image">License Image</label>
+            <div class="upload-container">
+              <input type="file" id="l_image" name="l_image" <?php echo (!empty($data['l_image_err'])) ? 'is_invalid' : ''; ?> value="<?php echo $data['l_image']; ?>" onchange="previewlImage(event)">
+            </div>
+            <div id="l_image-preview" style="margin-top: 15px;">
+                  <img id="limage" src="" alt="L_Image Preview" style="max-width: 200px; display: none;">
+                  <span class="error"><?php echo $data['l_image_err']; ?></span>
             </div>
           
               <label for="password">Password</label>
@@ -152,6 +160,13 @@
         vehicleImagePreview.src = URL.createObjectURL(event.target.files[0]);
         vehicleImagePreview.style.display = 'block';
         vehicleImagePreview.onload = () => URL.revokeObjectURL(vehicleImagePreview.src); // Free memory
+    }
+
+    function previewlImage(event) {
+        const lImagePreview = document.getElementById('limage');
+        lImagePreview.src = URL.createObjectURL(event.target.files[0]);
+        lImagePreview.style.display = 'block';
+        lImagePreview.onload = () => URL.revokeObjectURL(lImagePreview.src); // Free memory
     }
   </script>
 
