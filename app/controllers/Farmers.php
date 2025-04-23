@@ -164,6 +164,15 @@ class Farmers extends Controller
     if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
       redirect('users/login');
     }
+    
+    $this->view('farmers/index');
+  }
+
+  public function viewprofile()
+  {
+    if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
+      redirect('users/login');
+    }
 
     $farmer = $this->farmerModel->getFarmerbyId($_SESSION['user_id']);
     $data = [
@@ -178,16 +187,7 @@ class Farmers extends Controller
       'image_err' => ''
     ];
 
-    $this->view('farmers/index', $data);
-  }
-
-  public function viewprofile()
-  {
-    if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
-      redirect('users/login');
-    }
-
-    $this->view('farmers/viewprofile');
+    $this->view('farmers/viewprofile', $data);
   }
 
   public function editprofile()
