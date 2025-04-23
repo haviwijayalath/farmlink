@@ -77,25 +77,14 @@
   <section class="sales-summary">
     <div class="summary-container">
       <h3>Sales Summary</h3>
-      <?php 
-      $totalSales = 0;
-      $totalOrders = 0;
-      
-      if(!empty($data['monthlySales'])) {
-        foreach($data['monthlySales'] as $monthData) {
-          $totalSales += $monthData['totalFee'];
-          $totalOrders += count($monthData['orders']);
-        }
-      }
-      ?>
       <div class="summary-details">
         <div class="summary-item">
           <span class="summary-label">Total Sales:</span>
-          <span class="summary-value">Rs <?= number_format($totalSales, 2) ?></span>
+          <span class="summary-value">Rs <?= number_format($data['totalSales'], 2) ?></span>
         </div>
         <div class="summary-item">
           <span class="summary-label">Total Orders:</span>
-          <span class="summary-value"><?= $totalOrders ?></span>
+          <span class="summary-value"><?= $data['totalOrders'] ?></span>
         </div>
       </div>
     </div>

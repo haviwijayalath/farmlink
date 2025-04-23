@@ -700,14 +700,26 @@ class Farmers extends Controller
     }
   }
 
-  public function viewsales()
+  public function calTotalSalesTotalOrders($monthlySales)
   {
-    if (!isLoggedIn()) {
-      redirect('users/login');
+    $totalSales = 0;
+    $totalOrders = 0;
+    
+    if(!empty($monthlySales)) {
+      foreach($monthlySales as $monthData) {
+        $totalSales += $monthData['totalFee'];
+        $totalOrders += count($monthData['orders']);
+      }
     }
 
-    $sales = $this->farmerModel->getSales();
+    return [
+      'totalSales' => $totalSales,
+      'totalOrders' => $totalOrders
+    ];
+  }
 
+  public function calMonthlySales($sales) 
+  {
     // Group sales by month and calculate sum of farmersFee
     $monthlySales = [];
     $salesByMonth = [];
@@ -737,8 +749,24 @@ class Farmers extends Controller
       ];
     }
 
+    return $monthlySales;
+  }
+
+  public function viewsales()
+  {
+    if (!isLoggedIn()) {
+      redirect('users/login');
+    }
+
+    $sales = $this->farmerModel->getSales();
+
+    $monthlySales = $this->calMonthlySales($sales);
+    $totals = $this->calTotalSalesTotalOrders($monthlySales); 
+
     $data = [
-      'monthlySales' => $monthlySales
+      'monthlySales' => $monthlySales,
+      'totalSales' => $totals['totalSales'],
+      'totalOrders' => $totals['totalOrders']
     ];
 
     $this->view('farmers/viewsales', $data);
