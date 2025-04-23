@@ -5,23 +5,34 @@
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
 <div class="content">
-    <div class="order-summery">
-        <h2>CART TOTAL</h2>
-        <div class="item">
-            <div class="lable">SUB TOTAL</div> 
-            <div class="value">Rs.<?= number_format($data['farmer_fee'], 2) ?></div>
-        </div>
-        <div class="divider"></div>
+<div class="order-summery">
+    <h2>CART TOTAL</h2>
+
+    <div class="item">
+        <div class="lable">SUB TOTAL</div> 
+        <div class="value">Rs.<?= number_format($data['farmer_fee'], 2) ?></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <?php 
+        $deliveryFee = isset($data['delivery_fee']) ? $data['delivery_fee'] : 0;
+    ?>
+    
+    <?php if ($deliveryFee > 0): ?>
         <div class="item">
             <div class="lable">DELIVERY FEE</div>
-            <div class="value">Rs.<?= number_format($data['delivery_fee'], 2) ?></div>
+            <div class="value">Rs.<?= number_format($deliveryFee, 2) ?></div>
         </div>
         <div class="divider"></div>
-        <div class="item">
-            <div class="lable">TOTAL</div>
-            <div class="value">Rs.<?= number_format($data['farmer_fee'] + $data['delivery_fee'], 2) ?></div>
-        </div>
+    <?php endif; ?>
+
+    <div class="item">
+        <div class="lable">TOTAL</div>
+        <div class="value">Rs.<?= number_format($data['farmer_fee'] + $deliveryFee, 2) ?></div>
     </div>
+</div>
+
 
     <div class="payment-option">
         

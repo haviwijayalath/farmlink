@@ -372,18 +372,27 @@ class Buyercontrollers extends Controller {
     }
     
     
-    public function paymentDetails() {
-        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
-            redirect('users/login');
-        }
-    
-        // Get cart_id from GET request
-        $cart_id = $_GET['cart_id'] ?? null;  // Optional: handle missing cart_id gracefully
-    
-        // Pass the cart_id to the view
-        $data = ['cartID' => $cart_id];
-        $this->view('buyer/cart/payment', $data);
+    public function paymentDetails()
+{
+    $cartParam = $_GET['cart_id'] ?? null;
+
+    if (!$cartParam) {
+        die("Cart ID not provided.");
     }
+
+    [$cartId] = explode('/', $cartParam); //splits a string into an array, based on a delimiter you provide.
+
+    if ($this->buyerModel->insertOrderFromCart($cartId)) {
+        $cart = $this->buyerModel->getCartById($cartId);
+        $this->view('buyer/cart/payment', [
+            'farmer_fee' => $cart->price ?? 0,
+            'delivery_fee' => 0
+        ]);
+    } else {
+        die("Failed to place order.");
+    }
+}
+
     
 
     public function orderConfirm(){
@@ -505,11 +514,14 @@ class Buyercontrollers extends Controller {
 
     public function payhereProcess(){
 
-        $amount = 3000;
+        $orderID = $this->buyerModel->getOrderID();
+        $orderDetails = $this->buyerModel->getOrderDetails($orderID);
+
+        $amount = $orderDetails->farmerFee + $orderDetails->deliveryFee;
         $merchant_id = "1229272";
         $merchant_secret = "Mjg0OTYwNzA0MjU4NDUzNDYyODMxOTIzMzMzNDczNzY5MzI1NzM3" ;
-        $order_id = uniqid();
-        $item = "Door bell wireles";
+        $order_id = $orderID;
+        $item = "Door";
         $currency = "LKR";
         $first_name = "Saman";
         $last_name = "Perera";
