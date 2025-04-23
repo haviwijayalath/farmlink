@@ -132,17 +132,23 @@ class orderControllers extends Controller{
         $this->view('d_person/complaints', ['complaints' => $complaints]);
     }
 
-    public function show_buyer_complaint() {
+    public function show_buyer_complaint($orderID = null) {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
         }
-    
-        $userId = $_SESSION['user_id'];
+        
+        $buyerId = $_SESSION['user_id']; // or however you identify the user
         $role = $_SESSION['user_role'];
-        $complaints = $this->orderModel->getComplaints($userId, $role);
     
-        $this->view('buyer/complaints', ['complaints' => $complaints]);
-    }
+        $complaints = $this->orderModel->getComplaints($buyerId, $role);
+    
+        $data = [
+            'complaints' => $complaints,
+            'selectedOrderID' => $orderID // <-- pass the orderID
+        ];
+    
+        $this->view('buyer/complaints', $data);
+    }    
     
     public function submitComplaint() {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {

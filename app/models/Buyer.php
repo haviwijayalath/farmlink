@@ -272,7 +272,7 @@ class Buyer extends Database{
         $buyer_id = $_SESSION['user_id'];
 
         $this->db->query('
-            select product,quantity,dropAddress,orderDate,status from order_success
+            select orderID,product,quantity,dropAddress,orderDate,status from order_success
             where buyerID = :id
         ');
 
