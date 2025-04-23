@@ -81,8 +81,8 @@ class orderControllers extends Controller{
         $distance = $this->getDistanceInKm($pickupLocation, $dropoffLocation);
 
         // Set fee
-        $baseFee = 100; // fixed base fee
-        $ratePerKm = 50; // you can adjust this
+        $baseFee = 200; // fixed base fee
+        $ratePerKm = 30; // you can adjust this
         $deliveryFee = ($distance !== null) ? $baseFee + ($ratePerKm * $distance) : $baseFee;
 
         $data['delivery_fee'] = round($deliveryFee, 2); // Store it in $data
