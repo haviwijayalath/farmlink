@@ -187,7 +187,7 @@ class Dperson extends Database{
         $this->db->query('SELECT buyerID, product FROM order_success WHERE orderID = :orderId');
         $this->db->bind(':orderId', $orderId);
         return $this->db->single(); // returns an associative array with buyer_id and product_name
-    }   
+    }    
 
     // Fetch ongoing orders filtered by delivery area
     public function getOrdersByArea($deliveryArea) {
@@ -222,37 +222,18 @@ class Dperson extends Database{
         return $this->db->resultSet();
     }
 
-    public function savePickupImages($orderId, $deliveryId, $pickupAddr, $pickupImagePath) {
-        // Step 1: Insert into delivery_info table
-        $this->db->query('INSERT INTO delivery_info (order_id, delivery_person_id, pickupAddress, pic_before) 
-                          VALUES (:orderId, :deliveryId, :pickupaddr, :pic_before)');
+    public function savePickupImages($orderId, $deliveryId,  $pickupAddr, $pickupImagePath) {
+        // Insert image paths into the delivery_info table
+        $this->db->query('INSERT INTO delivery_info (order_id, delivery_person_id	,pickupAddress, pic_before) VALUES (:orderId, :deliveryId, :pickupaddr, :pic_before)');
         $this->db->bind(':orderId', $orderId);
         $this->db->bind(':deliveryId', $deliveryId);
         $this->db->bind(':pickupaddr', $pickupAddr);
         $this->db->bind(':pic_before', $pickupImagePath);
-    
+
         if ($this->db->execute()) {
-            // Step 2: Fetch buyer_id and product from order_success table
-            $this->db->query('SELECT buyerID, product FROM order_success WHERE orderID = :orderId');
-            $this->db->bind(':orderId', $orderId);
-            $result = $this->db->single(); // Assuming only one row per orderID
-    
-            if ($result) {
-                return [
-                    'delivery_id' => $this->db->lastInsertId(),
-                    'buyer_id' => $result->buyerID,
-                    'product' => $result->product
-                ];
-            } else {
-                // Order found in delivery_info, but not in order_success — handle it as needed
-                return [
-                    'delivery_id' => $this->db->lastInsertId(),
-                    'buyer_id' => null,
-                    'product' => null
-                ];
-            }
+            // Get the last inserted delivery_id
+            return $this->db->lastInsertId();
         }
-    
         return false;
     }
 
