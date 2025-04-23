@@ -2,6 +2,7 @@
 class Dpaccounts extends Controller {
 
     private $userModel;
+    private $earningsModel;
     
   public function __construct() {
     // Protect all methods in this controller
