@@ -35,8 +35,8 @@ class Dperson extends Database{
         }
     
         // Insert the delivery person data
-        $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, area, address_id, vehicle_id, status) 
-                          VALUES (:name, :password, :email, :phone, :image, :area, :address_id, :vehicle_id, :status)');
+        $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, area, address_id, vehicle_id, license_image, status) 
+                          VALUES (:name, :password, :email, :phone, :image, :area, :address_id, :vehicle_id, :limage, :status)');
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':phone', $data['phone']);
@@ -45,6 +45,7 @@ class Dperson extends Database{
         $this->db->bind(':password', $data['password']);
         $this->db->bind(':address_id', $addressId); // Use the address ID as a foreign key
         $this->db->bind(':vehicle_id', $vehicleId); // Use the vehicle ID as a foreign key
+        $this->db->bind(':limage', $data['l_image']);
         $this->db->bind(':status', 'pending');
     
         // Execute the delivery person insertion

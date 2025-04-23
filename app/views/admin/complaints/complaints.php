@@ -31,7 +31,15 @@
                     </a>
                     </td>
 
-                    <td><?= $complaint->user_id ?></td>
+                    <td>
+                        <?php if ($complaint->role === 'dperson'): ?>
+                            <?= $complaint->delivery_name ?>
+                        <?php elseif ($complaint->role === 'buyer'): ?>
+                            <?= $complaint->buyer_name ?>
+                        <?php else: ?>
+                            Unknown
+                        <?php endif; ?>
+                    </td>
                     <td><?= ucfirst($complaint->role) ?></td>
                     <td><?= $complaint->order_id ?></td>
                     <td><?= $complaint->status ?></td>
