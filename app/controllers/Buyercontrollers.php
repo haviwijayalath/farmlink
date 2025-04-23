@@ -505,11 +505,14 @@ class Buyercontrollers extends Controller {
 
     public function payhereProcess(){
 
-        $amount = 3000;
+        $orderID = $this->buyerModel->getOrderID();
+        $orderDetails = $this->buyerModel->getOrderDetails($orderID);
+
+        $amount = $orderDetails->farmerFee + $orderDetails->deliveryFee;
         $merchant_id = "1229272";
         $merchant_secret = "Mjg0OTYwNzA0MjU4NDUzNDYyODMxOTIzMzMzNDczNzY5MzI1NzM3" ;
-        $order_id = uniqid();
-        $item = "Door bell wireles";
+        $order_id = $orderID;
+        $item = "Door";
         $currency = "LKR";
         $first_name = "Saman";
         $last_name = "Perera";
