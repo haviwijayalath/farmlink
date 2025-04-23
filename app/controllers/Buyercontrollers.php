@@ -310,13 +310,37 @@ class Buyercontrollers extends Controller {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-    
+
+            $availableQuantity = $this->buyerModel->getQuantity($_POST['cart_id']);
+
+
             $data = [
                 'cart_id' => $_POST['cart_id'],
                 'quantity' => $_POST['quantity']
             ];
     
-            // Update the cart item
+        //     // Update the cart item
+        //     if ($this->buyerModel->updateCartItem($data)) {
+        //         // Redirect to cart details page after updating
+        //         redirect('Buyercontrollers/cartDetails');
+        //     } else {
+        //         // Handle error scenario
+        //         die('Something went wrong while updating the cart.');
+        //     }
+        // } else {
+        //     // Redirect to cart details page if not a POST request
+        //     redirect('Buyercontrollers/cartDetails');
+        // }
+
+         // Check if the requested quantity exceeds the available stock
+         if ($availableQuantity === null) {
+            die('Something went wrong while fetching the product stock.');
+            } elseif ($data['quantity'] > $availableQuantity) {
+                // Return an error if the requested quantity exceeds the available stock
+                die('Error: The requested quantity exceeds the available stock.');
+            }
+
+            // Update the cart item if the quantity is valid
             if ($this->buyerModel->updateCartItem($data)) {
                 // Redirect to cart details page after updating
                 redirect('Buyercontrollers/cartDetails');
@@ -514,6 +538,10 @@ class Buyercontrollers extends Controller {
 
     public function payhereProcess(){
 
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            redirect('users/login');
+          }
+
         $orderID = $this->buyerModel->getOrderID();
         $orderDetails = $this->buyerModel->getOrderDetails($orderID);
 
@@ -521,7 +549,7 @@ class Buyercontrollers extends Controller {
         $merchant_id = "1229272";
         $merchant_secret = "Mjg0OTYwNzA0MjU4NDUzNDYyODMxOTIzMzMzNDczNzY5MzI1NzM3" ;
         $order_id = $orderID;
-        $item = "Door";
+        $item = "";
         $currency = "LKR";
         $first_name = "Saman";
         $last_name = "Perera";
@@ -568,6 +596,45 @@ class Buyercontrollers extends Controller {
         $jsonOBJ = json_encode($data);
 
         echo $jsonOBJ;
+    }
+
+    public function saveOrderSuccess() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+            $orderProcessID = $_POST['order_id']; // Use POST data directly
+            error_log("Order ID: " . $orderProcessID); // Log the order ID
+    
+            // Fetch order details
+            $orderDetails = $this->buyerModel->getOrderDetailss($orderProcessID);
+            if (!$orderDetails) {
+                error_log("Failed to retrieve order details for ID: " . $orderProcessID);
+                echo json_encode(['success' => false, 'message' => 'Failed to retrieve order details.']);
+                return;
+            }
+    
+            // Prepare data for saving to the order_success table
+            $data = [
+                'orderID' => $orderProcessID,
+                'buyerID' => $_SESSION['user_id'],
+                'productID' => $orderDetails->productId, // Product ID from order_process
+                'product' => $orderDetails->productName, // Replace with actual product name logic
+                'quantity' => $orderDetails->quantity,   // Quantity from order_process
+                'famersFee' => $orderDetails->farmerFee, // Farmer's fee from order_process
+                'deliveryFee' => $orderDetails->deliveryFee, // Delivery fee from order_process
+                'dropAddress' => $orderDetails->dropAddress, // Address from POST data
+                'status' => 'pending', // Default status
+                'dperson_id' => '0'
+            ];
+    
+            // Save to database
+            if ($this->buyerModel->saveOrderSuccess($data)) {    
+                echo json_encode(['success' => true]);
+            } else {
+                echo json_encode(['success' => false, 'message' => 'Failed to save order details.']);
+            }
+        }
     }
 
 }
