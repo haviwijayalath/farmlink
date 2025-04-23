@@ -66,6 +66,13 @@
                     <div class="info-row"><strong>Capacity:</strong> <?= $data['user']->capacity ?></div>
                 <?php endif; ?>
 
+                <?php if (!empty($data['user']->license_image)): ?>
+                    <div class="info-row vehicle-image">
+                        <strong>License Image:</strong><br>
+                        <img src="<?= URLROOT ?>/public/uploads/<?= $data['user']->license_image ?>" alt="License Image">
+                    </div>
+                <?php endif; ?>
+
                 <?php if (!empty($data['user']->v_image)): ?>
                     <div class="info-row vehicle-image">
                         <strong>Vehicle Image:</strong><br>
