@@ -12,6 +12,7 @@
                 <th>Pick-Up</th>
                 <th>Drop-Off</th>
                 <th>Capacity</th>
+                <th>Status</th>
                 <th>Actions</th>
             </tr>
         </thead>
@@ -27,11 +28,16 @@
                         <td><?= htmlspecialchars($order->pickup_address) ?></td>
                         <td><?= htmlspecialchars($order->dropoff_address) ?></td>
                         <td><?= htmlspecialchars($order->quantity) ?></td>
+                        <td><?= htmlspecialchars($order->status) ?></td>
                         <td>
-                            <a href="#" 
-                               class="newbtn newbtn-confirm" 
-                               data-url="<?= URLROOT ?>/dpersons/confirmNewOrder/<?= htmlspecialchars($order->orderID) ?>" 
-                               onclick="showPopup2(this)">Confirm</a>
+                            <?php if (strtolower($order->status) === 'processing'): ?>
+                                <button class="newbtn newbtn-confirm" disabled style="opacity: 0.6; cursor: not-allowed;">Confirm</button>
+                            <?php else: ?>
+                                <a href="#" 
+                                class="newbtn newbtn-confirm" 
+                                data-url="<?= URLROOT ?>/dpersons/confirmNewOrder/<?= htmlspecialchars($order->orderID) ?>" 
+                                onclick="showPopup2(this)">Confirm</a>
+                            <?php endif; ?>
                         </td>
                     </tr>
                 <?php endforeach; ?>

@@ -79,7 +79,8 @@
     <div class="image-gallery">
         <div class="image-card">
             <p><strong>Before Delivery</strong></p>
-            <img src="<?= URLROOT ?>/<?= htmlspecialchars($data['complaint']->pic_before); ?>" alt="Before Delivery">
+            <img src="<?= URLROOT ?>/public/d_uploads/<?= !empty($data['complaint']->pic_before) && 
+                file_exists(APPROOT . '/../public/d_uploads/' . $data['complaint']->pic_before) ? $data['complaint']->pic_before : 'Farmer-bro.jpg' ?>" alt="Before Delivery">
         </div>
         <div class="image-card">
             <p><strong>After Delivery</strong></p>
