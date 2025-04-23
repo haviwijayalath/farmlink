@@ -41,13 +41,13 @@
           <td><?= date('M d, Y h:i A', strtotime($order->orderDate)) ?></td>
           <td><?= htmlspecialchars($order->dperson_name) ?></td>
           <td>
-            <?php if ($order->status == 'processing') : ?>
+            <?php if ($order->status == 'pending') : ?>
               <form action="<?= URLROOT ?>/farmers/orderready" method="POST">
                 <input type="hidden" name="order_id" value="<?= $order->orderID ?>">
                 <button type="submit" class="ready-btn">Order Ready</button>
               </form>
             <?php else: ?>
-              <button class="status-confirmed" style="padding: 8px 12px;" disabled>Confirmed</button>
+              <button class="status-confirmed" style="padding: 8px 12px;" disabled><?= htmlspecialchars($order->status) ?></button>
             <?php endif; ?>
           </td>
         </tr>
