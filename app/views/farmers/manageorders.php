@@ -35,7 +35,7 @@
           <td><?= htmlspecialchars($order->orderID) ?></td>
           <td><?= htmlspecialchars($order->buyer_name) ?></td>
           <td><?= htmlspecialchars($order->product) ?></td>
-          <td><?= htmlspecialchars($order->quantity) ?></td>
+          <td><?= htmlspecialchars($order->quantity) . 'kg' ?></td>
           <td>Rs <?= number_format($order->famersFee, 2) ?></td>
           <td><?= htmlspecialchars($order->dropAddress) ?></td>
           <td><?= date('M d, Y h:i A', strtotime($order->orderDate)) ?></td>

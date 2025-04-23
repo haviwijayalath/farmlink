@@ -164,7 +164,7 @@ class Farmers extends Controller
     if (!isLoggedIn() || $_SESSION['user_role'] != 'farmer') {
       redirect('users/login');
     }
-    
+
     $this->view('farmers/index');
   }
 
@@ -706,7 +706,42 @@ class Farmers extends Controller
       redirect('users/login');
     }
 
-    $this->view('farmers/viewsales');
+    $sales = $this->farmerModel->getSales();
+
+    // Group sales by month and calculate sum of farmersFee
+    $monthlySales = [];
+    $salesByMonth = [];
+
+    foreach ($sales as $sale) {
+      $month = date('F Y', strtotime($sale->orderDate)); // Get month and year from orderDate
+      
+      if (!isset($salesByMonth[$month])) {
+        $salesByMonth[$month] = [
+          'totalFee' => 0,
+          'orders' => []
+        ];
+      }
+      
+      // Add farmer's fee to the total for this month
+      $salesByMonth[$month]['totalFee'] += $sale->famersFee;
+      // Add the sale to the orders for this month
+      $salesByMonth[$month]['orders'][] = $sale;
+    }
+
+    // Convert to array for the view
+    foreach ($salesByMonth as $month => $data) {
+      $monthlySales[] = [
+        'month' => $month,
+        'totalFee' => $data['totalFee'],
+        'orders' => $data['orders']
+      ];
+    }
+
+    $data = [
+      'monthlySales' => $monthlySales
+    ];
+
+    $this->view('farmers/viewsales', $data);
   }
 
   public function expstock()

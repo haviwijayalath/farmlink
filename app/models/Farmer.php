@@ -329,4 +329,21 @@ class Farmer
     $row = $this->db->single();
     return $row->dperson_id;
   }
+
+  public function getSales()
+  {
+    $this->db->query('
+      SELECT os.*, fp.name AS product_name
+      FROM order_success os
+      INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+      INNER JOIN farmers f ON fp.farmer_id = f.id
+      WHERE f.id = :farmer_id
+      ORDER BY os.orderDate DESC
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
 }
