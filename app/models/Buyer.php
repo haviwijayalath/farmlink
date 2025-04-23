@@ -284,7 +284,7 @@ class Buyer extends Database{
         // Return the results (empty array if no orders exist)
         return $results ?: [];
     }
-
+  
     public function getOrderID(){
         $this->db->query('
             SELECT orderProcessID
@@ -307,5 +307,38 @@ class Buyer extends Database{
 
         return $this->db->single(); // Return the single result
     }
-           
+  
+    
+    public function insertOrderFromCart($cartId)
+    {
+    // Get cart details first
+    $this->db->query("SELECT * FROM buyer_carts WHERE cart_id = :cart_id");
+    $this->db->bind(':cart_id', $cartId);
+    $cart = $this->db->single();
+
+    if ($cart) {
+        // Insert into ordersuccess
+        $this->db->query("INSERT INTO order_process (cartID, buyerID, productId, quantity, farmerFee)
+                          VALUES (:cart_id, :buyer_id, :product_id, :quantity, :fee)");
+
+        $this->db->bind(':cart_id', $cart->cart_id);
+        $this->db->bind(':buyer_id', $cart->buyer_id);
+        $this->db->bind(':product_id', $cart->product_id);
+        $this->db->bind(':quantity', $cart->quantity);
+        $this->db->bind(':fee', $cart->price);
+
+        return $this->db->execute();
+    }
+
+    return false; // Cart not found
+    }
+
+    public function getCartById($cartId)
+    {
+    $this->db->query("SELECT * FROM buyer_carts WHERE cart_id = :cart_id");
+    $this->db->bind(':cart_id', $cartId);
+
+    return $this->db->single(); // Returns object with cart info
+    }
+
 }

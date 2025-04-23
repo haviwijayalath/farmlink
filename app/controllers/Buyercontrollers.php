@@ -372,18 +372,27 @@ class Buyercontrollers extends Controller {
     }
     
     
-    public function paymentDetails() {
-        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
-            redirect('users/login');
-        }
-    
-        // Get cart_id from GET request
-        $cart_id = $_GET['cart_id'] ?? null;  // Optional: handle missing cart_id gracefully
-    
-        // Pass the cart_id to the view
-        $data = ['cartID' => $cart_id];
-        $this->view('buyer/cart/payment', $data);
+    public function paymentDetails()
+{
+    $cartParam = $_GET['cart_id'] ?? null;
+
+    if (!$cartParam) {
+        die("Cart ID not provided.");
     }
+
+    [$cartId] = explode('/', $cartParam); //splits a string into an array, based on a delimiter you provide.
+
+    if ($this->buyerModel->insertOrderFromCart($cartId)) {
+        $cart = $this->buyerModel->getCartById($cartId);
+        $this->view('buyer/cart/payment', [
+            'farmer_fee' => $cart->price ?? 0,
+            'delivery_fee' => 0
+        ]);
+    } else {
+        die("Failed to place order.");
+    }
+}
+
     
 
     public function orderConfirm(){
