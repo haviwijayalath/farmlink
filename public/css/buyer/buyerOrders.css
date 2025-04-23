@@ -56,6 +56,40 @@ h2 {
     background-color: #f9f9f9;
 }
 
+/* Buttons inside the orders table */
+.order-history-table a.btn {
+    display: inline-block;
+    padding: 6px 12px;
+    margin: 2px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: white;
+}
+
+/* Primary button - Review */
+.order-history-table .btn-primary {
+    background-color: #3498db; /* Blue */
+}
+
+.order-history-table .btn-primary:hover {
+    background-color: #2980b9;
+}
+
+/* Danger button - Complaint */
+.order-history-table .btn-danger {
+    background-color: #e74c3c; /* Red */
+}
+
+.order-history-table .btn-danger:hover {
+    background-color: #c0392b;
+}
+
+
 @media screen and (max-width: 768px) {
     .history-container {
         margin-left: 20px;
