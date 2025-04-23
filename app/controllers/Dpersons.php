@@ -86,7 +86,7 @@ class Dpersons extends Controller {
         $confirmedOrder = $this->userModel->confirmOrder($_SESSION['user_id'],$orderId);
 
         if ($confirmedOrder) {
-            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $confirmedOrder->buyerID, 'Order Confirmed', 'Your ' . $confirmedOrder->product . '  order is confirmed by the delivery ', '/farmlink/dpersons/ongoingDeliveries', 'info');
+            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $confirmedOrder->buyerID, 'Order Confirmed', 'Your ' . $confirmedOrder->product . '  order is confirmed by the delivery ', '/farmlink/buyercontrollers/buyerOrders', 'info');
             header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
         } else {
             die('Something went wrong.');
@@ -162,14 +162,13 @@ class Dpersons extends Controller {
     
 
     public function deliveryUploadPickup() {
-
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
-            }
-
+        }
+    
         if (isset($_FILES['pickup_image'])) {
             $uploadDir = APPROOT . '/../public/d_uploads/';
-    
+            
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
@@ -177,22 +176,42 @@ class Dpersons extends Controller {
             $pickupImage = $_FILES['pickup_image'];
             $pickupImageName = time() . '_pickup_' . basename($pickupImage['name']);
             $pickupImagePath = $uploadDir . $pickupImageName;
-
+    
             if (move_uploaded_file($pickupImage['tmp_name'], $pickupImagePath)) {
                 $relativePath = 'public/d_uploads/' . $pickupImageName;
-
-                $deliveryId = $this->userModel->savePickupImages($_SESSION['order_id'], $_SESSION['user_id'],$_SESSION['pickup_address'], $pickupImageName);
-                    
-                    if ( $deliveryId) {
-
-                        $_SESSION['pickup_image'] = $relativePath;
-        
-                        $_SESSION['delivery_id'] = $deliveryId;
-        
-                        // Redirect with success
-                        redirect('dpersons/ongoingDeliveries');
+    
+                // Save the image and fetch delivery_id, buyer_id, and product
+                $result = $this->userModel->savePickupImages(
+                    $_SESSION['order_id'],
+                    $_SESSION['user_id'],
+                    $_SESSION['pickup_address'],
+                    $pickupImageName
+                );
+    
+                if ($result) {
+                    $_SESSION['pickup_image'] = $relativePath;
+                    $_SESSION['delivery_id'] = $result['delivery_id'];
+    
+                    // Send notification to buyer
+                    if (!empty($result['buyer_id']) && !empty($result['product'])) {
+                        $this->notificationHelper->send_notification(
+                            'd', 
+                            $_SESSION['user_id'],
+                            'b', 
+                            $result['buyer_id'],
+                            'Order is picked',
+                            'Your ' . $result['product'] . ' order is pickup by the delivery',
+                            '/farmlink/buyercontrollers/buyerOrders',
+                            'info'
+                        );
+                    }
+    
+                    // Redirect to ongoing deliveries
+                    redirect('dpersons/ongoingDeliveries');
                 }
             }
+    
+            // Fallback redirect if upload failed
             redirect('dpersons/proof');
         }
     }
