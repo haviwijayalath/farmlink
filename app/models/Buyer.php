@@ -284,6 +284,7 @@ class Buyer extends Database{
         // Return the results (empty array if no orders exist)
         return $results ?: [];
     }
+    
     public function insertOrderFromCart($cartId)
     {
     // Get cart details first
