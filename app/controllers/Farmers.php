@@ -557,6 +557,13 @@ class Farmers extends Controller
         if ($this->farmerModel->addStock($data)) {
           flash('stock_message', 'Stock Added');
           $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'f', $_SESSION['user_id'], 'New stock added', 'New stock ' . $data['stock'] . 'kg of ' . $data['name'] . ' added', '/farmlink/farmers/managestocks', 'stock');
+          
+          // Notify buyers who wish to buy this product
+          $buyers = $this->farmerModel->wishToBuyBuyers($data['name']);
+          foreach ($buyers as $buyer) {
+            $this->notificationHelper->send_notification('b', $buyer->buyer_id, 'f', $_SESSION['user_id'], 'Product Available', 'The product ' . $data['name'] . ' is now available in stock', '/farmlink/buyers/viewproduct/' . $data['name'], 'product');
+          }
+
           redirect('farmers/managestocks');
         } else {
           die('Something went wrong');
