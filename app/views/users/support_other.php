@@ -6,7 +6,7 @@
     <h1>Support - Other Inquiries</h1>
     <p>If you have any other inquiries or issues that do not fall under the categories of activation or approval, please fill out the form below:</p>
     
-    <form action="/farmlink/users/support_msg" method="POST">
+    <form action="/farmlink/users/support_other" method="POST">
         <div class="form-group">
             <label for="name">Your Name:</label>
             <input type="text" id="name" name="name" required>

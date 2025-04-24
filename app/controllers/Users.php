@@ -245,7 +245,7 @@ class Users extends Controller {
     
             if (empty($data['email_err']) && empty($data['message_err'])) {
                 $this->userModel->setSupportMessage($data);
-                flash('support_msg', 'Your request has been sent successfully.');
+                flash('support', 'Your request has been sent successfully.');
                 redirect('users/support');
             } else {
                 $this->view('users/support_activation', $data);
@@ -290,7 +290,7 @@ class Users extends Controller {
     
             if (empty($data['name_err']) && empty($data['email_err']) && empty($data['message_err'])) {
                 $this->userModel->setSupportMessage($data);
-                flash('support_msg', 'Your request has been sent successfully.');
+                flash('support', 'Your request has been sent successfully.');
                 redirect('users/support');
             } else {
                 $this->view('users/support_other', $data);
