@@ -438,4 +438,6 @@ class Buyer extends Database{
         return $row ? $row->stock : null;
     }
 
+    
+
 }
