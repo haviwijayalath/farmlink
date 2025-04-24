@@ -221,5 +221,92 @@ class Users extends Controller {
             $this->view('users/support');
         }
     }
+
+    public function support_activation() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process form
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+    
+            $data = [
+                'name' => 'Account Activation Request',
+                'email' => trim($_POST['email']),
+                'message' => trim($_POST['message']),
+                'email_err' => '',
+                'message_err' => ''
+            ];
+    
+            if (empty($data['email'])) {
+                $data['email_err'] = 'Please enter your Email';
+            }
+    
+            if (empty($data['message'])) {
+                $data['message_err'] = 'Please enter a message';
+            }
+    
+            if (empty($data['email_err']) && empty($data['message_err'])) {
+                $this->userModel->setSupportMessage($data);
+                flash('support_msg', 'Your request has been sent successfully.');
+                redirect('users/support');
+            } else {
+                $this->view('users/support_activation', $data);
+            }
+        } else {
+            $data = [
+                'email' => '',
+                'message' => '',
+                'email_err' => '',
+                'message_err' => ''
+            ];
+    
+            $this->view('users/support_activation', $data);
+        }
+    }
+
+    public function support_other() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process form
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+    
+            $data = [
+                'name' => trim($_POST['name']),
+                'email' => trim($_POST['email']),
+                'message' => trim($_POST['message']),
+                'name_err' => '',
+                'email_err' => '',
+                'message_err' => ''
+            ];
+    
+            if (empty($data['name'])) {
+                $data['name_err'] = 'Please enter your name';
+            }
+    
+            if (empty($data['email'])) {
+                $data['email_err'] = 'Please enter your Email';
+            }
+    
+            if (empty($data['message'])) {
+                $data['message_err'] = 'Please enter a message';
+            }
+    
+            if (empty($data['name_err']) && empty($data['email_err']) && empty($data['message_err'])) {
+                $this->userModel->setSupportMessage($data);
+                flash('support_msg', 'Your request has been sent successfully.');
+                redirect('users/support');
+            } else {
+                $this->view('users/support_other', $data);
+            }
+        } else {
+            $data = [
+                'name' => '',
+                'email' => '',
+                'message' => '',
+                'name_err' => '',
+                'email_err' => '',
+                'message_err' => ''
+            ];
+    
+            $this->view('users/support_other', $data);
+        }
+    }
 }
 ?>
