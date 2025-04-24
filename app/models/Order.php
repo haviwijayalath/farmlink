@@ -122,6 +122,7 @@ public function getComplaints($userId, $role) {
     }
     
     public function addReview($data) {
+        // Insert the review
         $this->db->query("
             INSERT INTO farmer_reviews (order_id, buyer_id, farmer_id, description, rating, image, created_at)
             VALUES (:orderID, :buyerID, :farmerID, :description, :rating, :images, NOW())
@@ -131,10 +132,25 @@ public function getComplaints($userId, $role) {
         $this->db->bind(':farmerID', $data['farmerID']);
         $this->db->bind(':description', $data['description']);
         $this->db->bind(':rating', $data['rating']);
-        $this->db->bind(':images', $data['images']); // comma-separated or JSON if multiple
+        $this->db->bind(':images', $data['images']);
+        
+        if ($this->db->execute()) {
+            // Now calculate the average rating of this farmer
+            $this->db->query("SELECT AVG(rating) as avgRating FROM farmer_reviews WHERE farmer_id = :farmerID");
+            $this->db->bind(':farmerID', $data['farmerID']);
+            $row = $this->db->single();
+            $avgRating = round($row->avgRating, 1); // keep one decimal place
     
-        return $this->db->execute();
+            // Update farmer table
+            $this->db->query("UPDATE farmers SET rate = :rating WHERE id = :farmerID");
+            $this->db->bind(':rating', $avgRating);
+            $this->db->bind(':farmerID', $data['farmerID']);
+            return $this->db->execute(); // final execute to update rating
+        }
+    
+        return false;
     }
+    
 
     public function getBuyerAddress($buyerId) {
         $this->db->query('
