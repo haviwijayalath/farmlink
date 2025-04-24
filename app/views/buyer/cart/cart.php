@@ -29,7 +29,7 @@
                         <td>
                             <form action="<?= URLROOT ?>/Buyercontrollers/updateCartItem" method="POST" style="display: inline;">
                                 <input type="hidden" name="cart_id" value="<?= $item->cart_id ?>">
-                                <input type="number" name="quantity" value="<?= $item->quantity ?>" min="1" required>
+                                <input type="number" name="quantity" value="<?= $item->quantity ?>" min="1" max="<?= $data['availableQuantity'] ?>" required>
                                 <button type="submit">Update</button>
                             </form>
                         </td>

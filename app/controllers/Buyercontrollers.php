@@ -272,6 +272,7 @@ class Buyercontrollers extends Controller {
 
         // get the cart items from database
         $cartItems = $this->buyerModel->getCartItems(); 
+        $availableQuantity = $this->buyerModel->getQuantity($cartItems[0]->cart_id);
         $total = 0;
 
         foreach ($cartItems as $item) {
@@ -284,6 +285,7 @@ class Buyercontrollers extends Controller {
             'cartItems' => $cartItems,
             'total' => $total,
             'productID' => $cartItems[0]->product_id,
+            'availableQuantity' => $availableQuantity,
         ];
     } else {
         //handle the cart when cart is empty
