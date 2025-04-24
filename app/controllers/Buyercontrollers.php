@@ -550,7 +550,11 @@ class Buyercontrollers extends Controller {
 
     // Function to display a single product
     public function viewproduct($id) {
-        $product = $this->buyerModel->getProductById($id);
+        $result = $this->buyerModel->getProductById($id); // Get the full result: product + reviews
+    
+        $product = $result->product;
+        $reviews = $result->reviews;
+    
         $data = [
             'pName' => $product->productName,
             'description' => $product->description,
@@ -561,10 +565,14 @@ class Buyercontrollers extends Controller {
             'fId' => $id,
             'fName' => $product->farmerName,
             'fImage' => $product->farmerImage,
-            'fEmail' => $product->email
+            'fEmail' => $product->email,
+            'rate' => $product->rate,
+            'reviews' => $reviews // this is now an array of objects
         ];
+    
         $this->view('buyer/products/view_product', $data);
     }
+    
 
     public function payhereProcess(){
 

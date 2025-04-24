@@ -253,12 +253,36 @@ class Buyer extends Database
 
     public function getProductById($id)
     {
-        $this->db->query('SELECT p.name as productName, p.description, p.price, p.stock, p.image as productImage, p.exp_date, f.id as farmerId, f.name as farmerName, f.image as farmerImage, f.email FROM fproducts p JOIN farmers f ON f.id = p.farmer_id WHERE fproduct_id = :id');
+        $this->db->query('SELECT p.name as productName, p.description, p.price, p.stock, p.image as productImage, p.exp_date, f.id as farmerId, f.name as farmerName, f.image as farmerImage, f.email, f.rate FROM fproducts p JOIN farmers f ON f.id = p.farmer_id WHERE fproduct_id = :id');
         $this->db->bind(':id', $id);
 
-        $row = $this->db->single();
+        $this->db->bind(':id', $id);
+        $product = $this->db->single();
 
-        return $row;
+        // Step 2: Get reviews for the product
+        $this->db->query('
+        SELECT 
+            r.description, 
+            r.rating, 
+            r.image as reviewImage, 
+            r.created_at, 
+            b.name as buyerName, 
+            fp.farmer_id,
+            r.farmer_id
+        FROM farmer_reviews r 
+        JOIN buyers b ON b.id = r.buyer_id
+        JOIN fproducts fp ON fp.fproduct_id = :id
+        WHERE r.farmer_id = fp.farmer_id 
+        ORDER BY r.created_at DESC
+    ');
+    $this->db->bind(':id', $id);
+    $reviews = $this->db->resultSet();
+
+    // Combine both into one data object/array
+    return (object)[
+        'product' => $product,
+        'reviews' => $reviews
+    ];
     }
 
     public function getWishlistItem()
