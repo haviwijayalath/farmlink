@@ -119,6 +119,49 @@ class orderControllers extends Controller{
                !empty($data['street']) && !empty($data['city']) && !empty($data['mobile']);
     }
 
+    // public function getBuyerAddress() {
+        
+    //     if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+    //         redirect('users/login');
+    //     }
+
+    //     $buyerId = $_SESSION['user_id'];
+
+    //     $buyerData = $this->orderModel->getBuyerAddress($buyerId); // Fetch from DB
+    //     if ($buyerData) {
+    //         echo json_encode($buyerData);
+    //     } else {
+    //         echo json_encode(['error' => 'No address found']);
+    //     }
+    // }
+
+    public function getBuyerAddress() {
+        if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+            echo json_encode(['error' => 'Unauthorized']);
+            exit;
+        }
+    
+        $buyerId = $_SESSION['user_id'];
+        $buyerData = $this->orderModel->getBuyerAddress($buyerId); // Fetch from DB
+    
+        if ($buyerData) {
+            // Format the data for the frontend
+            $formattedData = [
+                'title' => 'Mr', // Default title (you can modify this based on your logic)
+                'first_name' => explode(' ', $buyerData->name)[0], // Extract first name
+                'last_name' => explode(' ', $buyerData->name)[1] ?? '', // Extract last name
+                'number' => $buyerData->number,
+                'street' => $buyerData->Street,
+                'city' => $buyerData->City,
+                'mobile' => $buyerData->phone,
+                'email' => $buyerData->email
+            ];
+            echo json_encode($formattedData);
+        } else {
+            echo json_encode(['error' => 'No address found']);
+        }
+    }
+
     
     public function showcomplaint() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
