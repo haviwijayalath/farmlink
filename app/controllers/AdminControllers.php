@@ -14,7 +14,8 @@ class AdminControllers extends Controller
     public function index()
     {
         $users = $this->adminControllerModel->getAllUsers();
-        $this->view('admin/users/index', ['users' => $users]);
+        $data = ['users' => $users];
+        $this->view('admin/users/index', $data);
     }
 
     public function show($table, $id)

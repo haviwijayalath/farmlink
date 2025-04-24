@@ -77,34 +77,49 @@ class AdminController extends Database
     public function getFilteredUsers($role, $status)
     {
         $allowedRoles = ['farmers', 'buyers', 'delivery_persons', 'consultants'];
+        $roleNames = [
+            'farmers' => 'Farmer',
+            'consultants' => 'Consultant',
+            'delivery_persons' => 'Delivery_Person',
+            'buyers' => 'Buyer'
+        ];
         $results = [];
 
         if (!empty($role) && in_array($role, $allowedRoles)) {
             // Filter by role (table), and maybe also by status
             if (!empty($status)) {
-                $query = "SELECT *, '$role' AS role FROM $role WHERE status = :status";
+                $query = "SELECT id, name, email, phone, status FROM $role WHERE status = :status";
                 $this->db->query($query);
                 $this->db->bind(':status', $status);
             } else {
-                $query = "SELECT *, '$role' AS role FROM $role";
+                $query = "SELECT id, name, email, phone, status FROM $role";
                 $this->db->query($query);
             }
 
-            $results = $this->db->resultSet();
+            $result = $this->db->resultSet();
+            foreach ($result as $user) {
+                $user->role = $roleNames[$role];
+                $user->table = $role;
+                $results[] = $user;
+            }
         } else {
             // No specific role: check all tables for status (or fetch all if no status)
             foreach ($allowedRoles as $table) {
                 if (!empty($status)) {
-                    $query = "SELECT *, '$table' AS role FROM $table WHERE status = :status";
+                    $query = "SELECT id, name, email, phone, status FROM $table WHERE status = :status";
                     $this->db->query($query);
                     $this->db->bind(':status', $status);
                 } else {
-                    $query = "SELECT *, '$table' AS role FROM $table";
+                    $query = "SELECT id, name, email, phone, status FROM $table";
                     $this->db->query($query);
                 }
 
                 $res = $this->db->resultSet();
-                $results = array_merge($results, $res);
+                foreach ($res as $user) {
+                    $user->role = $roleNames[$table];
+                    $user->table = $table;
+                    $results[] = $user;
+                }
             }
         }
 
