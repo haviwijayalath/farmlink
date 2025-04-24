@@ -28,7 +28,7 @@
                     <th>Order_ID</th>
                     <th>Product</th>
                     <th>Customer Name</th>
-                    <th>Amount</th>
+                    <th>Amount(Rs.)</th>
                     <th>Date</th>
                 </tr>
             </thead>
