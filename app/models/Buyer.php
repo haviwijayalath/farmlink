@@ -6,16 +6,35 @@ class Buyer extends Database{
         $this->db = new Database;
     }
 
+      // Save address and return inserted address ID.
+    public function saveAddress($no, $street, $city)
+    {
+        $this->db->query('INSERT INTO address (number, Street, City) VALUES(:number, :street, :city)');
+        $this->db->bind(':number', $no);
+        $this->db->bind(':street', $street);
+        $this->db->bind(':city', $city);
+
+        if ($this->db->execute()) {
+        return $this->db->lastInsertId();
+
+        } else {
+        return false;
+        }
+    }
+
     public function registerBuyer($data) {
+
+        $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
     
           // Now, insert the buyer data along with the address ID as a foreign key
-          $this->db->query('INSERT INTO buyers (name, password, email, phone) 
-                            VALUES (:name, :password, :email, :phone)');
+          $this->db->query('INSERT INTO buyers (name, password, email, phone, address_id) 
+                            VALUES (:name, :password, :email, :phone, :address_id)');
     
           $this->db->bind(':name', $data['name']);
           $this->db->bind(':email', $data['email']);
           $this->db->bind(':phone', $data['phone']);
           $this->db->bind(':password', $data['password']);
+          $this->db->bind(':address_id', $address_id);
 
           // Execute the delivery person insertion
           return $this->db->execute();
