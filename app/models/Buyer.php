@@ -293,6 +293,7 @@ class Buyer extends Database{
         $this->db->query('
             select orderID,product,quantity,dropAddress,orderDate,status from order_success
             where buyerID = :id
+            order by orderID desc
         ');
 
         $this->db->bind(':id', $buyer_id);
