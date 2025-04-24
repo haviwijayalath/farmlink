@@ -406,4 +406,17 @@ class Farmer
 
     return $results;
   }
+
+  // Get buyers who has added the product to wishlist
+  public function wishToBuyBuyers($productName)
+  {
+    $this->db->query('
+      SELECT w.buyer_id FROM wishlist w
+      INNER JOIN fproducts fp ON w.product_id = fp.fproduct_id
+      WHERE fp.name = :product_name
+    ');
+    $this->db->bind(':product_name', $productName);
+    $results = $this->db->resultSet();
+    return $results;
+  }
 }
