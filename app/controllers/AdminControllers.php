@@ -76,4 +76,25 @@ class AdminControllers extends Controller
 
         $this->view('admin/users/index', $data);
     }
+
+    public function viewSupport()
+    {
+        $data = $this->adminControllerModel->getSupportRequests();
+        $this->view('admin/supportMessages', $data);
+    }
+
+    public function clearMessage()
+    {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            $id = $_POST['id'];
+
+            if ($this->adminControllerModel->deleteSupportMessage($id)) {
+                flash('message_action', 'Message cleared successfully');
+            } else {
+                flash('message_action', 'Something went wrong', 'alert alert-danger');
+            }
+
+            redirect('adminControllers/viewSupport');
+        }
+    }
 }

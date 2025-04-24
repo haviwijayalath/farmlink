@@ -133,4 +133,17 @@ class AdminController extends Database
 
         return $results;
     }
+
+    public function getSupportRequests()
+    {
+        $this->db->query("SELECT * FROM support");
+        return $this->db->resultSet();
+    }
+
+    public function deleteSupportMessage($id)
+    {
+        $this->db->query("DELETE FROM support WHERE id = :id");
+        $this->db->bind(':id', $id);
+        return $this->db->execute();
+    }
 }

@@ -8,6 +8,7 @@
     <div class="col-md-8">
       <div class="card mb-3">
         <div class="card-body">
+          <?php flash('support'); ?>
           <h2 class="card-title text-center mb-4">How can we help you?</h2>
           <div class="d-grid gap-3">
             <a href="<?php echo URLROOT; ?>/users/support?type=activation" class="btn btn-success btn-lg p-4">
