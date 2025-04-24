@@ -39,24 +39,25 @@ class AdminControllers extends Controller
             switch ($action) {
                 case 'suspend':
                     $newStatus = 'suspended';
+                    $suspendDate = $_POST['suspend_date'] ?? null;
                     break;
                 case 'approve':
                     $newStatus = 'approved';
                     break;
-                case 'delete':
-                    $newStatus = 'deleted';
+                case 'deactivate':
+                    $newStatus = 'deactivated';
                     break;
                 default:
                     $newStatus = 'pending';
             }
 
-            if ($this->adminControllerModel->updateUserStatus($role, $id, $newStatus)) {
+            if ($this->adminControllerModel->updateUserStatus($role, $id, $newStatus, $suspendDate)) {
                 flash('user_action', 'User status updated');
             } else {
                 flash('user_action', 'Something went wrong', 'alert alert-danger');
             }
 
-            redirect('adminControllers/index'); // your route to user list
+            redirect('adminControllers/show/' . $role . '/' . $id); // your route to user list
         }
     }
 

@@ -20,7 +20,7 @@ class AdminController extends Database
         $users = [];
 
         foreach ($tables as $table => $roleName) {
-            $this->db->query("SELECT id, name, email, phone, status FROM $table");
+            $this->db->query("SELECT id, name, email, phone, status, suspend_date FROM $table");
             $result = $this->db->resultSet();
 
             foreach ($result as $user) {
@@ -65,12 +65,20 @@ class AdminController extends Database
         return $this->db->single();
     }
 
-    public function updateUserStatus($role, $id, $status)
+    public function updateUserStatus($role, $id, $status, $suspendDate = null)
     {
-        $sql = "UPDATE $role SET status = :status WHERE id = :id";
+        $allowedRoles = ['farmers', 'buyers', 'delivery_persons', 'consultants'];
+
+        if (!in_array($role, $allowedRoles)) {
+            return false;
+        }
+
+        $sql = "UPDATE $role SET status = :status, suspend_date = :suspend_date WHERE id = :id";
         $this->db->query($sql);
+        $this->db->bind(':suspend_date', $suspendDate);
         $this->db->bind(':status', $status);
         $this->db->bind(':id', $id);
+
         return $this->db->execute();
     }
 
