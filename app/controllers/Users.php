@@ -38,14 +38,19 @@ class Users extends Controller {
             if(empty($data['email_err']) && empty($data['password_err'])){
                 $loggedInUser = $this->userModel->login($data['email'], $data['password']);
     
-                if ($loggedInUser === 'pending') {
+                if ($loggedInUser->status === 'pending') {
                     $data['email_err'] = 'Your account is pending admin approval.';
                     flash('log in failed', 'Your account is pending admin approval.');
                     $this->view('users/login', $data);
                     return;
-                } elseif ($loggedInUser === 'suspended') {
-                    $data['email_err'] = 'Your account has been suspended. Please contact support.';
-                    flash('log in failed', 'Your account has been suspended. Please contact support.');
+                } elseif ($loggedInUser->status === 'suspended') {
+                    $data['email_err'] = 'Your account has been suspended till ' . date('Y-m-d', strtotime($loggedInUser->suspend_date)) . '. Please <a href="/farmlink/users/support" style="color: blue; text-decoration: underline;">contact support</a>.';
+                    flash('log in failed', 'Your account has been suspended till ' . date('Y-m-d', strtotime($loggedInUser->suspend_date)) . '. Please contact support.');
+                    $this->view('users/login', $data);
+                    return;
+                } elseif ($loggedInUser->status === 'deactivated') {
+                    $data['email_err'] = 'Your account has been deactivated. Please <a href="/farmlink/users/support" style="color: blue; text-decoration: underline;">contact support</a>.';
+                    flash('log in failed', 'Your account has been deactivated. Please contact support.');
                     $this->view('users/login', $data);
                     return;
                 } elseif ($loggedInUser) {
@@ -199,5 +204,109 @@ class Users extends Controller {
         } 
     }
 
+    public function support() {
+        if (isset($_GET['type'])) {
+            // Process form
+            $_GET = filter_input_array(INPUT_GET, FILTER_SANITIZE_STRING);
+            
+            if ($_GET['type'] == 'activation') {
+                $this->view('users/support_activation');
+            } elseif ($_GET['type'] == 'approval') {
+                $this->view('users/support_approval');
+            } elseif ($_GET['type'] == 'other') {
+                $this->view('users/support_other');
+            }
+        } else {
+            // Default view if no type is specified
+            $this->view('users/support');
+        }
+    }
+
+    public function support_activation() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process form
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+    
+            $data = [
+                'name' => 'Account Activation Request',
+                'email' => trim($_POST['email']),
+                'message' => trim($_POST['message']),
+                'email_err' => '',
+                'message_err' => ''
+            ];
+    
+            if (empty($data['email'])) {
+                $data['email_err'] = 'Please enter your Email';
+            }
+    
+            if (empty($data['message'])) {
+                $data['message_err'] = 'Please enter a message';
+            }
+    
+            if (empty($data['email_err']) && empty($data['message_err'])) {
+                $this->userModel->setSupportMessage($data);
+                flash('support', 'Your request has been sent successfully.');
+                redirect('users/support');
+            } else {
+                $this->view('users/support_activation', $data);
+            }
+        } else {
+            $data = [
+                'email' => '',
+                'message' => '',
+                'email_err' => '',
+                'message_err' => ''
+            ];
+    
+            $this->view('users/support_activation', $data);
+        }
+    }
+
+    public function support_other() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process form
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+    
+            $data = [
+                'name' => trim($_POST['name']),
+                'email' => trim($_POST['email']),
+                'message' => trim($_POST['message']),
+                'name_err' => '',
+                'email_err' => '',
+                'message_err' => ''
+            ];
+    
+            if (empty($data['name'])) {
+                $data['name_err'] = 'Please enter your name';
+            }
+    
+            if (empty($data['email'])) {
+                $data['email_err'] = 'Please enter your Email';
+            }
+    
+            if (empty($data['message'])) {
+                $data['message_err'] = 'Please enter a message';
+            }
+    
+            if (empty($data['name_err']) && empty($data['email_err']) && empty($data['message_err'])) {
+                $this->userModel->setSupportMessage($data);
+                flash('support', 'Your request has been sent successfully.');
+                redirect('users/support');
+            } else {
+                $this->view('users/support_other', $data);
+            }
+        } else {
+            $data = [
+                'name' => '',
+                'email' => '',
+                'message' => '',
+                'name_err' => '',
+                'email_err' => '',
+                'message_err' => ''
+            ];
+    
+            $this->view('users/support_other', $data);
+        }
+    }
 }
 ?>
