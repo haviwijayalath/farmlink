@@ -1,0 +1,118 @@
+/* Support Center General Styling */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center; /* Center all text content */
+}
+
+h1.text-center {
+    font-size: 2.5rem;
+    color: #34495e; /* Slightly lighter heading color */
+    margin-bottom: 2rem;
+    font-weight: 600;
+}
+
+/* Card Styling */
+.card {
+    border-radius: 12px;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08); /* Lighter shadow */
+    border: none;
+    transition: transform 0.3s ease;
+    margin: 0 auto; /* Center card */
+    background-color: #fcfcfc; /* Slightly off-white background */
+}
+
+.card-body {
+    padding: 2.5rem;
+}
+
+.card-title {
+    color: #3a506b; /* Lighter title color */
+    font-weight: 600;
+    text-align: center; /* Ensure title is centered */
+}
+
+/* Button Styling - Fixed to ensure visibility */
+.btn {
+    border-radius: 10px;
+    transition: all 0.3s ease;
+    border: none;
+    font-weight: 500;
+    text-align: center; /* Center button text */
+    display: block; /* Ensure buttons display as blocks */
+    width: 100%; /* Full width */
+    opacity: 1; /* Ensure buttons are fully visible */
+    margin-bottom: 15px; /* Add more space between buttons */
+    padding: 1.2rem !important; /* Consistent padding */
+}
+
+.btn h4 {
+    margin: 0;
+    font-size: 1.2rem;
+    font-weight: 500;
+    color: #ffffff; /* Ensure text is visible on colored backgrounds */
+}
+
+.btn:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Button Colors - Lighter variants */
+.btn-success {
+    background-color: #58d68d !important; /* Lighter green */
+    color: white !important;
+}
+
+.btn-success:hover {
+    background-color: #2ecc71 !important;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+    .card-body {
+        padding: 1.5rem;
+    }
+    
+    .btn-lg {
+        padding: 1.2rem !important;
+    }
+    
+    h4 {
+        font-size: 1rem !important;
+    }
+    
+    h1.text-center {
+        font-size: 2rem;
+    }
+}
+
+/* Animation for buttons */
+.btn {
+    position: relative;
+    overflow: hidden;
+}
+
+.btn::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.2); /* Lighter highlight effect */
+    transform: translateX(-100%);
+    transition: transform 0.6s ease;
+}
+
+.btn:hover::after {
+    transform: translateX(100%);
+}
+
+/* Additional fix for Bootstrap conflicts */
+.d-grid {
+    display: grid !important;
+    gap: 1.5rem !important; /* More space between grid items */
+    max-width: 90%; /* Limit width to center content better */
+    margin: 0 auto; /* Center the grid */
+}
