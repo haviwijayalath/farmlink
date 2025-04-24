@@ -176,6 +176,7 @@ class orderControllers extends Controller{
     }
 
     public function show_buyer_complaint($orderID = null) {
+    public function show_buyer_complaint($orderID = null) {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
         }
@@ -190,6 +191,15 @@ class orderControllers extends Controller{
             'selectedOrderID' => $orderID // <-- pass the orderID
         ];
     
+        $complaints = $this->orderModel->getComplaints($buyerId, $role);
+    
+        $data = [
+            'complaints' => $complaints,
+            'selectedOrderID' => $orderID // <-- pass the orderID
+        ];
+    
+        $this->view('buyer/complaints', $data);
+    }    
         $this->view('buyer/complaints', $data);
     }    
     

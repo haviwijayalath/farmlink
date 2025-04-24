@@ -319,11 +319,26 @@ class Buyer extends Database{
 
        // Get the latest order ID
        public function getOrderID() {
+    // public function getOrderID(){
+    //     $this->db->query('
+    //         SELECT orderProcessID
+    //         FROM order_process
+    //         ORDER BY orderProcessID DESC
+    //         LIMIT 1;
+    //     ');   
+
+    //     $row = $this->db->single(); // Fetch the single result
+    //     return $row ? $row->orderProcessID : null; // Return the orderProcessID or null if no rows exist
+    // }
+
+       // Get the latest order ID
+       public function getOrderID() {
         $this->db->query('
             SELECT orderProcessID
             FROM order_process
             ORDER BY orderProcessID DESC
             LIMIT 1;
+        ');
         ');
         $row = $this->db->single(); // Fetch the single result
         return $row ? $row->orderProcessID : null; // Return the orderProcessID or null if no rows exist
