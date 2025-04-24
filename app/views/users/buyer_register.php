@@ -24,6 +24,19 @@
           <label for="phone">Phone</label>
           <input type="text" id="phone" name="phone" placeholder="Enter your phone number" <?php echo (!empty($data['phone_err'])) ? 'is_invalid' : ''; ?> 
             value="<?php echo $data['phone']; ?>" required>
+
+            <label for="email">Address</label>
+          <input type="text" id="addr_no" name="addr_no" placeholder="Home No." <?php echo (!empty($data['addr_no_err'])) ? 'is_invalid' : ''; ?> 
+                value="<?php echo $data['addr_no']; ?>" required>
+              <span class="error"><?php echo $data['addr_no_err']; ?></span>
+
+          <input type="text" id="street" name="street" placeholder="Home Street" <?php echo (!empty($data['street_err'])) ? 'is_invalid' : ''; ?> 
+                value="<?php echo $data['addr_street']; ?>" required>
+              <span class="error"><?php echo $data['street_err']; ?></span>
+
+          <input type="text" id="city" name="city" placeholder="City" <?php echo (!empty($data['city_err'])) ? 'is_invalid' : ''; ?> 
+                value="<?php echo $data['addr_city']; ?>" required>
+              <span class="error"><?php echo $data['city_err']; ?></span>
           
           <label for="password">Password</label>
           <input type="password" id="password" name="password" placeholder="Enter your password" <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> 
