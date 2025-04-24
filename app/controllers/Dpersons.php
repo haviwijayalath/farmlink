@@ -16,7 +16,7 @@ class Dpersons extends Controller {
             redirect('users/login');
           }
         // Default method content here
-        echo "Welcome to the Orders page!";
+        redirect('dpersons/neworder');
     }
 
     // Show new orders page
