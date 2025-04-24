@@ -28,11 +28,17 @@ class Buyercontrollers extends Controller {
                 'phone' => trim($_POST['phone']),
                 'password' => trim($_POST['password']),
                 'confirm_password' => trim($_POST['confirm_password']),
+                'addr_no' => trim($_POST['addr_no']),
+                'addr_street' => trim($_POST['street']),
+                'addr_city' => trim($_POST['city']),
                 'role' => trim($_POST['role']),// Pass role to view
 
                 'name_err' => '',
                 'email_err' => '',
                 'phone_err' => '',
+                'addr_no_err' => '',
+                'street_err' => '',
+                'city_err' => '',
                 'password_err' => '',
                 'confirm_password_err' => ''
             ];
@@ -40,6 +46,21 @@ class Buyercontrollers extends Controller {
                // Validate name
                if(empty($data['name'])) {
                 $data['name_err'] = 'Please enter name';
+            }
+
+                // Validate addr_no
+                if(empty($data['addr_no'])) {
+                    $data['addr_no__err'] = 'Please enter address no';
+                }
+
+                    // Validate street
+               if(empty($data['addr_street'])) {
+                $data['street_err'] = 'Please enter street';
+                }
+
+                    // Validate city
+               if(empty($data['addr_city'])) {
+                $data['city_err'] = 'Please enter city';
             }
 
             // Validate email
@@ -75,7 +96,8 @@ class Buyercontrollers extends Controller {
 
              // Make sure there are no errors before submit
              if(empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) &&
-             empty($data['password_err']) && empty($data['confirm_password_err'])) {
+                empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['addr_no__err'])
+                && empty($data['street_err']) && empty($data['city_err'])) {
                 
                 // hashing password
                 $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
@@ -99,6 +121,9 @@ class Buyercontrollers extends Controller {
                 'name' => '',
                 'email' => '',
                 'phone' => '',
+                'addr_no' => '',
+                'addr_street' => '',
+                'addr_city' => '',
                 'password' => '',
                 'confirm_password' => '',
                 'role' => '',// Pass role to view
@@ -106,6 +131,9 @@ class Buyercontrollers extends Controller {
                 'name_err' => '',
                 'email_err' => '',
                 'phone_err' => '',
+                'addr_no_err' => '',
+                'street_err' => '',
+                'city_err' => '',
                 'password_err' => '',
                 'confirm_password_err' => ''
                 ];
