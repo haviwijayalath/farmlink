@@ -49,9 +49,20 @@
             </p>
     </section>
 
+    <!-- Contact Section -->
+    <section id="contact" class="about">
+        <h2>Contact Us</h2>
+        <p>If you have any questions or inquiries, feel free to reach out to us:</p>
+        <ul>
+            <li>Email: info@farmlink.com</li>
+            <li>Phone: (123) 456-7890</li>
+            <li>Address: 123 FarmLink St, Agriculture City, AG 12345</li>
+        </ul>
+    </section>
+
     <!-- Footer -->
     <footer>
-        <p>© 2024 FarmLink. All rights reserved.</p>
+        <p>© 2025 FarmLink. All rights reserved.</p>
     </footer>
 </body>
 </html>

@@ -9,6 +9,10 @@ class Users extends Controller {
     }
 
     public function login() {
+        // Check if user is already logged in
+        if(isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])) {
+            redirect('home/home');
+        }
         // Check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
             // Process form
