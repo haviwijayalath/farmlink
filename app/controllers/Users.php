@@ -8,6 +8,14 @@ class Users extends Controller {
       $this->userModel = $this->model('User'); 
     }
 
+    public function index() {
+        // Check if user is already logged in
+        if(isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])) {
+            redirect('home/home');
+        }
+        $this->view('home/home');
+    }
+
     public function login() {
         // Check if user is already logged in
         if(isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])) {
@@ -332,8 +340,7 @@ class Users extends Controller {
             if ($this->userModel->findUserByEmail($data['email'])) {
                 // User found
                 $this->userModel->sendResetLink($data['email']);
-                flash('reset_link', 'A password reset link has been sent to your email.');
-                redirect('users/login');
+                redirect('users/linkSent');
             } else {
                 $data['email_err'] = 'No user found with that email';
                 $this->view('users/forgotPassword', $data);
@@ -406,6 +413,10 @@ class Users extends Controller {
         } else {
             $this->view('users/resetPassword', $data);
         }
+    }
+
+    public function linkSent() {
+        $this->view('users/linkSent');
     }
 }
 ?>
