@@ -11,13 +11,11 @@
             <thead>
                 <tr>
                     <th>OrderID</th>
-                    <th>OrderID</th>
                     <th>Product</th>
                     <th>Amount</th>
                     <th>Shipping Address</th>
                     <th>Order Date</th>
                     <th>Status</th>
-                    <th>Action</th>
                     <th>Action</th>
                 </tr>
             </thead>
