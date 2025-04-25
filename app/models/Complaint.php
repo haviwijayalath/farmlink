@@ -156,5 +156,21 @@ public function getFilteredComplaints($role, $status) {
     return $this->db->resultSet();
 }
 
+public function getFilteredReports($role) {
+    $sql = "SELECT *, id AS complaint_id FROM complaints WHERE 1=1";
+
+    if (!empty($role)) {
+        $sql .= " AND role = :role";
+    }
+
+    $this->db->query($sql);
+
+    if (!empty($role)) {
+        $this->db->bind(':role', $role);
+    }
+
+    return $this->db->resultSet();
+}
+
 
 }

@@ -4,10 +4,13 @@ class Buyercontrollers extends Controller {
 
     private $buyerModel;
     private $farmerModel;
+    private $notificationHelper;
+
 
     public function __construct() {
         $this->buyerModel = $this->model('Buyer'); 
         $this->farmerModel = $this->model('Farmer');
+        $this->notificationHelper = new NotificationHelper();
     }
 
     public function register(){
@@ -780,10 +783,17 @@ class Buyercontrollers extends Controller {
             ];
 
             $cartID = $orderDetails->cartID;
+            $farmerID = $orderDetails->farmer_id;
+            $pName = $orderDetails->productName;
+            $quantity = $orderDetails->quantity;
 
     
             // Save to database
             if ($this->buyerModel->saveOrderSuccess($data) && $this->buyerModel->update_cart_status($cartID)) { 
+
+                $this->notificationHelper->send_notification('b', $_SESSION['user_id'], 'f', $farmerID, 'Order Placed', 
+                'Ordered ' . $quantity .' KG of ' . $pName. ' ', '/farmlink/farmers/index', 'info');
+             
                 echo json_encode(['success' => true]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to save order details.']);
