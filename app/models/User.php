@@ -10,40 +10,39 @@ class User extends Database
 
 
   public function login($email, $password)
-{
-    // List of tables to check for the login
-    $tables = ['delivery_persons', 'farmers', 'consultants', 'buyers', 'admins'];
+  {
+      // List of tables to check for the login
+      $tables = ['delivery_persons', 'farmers', 'consultants', 'buyers', 'admins'];
 
-    foreach ($tables as $table) {
-        $this->db->query("SELECT * FROM $table WHERE email = :email");
-        $this->db->bind(':email', $email);
+      foreach ($tables as $table) {
+          $this->db->query("SELECT * FROM $table WHERE email = :email");
+          $this->db->bind(':email', $email);
 
-        $row = $this->db->single();
+          $row = $this->db->single();
 
-        if ($row) {
-            // Check password
-            if (password_verify($password, $row->password)) {
+          if ($row) {
+              // Check password
+              if (password_verify($password, $row->password)) {
 
-          // Skip status check for admins and buyers
-          // if ($table !== 'admins' && $table !== 'buyers' && isset($row->status)) {
-          //   if ($row->status === 'pending') {
-          //     return 'pending';
-          //   } elseif ($row->status === 'suspended') {
-          //     return 'suspended';
-          //   }
-          // }
-                // Attach role information
-                $row->role = $table;
-                return $row;
-            } else {
-                return false; // Password mismatch
-            }
-        }
-    }
+            // Skip status check for admins and buyers
+            // if ($table !== 'admins' && $table !== 'buyers' && isset($row->status)) {
+            //   if ($row->status === 'pending') {
+            //     return 'pending';
+            //   } elseif ($row->status === 'suspended') {
+            //     return 'suspended';
+            //   }
+            // }
+                  // Attach role information
+                  $row->role = $table;
+                  return $row;
+              } else {
+                  return false; // Password mismatch
+              }
+          }
+      }
 
-    return false; // User not found
-}
-
+      return false; // User not found
+  }
 
   //Find user by email
   public function findUserByEmail($email)
@@ -76,4 +75,55 @@ class User extends Database
       return false;
     }
   }
+
+  public function emailExistsInPasswordResets($email)
+  {
+    $this->db->query('SELECT * FROM password_resets WHERE email = :email');
+    $this->db->bind(':email', $email);
+    $this->db->execute();
+
+    return $this->db->rowCount() > 0;
+  }
+
+  public function sendResetLink($email)
+  {
+    // Generate a unique token
+    $token = bin2hex(random_bytes(16));
+    $tokenHash = password_hash($token, PASSWORD_DEFAULT);
+
+    // Set the expiration time (e.g., 1 hour from now)
+    $expires = date('Y-m-d H:i:s', strtotime('+1 hour'));
+
+    // Store the token in the database
+    // check if the email exists in the password_resets table
+    if ($this->emailExistsInPasswordResets($email)) {
+      $this->db->query('UPDATE password_resets SET token = :token, expires = :expires WHERE email = :email');
+    } else {
+      $this->db->query('INSERT INTO password_resets (email, token, expires) VALUES (:email, :token, :expires)');
+    }
+    $this->db->bind(':email', $email);
+    $this->db->bind(':token', $tokenHash);
+    $this->db->bind(':expires', $expires);
+
+    // Execute the query
+    if ($this->db->execute()) {
+      // Send the email with the reset link
+      $resetLink = 'http://localhost/farmlink/users/resetPassword?token=' . $token;
+      $subject = 'Password Reset Request';
+      $message = 'Click the <a href="' . $resetLink . '">here</a> to reset your password: ';
+
+      // Use your mailer function here to send the email
+      $mail = mailerConfig();
+      $mail->setFrom('no-reply-farmlink@demomailtrap.co', 'Support');
+      $mail->addAddress($email);
+      $mail->Subject = $subject;
+      $mail->Body = $message;
+
+      $mail->send();
+      return true; 
+    } else {
+      return false;
+    }
+  }
+  
 }
