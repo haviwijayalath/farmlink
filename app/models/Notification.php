@@ -94,6 +94,8 @@ class Notification
         return 'notify_dperson';
       case 'c':
         return 'notify_consultant';
+      case 'a':
+        return 'notify_admin';
       default:
         return false;
     }
