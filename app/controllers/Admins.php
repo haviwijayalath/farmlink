@@ -127,11 +127,27 @@
   
       $this->view('admin/complaints/complaints', $data);
   }
+
+    public function filterReports() {
+      $role = $_GET['role'] ?? '';
+
+      $reports = $this->complaintModel->getFilteredReports($role);
+
+      $data = [
+          'users' => $reports,
+          'selected_role' => $role
+      ];
+
+      $this->view('admin/reports', $data);
+    }
   
     
     public function viewReports() { 
+
+      $users = $this->adminModel->getUsers();
+      $data = ['users' => $users];
       
-      $this->view('admin/reports');
+      $this->view('admin/reports', $data);
 
     }
 
