@@ -435,7 +435,7 @@ class Buyer extends Database
     {
         $this->db->query('
             SELECT op.orderProcessID, op.productId, p.name AS productName, op.quantity, 
-                   op.farmerFee, op.deliveryFee, op.dropAddress ,op.cartID
+                   op.farmerFee, op.deliveryFee, op.dropAddress ,op.cartID, p.farmer_id 
             FROM order_process op
             JOIN fproducts p ON op.productId = p.fproduct_id
             WHERE op.orderProcessID = :id
