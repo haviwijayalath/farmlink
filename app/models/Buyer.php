@@ -76,10 +76,9 @@ class Buyer extends Database{
         $this->db->bind(':phone', $data['phone']);
         $this->db->bind(':password', $data['new_password']);
 
-        $userUpdated = $this->db->execute();
-        $userUpdated = $this->db->execute();
+        
 
-        return $userUpdated ;
+        return  $this->db->execute()  ;
     }
 
     public function deleteAccount($userID){
