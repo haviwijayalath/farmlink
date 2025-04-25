@@ -108,7 +108,7 @@ class User extends Database
     // Execute the query
     if ($this->db->execute()) {
       // Send the email with the reset link
-      $resetLink = 'http://localhost/farmlink/users/resetPassword?token=' . $token;
+      $resetLink = 'http://localhost/farmlink/users/resetPassword?token=' . $token . '&email=' . urlencode($email);
       $subject = 'Password Reset Request';
       $message = 'Click the <a href="' . $resetLink . '">here</a> to reset your password: ';
 
@@ -125,5 +125,38 @@ class User extends Database
       return false;
     }
   }
+
+  public function isTokenValid($token, $email)
+  {
+    // Check if the token exists in the database and is not expired
+    $this->db->query('SELECT * FROM password_resets WHERE email = :email AND expires > NOW()');
+    $this->db->bind(':email', $email);
+    $this->db->execute();
+
+    $row = $this->db->single();
+
+    if ($row && password_verify($token, $row->token)) {
+      return true; // Token is valid
+    } else {
+      return false; // Token is invalid or expired
+    }
+  }
+
+  // {
+
+  //   var_dump($token);
+  //   $tokenHash = password_hash($token, PASSWORD_DEFAULT);
+  //   var_dump($tokenHash);
+
+  //   $this->db->query('SELECT * FROM password_resets WHERE token = :token AND expires > NOW()');
+  //   $this->db->bind(':token', $tokenHash);
+  //   $this->db->execute();
+
+  //   if ($this->db->rowCount() > 0) {
+  //     return true;
+  //   } else {
+  //     return false;
+  //   }
+  // }
   
 }
