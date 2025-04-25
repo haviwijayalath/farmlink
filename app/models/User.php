@@ -142,21 +142,38 @@ class User extends Database
     }
   }
 
-  // {
+  public function resetPassword($email, $password)
+  {
+    $table = $this->whichTable($email);
+    if ($table) {
+      // Hash the new password
+      $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-  //   var_dump($token);
-  //   $tokenHash = password_hash($token, PASSWORD_DEFAULT);
-  //   var_dump($tokenHash);
+      // Update the password in the corresponding table
+      $this->db->query("UPDATE $table SET password = :password WHERE email = :email");
+      $this->db->bind(':password', $hashedPassword);
+      $this->db->bind(':email', $email);
 
-  //   $this->db->query('SELECT * FROM password_resets WHERE token = :token AND expires > NOW()');
-  //   $this->db->bind(':token', $tokenHash);
-  //   $this->db->execute();
+      return $this->db->execute();
+    }
+  }
 
-  //   if ($this->db->rowCount() > 0) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
-  
+  public function whichTable($email)
+  {
+    // List of tables to check
+    $tables = ['farmers', 'buyers', 'consultants', 'suppliers', 'delivery_persons', 'admins'];
+
+    foreach ($tables as $table) {
+      $this->db->query("SELECT * FROM $table WHERE email = :email");
+      $this->db->bind(':email', $email);
+      $this->db->execute();
+
+      // Check if a match is found
+      if ($this->db->rowCount() > 0) {
+        return $table;  // Return the table name immediately if a match is found
+      }
+    }
+    return false;  // Return false if no match is found in any table
+  }
+
 }

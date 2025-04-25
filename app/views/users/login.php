@@ -11,6 +11,7 @@
         <h4 style="color: green;"> <?php flash('register_success'); ?> </h4>
         <h4 style="color: green;"> <?php flash('reset_link'); ?> </h4>
         <h4 style="color: red;"> <?php flash('reset_error'); ?> </h4>
+        <h4 style="color: green;"> <?php flash('reset_success'); ?> </h4>
         <h2>Welcome back!</h2>
         <form action="<?php echo URLROOT; ?>/users/login" method="POST">
             <div class="form-group">
