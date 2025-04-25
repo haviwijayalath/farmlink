@@ -26,16 +26,14 @@ class User extends Database
 
                 // Check status only if NOT admin
                 if ($table !== 'admins' && isset($row->status)) {
-                    if ($row->status === 'pending') {
-                        return 'pending';
-                    } elseif ($row->status === 'suspended') {
-                        return 'suspended';
-                    }
-                }
-
-                // Attach role information
-                $row->role = $table;
-                return $row;
+                  // Just return the row with role attached
+                  $row->role = $table;
+                  return $row;
+              } else {
+                  // Admin user
+                  $row->role = $table;
+                  return $row;
+              }
             } else {
                 return false; // Password mismatch
             }
