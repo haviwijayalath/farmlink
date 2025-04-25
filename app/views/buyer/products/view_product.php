@@ -52,7 +52,7 @@
       </form>
 
       <form action="<?= URLROOT ?>/buyercontrollers/addToWishlist" method="POST">
-        <input type="hidden" name="product_id" value="<?= $data['fId'] ?>">
+        <input type="hidden" name="product_id" value="<?= $data['fId'] ?> ">
         <button type="submit" class="btn btn-primary">Add to Wishlist</button>
       </form>
     </div>

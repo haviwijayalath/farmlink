@@ -290,7 +290,7 @@ class Buyer extends Database
     public function getWishlistItem()
     {
         $this->db->query('
-            SELECT w.wishlist_id, f.name, f.exp_date, f.price, f.fproduct_id
+            SELECT w.wishlist_id, f.name, f.exp_date, f.price, f.stock, f.fproduct_id
             FROM wishlist w 
             JOIN fproducts f ON w.product_id = f.fproduct_id
             WHERE w.buyer_id = :buyer_id

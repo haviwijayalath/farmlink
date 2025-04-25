@@ -289,12 +289,15 @@ class Buyercontrollers extends Controller {
             }
             if (empty($data['phone'])) {
                 $data['phone_err'] = 'Please enter your phone number';
-            } if (empty($data['password'])) {
-                $data['password_err'] = 'Please enter your phone number';
-            } if (empty($data['new_password'])) {
-                $data['new_password_err'] = 'Please enter your phone number';
-            } if (empty($data['confirm_password'])) {
-                $data['confirm_password_err'] = 'Please enter your phone number';
+            } 
+            if (empty($data['password'])) {
+                $data['password_err'] = 'Please enter your password';
+            } 
+            if (empty($data['new_password'])) {
+                $data['new_password_err'] = 'Please enter new password';
+            } 
+            if (empty($data['confirm_password'])) {
+                $data['confirm_password_err'] = 'Please enter correct new password';
             }
     
             // Validate current password
@@ -379,7 +382,6 @@ class Buyercontrollers extends Controller {
 
         // get the cart items from database
         $cartItems = $this->buyerModel->getCartItems(); 
-        $availableQuantity = $this->buyerModel->getQuantity($cartItems[0]->cart_id);
         $total = 0;
 
         foreach ($cartItems as $item) {
@@ -387,6 +389,9 @@ class Buyercontrollers extends Controller {
         }
     
         if(!empty($cartItems)){
+            
+            $availableQuantity = $this->buyerModel->getQuantity($cartItems[0]->cart_id);
+
         $data = [
             'cartID' => $cartItems[0]->cart_id,
             'cartItems' => $cartItems,
@@ -642,6 +647,7 @@ class Buyercontrollers extends Controller {
         $data = $this->buyerModel->getProducts($filter_variables);
         $this->view('buyer/products/browse_products', $data);
     }
+
 
     public function removeWishlist($id){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
