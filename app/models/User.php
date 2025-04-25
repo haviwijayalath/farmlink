@@ -24,15 +24,14 @@ class User extends Database
             // Check password
             if (password_verify($password, $row->password)) {
 
-                // Check status only if NOT admin
-                if ($table !== 'admins' && isset($row->status)) {
-                    if ($row->status === 'pending') {
-                        return 'pending';
-                    } elseif ($row->status === 'suspended') {
-                        return 'suspended';
-                    }
-                }
-
+          // Skip status check for admins and buyers
+          // if ($table !== 'admins' && $table !== 'buyers' && isset($row->status)) {
+          //   if ($row->status === 'pending') {
+          //     return 'pending';
+          //   } elseif ($row->status === 'suspended') {
+          //     return 'suspended';
+          //   }
+          // }
                 // Attach role information
                 $row->role = $table;
                 return $row;

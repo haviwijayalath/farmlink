@@ -28,14 +28,33 @@
       <input type="text" id="addr_street" name="addr_street" placeholder="Home Street" value="<?php echo $data['addr_street']; ?>" required>
       <input type="text" id="addr_city" name="addr_city" placeholder="City" value="<?php echo $data['addr_city']; ?>" required>
       
-      <label for="image">Upload Image</label>
+      <label for="image">Profile Picture</label>
       <div class="upload-container">
-        <input type="file" id="image" name="image" value="<?php echo $data['image']; ?>" onchange="previewImage(event)">
+        <input type="file" id="image" name="image" value="<?php echo $data['image']; ?>" onchange="previewImage(event, 'output')" required>
       </div>
       <div id="image-preview" style="margin-top: 15px;">
         <img id="output" src="" alt="Image Preview" style="max-width: 200px; display: none;">
-        
         <span style="color: red;"><?php echo $data['image_err']; ?></span>
+      </div>
+      
+      <!-- ID Card Front Image Upload -->
+      <label for="id_card_front">ID Card (Front)</label>
+      <div class="upload-container">
+        <input type="file" id="id_card_front" name="id_card_front" onchange="previewImage(event, 'id-front-preview')" required>
+      </div>
+      <div style="margin-top: 15px;">
+        <img id="id-front-preview" src="" alt="ID Front Preview" style="max-width: 200px; display: none;">
+        <span style="color: red;"><?php echo $data['id_card_front_err']; ?></span>
+      </div>
+      
+      <!-- ID Card Back Image Upload -->
+      <label for="id_card_back">ID Card (Back)</label>
+      <div class="upload-container">
+        <input type="file" id="id_card_back" name="id_card_back" onchange="previewImage(event, 'id-back-preview')" required>
+      </div>
+      <div style="margin-top: 15px;">
+        <img id="id-back-preview" src="" alt="ID Back Preview" style="max-width: 200px; display: none;">
+        <span style="color: red;"><?php echo $data['id_card_back_err']; ?></span>
       </div>
       
       <label for="password">Password</label>
@@ -54,8 +73,8 @@
 </div>
 
 <script>
-  function previewImage(event) {
-    const imagePreview = document.getElementById('output');
+  function previewImage(event, previewId) {
+    const imagePreview = document.getElementById(previewId);
     imagePreview.src = URL.createObjectURL(event.target.files[0]);
     imagePreview.style.display = 'block';
     imagePreview.onload = () => URL.revokeObjectURL(imagePreview.src); // Free memory
