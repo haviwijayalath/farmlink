@@ -138,7 +138,7 @@ class Users extends Controller {
                 $_SESSION['user_delivery_area'] = $user->area;
                 $_SESSION['user_password'] = $user->password;
                 $_SESSION['user_type'] = 'delivery_person'; // Added
-                redirect('dpersons/neworder');
+                redirect('dpaccounts/revenueCheck');
                 break;
 
             case 'consultants':
