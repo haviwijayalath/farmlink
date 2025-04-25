@@ -269,13 +269,7 @@ class Farmer
     // Move expired stocks to exp_products table
     $this->db->query('INSERT INTO exp_products (fproduct_id, farmer_id, name, type, price, stock, exp_date) SELECT fproduct_id, farmer_id, name, type, price, stock, exp_date FROM fproducts WHERE exp_date < CURDATE()');
     if ($this->db->execute()) {
-      // Delete expired stocks from fproducts table
-      $this->db->query('DELETE FROM fproducts WHERE exp_date < CURDATE()');
-      if ($this->db->execute()) {
-        return true;
-      } else {
-        return false;
-      }
+      return true;
     } else {
       return false;
     }

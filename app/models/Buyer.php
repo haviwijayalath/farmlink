@@ -208,7 +208,7 @@ class Buyer extends Database
     public function getProducts($filter_vars)
     {
 
-        $query = 'SELECT * FROM fproducts';
+        $query = 'SELECT * FROM fproducts WHERE exp_date > NOW() AND stock > 0';
         $orderBy = [];
         $whereConditions = [];
 
@@ -238,7 +238,7 @@ class Buyer extends Database
 
             // Add WHERE clause if conditions exist
             if (!empty($whereConditions)) {
-                $query .= ' WHERE ' . implode(' AND ', $whereConditions);
+                $query .= implode(' AND ', $whereConditions);
             }
 
             // Add ORDER BY clause if ordering exists
