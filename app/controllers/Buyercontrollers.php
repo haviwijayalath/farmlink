@@ -648,6 +648,7 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/products/browse_products', $data);
     }
 
+
     public function removeWishlist($id){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
