@@ -106,11 +106,8 @@
     
             // Take action based on decision
             if ($faultBy === 'farmer') {
-                $this->complaintModel->deactivateFarmer($farmer_id);
-            } elseif ($faultBy === 'delivery') {
-                $this->complaintModel->deactivateDperson($delivery_id);
+                $this->complaintModel->deductFarmerRating($farmer_id);
             }
-    
             flash('complaint_msg', 'Complaint resolved and action taken.');
             redirect('admins/viewComplaints');
         } else {
