@@ -29,14 +29,15 @@ class Buyer extends Database
         $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
         // Now, insert the buyer data along with the address ID as a foreign key
-        $this->db->query('INSERT INTO buyers (name, password, email, phone, address_id) 
-                            VALUES (:name, :password, :email, :phone, :address_id)');
+        $this->db->query('INSERT INTO buyers (name, password, email, phone, address_id, status) 
+                            VALUES (:name, :password, :email, :phone, :address_id, :status)');
 
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':phone', $data['phone']);
         $this->db->bind(':password', $data['password']);
         $this->db->bind(':address_id', $address_id);
+        $this->db->bind(':status', 'approved');
 
         // Execute the delivery person insertion
         return $this->db->execute();
@@ -90,9 +91,10 @@ class Buyer extends Database
     public function deleteAccount($userID)
     {
         $this->db->query('
-            delete from buyers where id = :userID
+            update buyers set status = :status where id = :userID
         ');
         $this->db->bind(':userID', $userID);
+        $this->db->bind(':status', 'deleted');
 
         // Execute the query and return true if successful, false otherwise
         return $this->db->execute();
