@@ -158,46 +158,158 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/accounts/buyer_account',$data);
     }
 
+    // public function editProfile($id = null) {
+    //     if($id === null){
+    //         $id = $_SESSION['user_id'];
+    //     }
+    //     if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
+    //         redirect('users/login');
+    //       }
+
+    //     if($_SERVER['REQUEST_METHOD'] == 'POST'){
+    //          // Sanitize POST data
+    //         $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+    //         $data = [
+    //             'id' => $_SESSION['user_id'],
+    //             'name' => trim($_POST['name']),
+    //             'email' => trim($_POST['email']),
+    //             'phone' => ($_POST['phone']),
+    //             'password' => $_POST['current_password'],
+    //             'new_password' => $_POST['new_password'],
+    //             'confirm_password' => $_POST['confirm_password'],
+    //             'name_err' => '',
+    //             'email_err' => '',
+    //             'phone_err' => '',
+    //             'password_err' => '',
+    //             'new_password_error' => '',
+    //             'confirm_password_error' => ''
+    //         ];
+
+    //         // Validate data
+    //         if (empty($data['name'])) $data['name_err'] = 'please enter name';
+    //         if (empty($data['email'])) $data['email_err'] = 'please enter email';
+    //         if (empty($data['phone'])) $data['phone_err'] = 'please enter phone number';
+
+    //         // Check for existing password and hash new password if provided
+    //         $user = $this->buyerModel->getUserById($id);
+
+    //         // Handle password update logic
+    //         if (!empty($data['new_password'])) {
+    //             if (empty($data['password']) || !password_verify($data['password'], $user->password)) {
+    //                 $data['password_err'] = 'Current password is incorrect';
+    //             } elseif ($data['new_password'] !== $data['confirm_password']) {
+    //                 $data['confirm_password_err'] = 'Passwords do not match';
+    //             } else {
+    //                 // Hash the new password
+    //                 $data['new_password'] = password_hash($data['new_password'], PASSWORD_DEFAULT);
+    //             }
+    //         } else {
+    //             $data['new_password'] = $user->password; // Keep the current password
+    //         }
+
+    //          // If no errors, update the user
+    //         if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['password_err']) && empty($data['new_password_err']) && empty($data['confirm_password_err'])) {
+    //             if ($this->buyerModel->updateUser($data)) {
+    //                 redirect('buyer/accounts/buyer_account');
+    //             } else {
+    //                 die('Something went wrong');
+    //             }
+    //         } else {
+    //             // Load view with errors
+    //             $this->view('buyer/accounts/buyer_editaccount', $data);
+    //         }
+
+    //         if ($this->buyerModel->updateUser($data)) {
+    //             // Set a flash message
+    //             flash('update_success', 'Your profile has been updated. Please log in again.');
+            
+    //             // Log the user out
+    //             session_destroy();
+    //             unset($_SESSION['user_id']);
+    //             unset($_SESSION['user_role']);
+                
+    //             redirect('users/login'); // Redirect to the login page
+    //         } else {
+    //             die('Something went wrong');
+    //         }
+            
+    //     } else {
+    //         // Get existing user data
+    //         $user = $this->buyerModel->getUserById($id);
+
+    //         $data = [
+    //             'id' => $user->id,
+    //             'name' => $user->name,
+    //             'email' => $user->email,
+    //             'phone' => $user->phone
+    //       ];
+    //         // Load view
+    //         $this->view('buyer/accounts/buyer_editaccount', $data);
+    //     }
+    // }
+
     public function editProfile($id = null) {
-        if($id === null){
+        if ($id === null) {
             $id = $_SESSION['user_id'];
         }
+    
+        // Redirect non-buyers or unauthenticated users
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
-          }
-
-        if($_SERVER['REQUEST_METHOD'] == 'POST'){
-             // Sanitize POST data
+        }
+    
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Sanitize POST data
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-
+    
+            // Initialize data array
             $data = [
                 'id' => $_SESSION['user_id'],
                 'name' => trim($_POST['name']),
                 'email' => trim($_POST['email']),
-                'phone' => ($_POST['phone']),
-                'password' => $_POST['current_password'],
-                'new_password' => $_POST['new_password'],
-                'confirm_password' => $_POST['confirm_password'],
+                'phone' => trim($_POST['phone']),
+                'password' => trim($_POST['current_password']),
+                'new_password' => trim($_POST['new_password']),
+                'confirm_password' => trim($_POST['confirm_password']),
                 'name_err' => '',
                 'email_err' => '',
                 'phone_err' => '',
                 'password_err' => '',
-                'new_password_error' => '',
-                'confirm_password_error' => ''
+                'new_password_err' => '',
+                'confirm_password_err' => ''
             ];
-
-            // Validate data
-            if (empty($data['name'])) $data['name_err'] = 'please enter name';
-            if (empty($data['email'])) $data['email_err'] = 'please enter email';
-            if (empty($data['phone'])) $data['phone_err'] = 'please enter phone number';
-
-            // Check for existing password and hash new password if provided
+    
+            // Validate inputs
+            if (empty($data['name'])) {
+                $data['name_err'] = 'Please enter your name';
+            }
+            if (empty($data['email'])) {
+                $data['email_err'] = 'Please enter your email';
+            }
+            if (empty($data['phone'])) {
+                $data['phone_err'] = 'Please enter your phone number';
+            } 
+            if (empty($data['password'])) {
+                $data['password_err'] = 'Please enter your password';
+            } 
+            if (empty($data['new_password'])) {
+                $data['new_password_err'] = 'Please enter new password';
+            } 
+            if (empty($data['confirm_password'])) {
+                $data['confirm_password_err'] = 'Please enter correct new password';
+            }
+    
+            // Validate current password
             $user = $this->buyerModel->getUserById($id);
-
-            // Handle password update logic
+            if (empty($data['password']) || !password_verify($data['password'], $user->password)) {
+                $data['password_err'] = 'Current password is incorrect';
+            }
+    
+            // Validate new password (if provided)
             if (!empty($data['new_password'])) {
-                if (empty($data['password']) || !password_verify($data['password'], $user->password)) {
-                    $data['password_err'] = 'Current password is incorrect';
+                if (strlen($data['new_password']) < 6) {
+                    $data['new_password_err'] = 'New password must be at least 6 characters';
                 } elseif ($data['new_password'] !== $data['confirm_password']) {
                     $data['confirm_password_err'] = 'Passwords do not match';
                 } else {
@@ -205,45 +317,43 @@ class Buyercontrollers extends Controller {
                     $data['new_password'] = password_hash($data['new_password'], PASSWORD_DEFAULT);
                 }
             } else {
-                $data['new_password'] = $user->password; // Keep the current password
+                // Keep the current password if no new password is provided
+                $data['new_password'] = $user->password;
             }
-
-             // If no errors, update the user
-            if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) && empty($data['password_err']) && empty($data['new_password_err']) && empty($data['confirm_password_err'])) {
+    
+            // Check for errors
+            if (
+                empty($data['name_err']) &&
+                empty($data['email_err']) &&
+                empty($data['phone_err']) &&
+                empty($data['password_err']) &&
+                empty($data['new_password_err']) &&
+                empty($data['confirm_password_err'])
+            ) {
+                // Update the user
                 if ($this->buyerModel->updateUser($data)) {
+                    // Set flash message and redirect
+                    flash('update_success', 'Your profile has been updated successfully.');
                     redirect('buyer/accounts/buyer_account');
                 } else {
-                    die('Something went wrong');
+                    die('Something went wrong while updating the user.');
                 }
             } else {
                 // Load view with errors
                 $this->view('buyer/accounts/buyer_editaccount', $data);
             }
-
-            if ($this->buyerModel->updateUser($data)) {
-                // Set a flash message
-                flash('update_success', 'Your profile has been updated. Please log in again.');
-            
-                // Log the user out
-                session_destroy();
-                unset($_SESSION['user_id']);
-                unset($_SESSION['user_role']);
-                
-                redirect('users/login'); // Redirect to the login page
-            } else {
-                die('Something went wrong');
-            }
-            
         } else {
             // Get existing user data
             $user = $this->buyerModel->getUserById($id);
-
+    
+            // Initialize data for GET request
             $data = [
                 'id' => $user->id,
                 'name' => $user->name,
                 'email' => $user->email,
                 'phone' => $user->phone
-          ];
+            ];
+    
             // Load view
             $this->view('buyer/accounts/buyer_editaccount', $data);
         }
@@ -272,14 +382,16 @@ class Buyercontrollers extends Controller {
 
         // get the cart items from database
         $cartItems = $this->buyerModel->getCartItems(); 
-        $availableQuantity = $this->buyerModel->getQuantity($cartItems[0]->cart_id);
         $total = 0;
 
         foreach ($cartItems as $item) {
             $total += $item->price * $item->quantity;
         }
     
-        if(!empty($cartItems)){
+        if(!empty($cartItems) && $cartItems[0]->status === 'pending'){
+            
+            $availableQuantity = $this->buyerModel->getQuantity($cartItems[0]->cart_id);
+
         $data = [
             'cartID' => $cartItems[0]->cart_id,
             'cartItems' => $cartItems,
@@ -536,6 +648,7 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/products/browse_products', $data);
     }
 
+
     public function removeWishlist($id){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
@@ -550,7 +663,11 @@ class Buyercontrollers extends Controller {
 
     // Function to display a single product
     public function viewproduct($id) {
-        $product = $this->buyerModel->getProductById($id);
+        $result = $this->buyerModel->getProductById($id); // Get the full result: product + reviews
+    
+        $product = $result->product;
+        $reviews = $result->reviews;
+    
         $data = [
             'pName' => $product->productName,
             'description' => $product->description,
@@ -561,10 +678,14 @@ class Buyercontrollers extends Controller {
             'fId' => $id,
             'fName' => $product->farmerName,
             'fImage' => $product->farmerImage,
-            'fEmail' => $product->email
+            'fEmail' => $product->email,
+            'rate' => $product->rate,
+            'reviews' => $reviews // this is now an array of objects
         ];
+    
         $this->view('buyer/products/view_product', $data);
     }
+    
 
     public function payhereProcess(){
 
@@ -655,11 +776,14 @@ class Buyercontrollers extends Controller {
                 'deliveryFee' => $orderDetails->deliveryFee, // Delivery fee from order_process
                 'dropAddress' => $orderDetails->dropAddress, // Address from POST data
                 'status' => 'pending', // Default status
-                'dperson_id' => '0'
+                'dperson_id' => '0',
             ];
+
+            $cartID = $orderDetails->cartID;
+
     
             // Save to database
-            if ($this->buyerModel->saveOrderSuccess($data)) {    
+            if ($this->buyerModel->saveOrderSuccess($data) && $this->buyerModel->update_cart_status($cartID)) { 
                 echo json_encode(['success' => true]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to save order details.']);

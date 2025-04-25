@@ -11,7 +11,7 @@
                 <th>Order_ID</th>
                 <th>Pick-Up</th>
                 <th>Drop-Off</th>
-                <th>Capacity</th>
+                <th>Capacity(kg)</th>
                 <th>Status</th>
                 <th>Actions</th>
             </tr>

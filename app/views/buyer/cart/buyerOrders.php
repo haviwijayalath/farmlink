@@ -11,13 +11,11 @@
             <thead>
                 <tr>
                     <th>OrderID</th>
-                    <th>OrderID</th>
                     <th>Product</th>
                     <th>Amount</th>
                     <th>Shipping Address</th>
                     <th>Order Date</th>
                     <th>Status</th>
-                    <th>Action</th>
                     <th>Action</th>
                 </tr>
             </thead>
@@ -43,11 +41,6 @@
                     </td>
                     </tr>
                 <?php endforeach; ?>
-            <?php else: ?>
-                <tr>
-                    <td colspan="7" style="text-align: center;">No orders found.</td>
-                </tr>
-            <?php endif; ?>
             <?php else: ?>
                 <tr>
                     <td colspan="7" style="text-align: center;">No orders found.</td>

@@ -10,19 +10,19 @@ class User extends Database
 
 
   public function login($email, $password)
-  {
+{
     // List of tables to check for the login
     $tables = ['delivery_persons', 'farmers', 'consultants', 'buyers', 'admins'];
 
     foreach ($tables as $table) {
-      $this->db->query("SELECT * FROM $table WHERE email = :email");
-      $this->db->bind(':email', $email);
+        $this->db->query("SELECT * FROM $table WHERE email = :email");
+        $this->db->bind(':email', $email);
 
-      $row = $this->db->single();
+        $row = $this->db->single();
 
-      if ($row) {
-        // Check password
-        if (password_verify($password, $row->password)) {
+        if ($row) {
+            // Check password
+            if (password_verify($password, $row->password)) {
 
           // Skip status check for admins and buyers
           // if ($table !== 'admins' && $table !== 'buyers' && isset($row->status)) {
@@ -32,18 +32,17 @@ class User extends Database
           //     return 'suspended';
           //   }
           // }
-
-          // Attach role information
-          $row->role = $table;
-          return $row;
-        } else {
-          return false; // Password mismatch
+                // Attach role information
+                $row->role = $table;
+                return $row;
+            } else {
+                return false; // Password mismatch
+            }
         }
-      }
     }
 
     return false; // User not found
-  }
+}
 
 
   //Find user by email

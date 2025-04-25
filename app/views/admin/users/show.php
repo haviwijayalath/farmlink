@@ -94,7 +94,7 @@
                         <img src="<?= URLROOT ?>/public/uploads/<?= $data['user']->v_image ?>" alt="Vehicle Image">
                     </div>
                 <?php endif; ?>
-
+              
                 <!-- ID Card Section -->
                 <?php if (!empty($data['user']->id_card_front) || !empty($data['user']->id_card_back)): ?>
                     <div class="info-row id-cards">
