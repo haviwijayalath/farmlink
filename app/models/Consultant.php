@@ -86,6 +86,7 @@ class Consultant {
             experience = :experience,
             address = :address,
             image = :image,
+            verification_doc = :verification_doc,
             password = :password
         WHERE id = :id
     ");
@@ -95,6 +96,7 @@ class Consultant {
     $this->db->bind(':experience', $data['experience']);
     $this->db->bind(':address', $data['address']);
     $this->db->bind(':image', $data['image']);
+    $this->db->bind(':verification_doc', $data['verification_doc']);
     $this->db->bind(':password', $data['password']);
     $this->db->bind(':id', $data['id']);
     
@@ -121,7 +123,6 @@ public function storeAnswer($data) {
   return $this->db->execute();
 }
 
-// File: app/models/Consultant.php
 public function fetchAnswers($question_id) {
   $this->db->query("
     SELECT 
@@ -129,7 +130,8 @@ public function fetchAnswers($question_id) {
       fa.answer, 
       fa.createdAt,
       fa.consultant_id, 
-      c.name AS consultant_name
+      c.name AS consultant_name,
+      c.image AS consultant_profile_picture
     FROM forum_answers fa
     JOIN consultants c ON fa.consultant_id = c.id
     WHERE fa.q_id = :q_id

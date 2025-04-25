@@ -1,0 +1,61 @@
+.edit-profile-container {
+    max-width: 500px;
+    margin: 40px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+  }
+  .edit-profile-container h2 {
+    margin-bottom: 20px;
+    color: #333;
+  }
+  .form-group {
+    margin-bottom: 15px;
+  }
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    color: #555;
+  }
+  .form-group input[type="text"],
+  .form-group input[type="email"],
+  .form-group input[type="file"] {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  .image-upload-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  .current-image img {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+  .upload-container input {
+    cursor: pointer;
+  }
+  .form-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+  }
+  .cancel-btn, .save-btn {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .cancel-btn {
+    background: #6c757d;
+    color: #fff;
+  }
+  .save-btn {
+    background: #007bff;
+    color: #fff;
+  }
+  

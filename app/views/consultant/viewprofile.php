@@ -1,5 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<link rel="stylesheet" href="/farmlink/public/css/consultants/viewprofile.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/consultants/viewprofile.css">
+<!-- Font Awesome for star icons -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
 <?php require APPROOT . '/views/inc/sidebars/consultant.php'; ?>
 
@@ -7,13 +9,33 @@
 
   <!-- PROFILE CARD -->
   <div class="profile-card">
+    <!-- ⭐ Average Rating Display -->
+    <div class="profile-rating">
+      <?php 
+        $rating    = round($data['rating'] ?? 0, 1);
+        $fullStars = floor($rating);
+        $halfStar  = ($rating - $fullStars) >= 0.5;
+      ?>
+      <div class="stars">
+        <?php 
+          for ($i = 0; $i < $fullStars; $i++)      echo '<i class="fa fa-star"></i>';
+          if ($halfStar)                           echo '<i class="fa fa-star-half-alt"></i>';
+          for ($i = $fullStars + $halfStar; $i < 5; $i++) echo '<i class="far fa-star"></i>';
+        ?>
+      </div>
+      <span class="rating-value"><?= $rating ?>/5</span>
+    </div>
+
     <div class="profile-avatar">
       <img 
         src="<?= URLROOT ?>/public/uploads/consultants/<?= 
             !empty($data['image']) 
-              ? htmlspecialchars($data['image']) : 'placeholder.png' ?>" 
+              ? htmlspecialchars($data['image']) 
+              : 'placeholder.png' 
+        ?>" 
         alt="<?= htmlspecialchars($data['name']) ?>">
     </div>
+
     <div class="profile-details">
       <h2><?= htmlspecialchars($data['name']); ?></h2>
       <p><strong>Specialization:</strong> <?= htmlspecialchars($data['specialization']); ?></p>
@@ -34,13 +56,13 @@
       <textarea name="content" rows="4" placeholder="What's on your mind?" required></textarea>
       <label class="file-label">
         <i class="fas fa-paperclip"></i> Attach files
-        <input type="file" name="attachments[]" multiple id="file-input" accept="image/*" class="file-input">
+        <input type="file" name="attachments[]" multiple id="fileInput" accept="image/*" class="file-input">
       </label>
 
-        <!-- PREVIEW CONTAINER -->
+      <!-- PREVIEW CONTAINER -->
       <div id="previewContainer" style="margin-top:10px; display:none;">
-       <strong>Preview:</strong><br>
-       <div id="thumbs" style="display:flex; gap:10px;"></div>
+        <strong>Preview:</strong><br>
+        <div id="thumbs" style="display:flex; gap:10px;"></div>
       </div>
 
       <button type="submit" class="btn post-btn">
@@ -63,24 +85,41 @@
               ?>" 
               class="avatar" alt="<?= htmlspecialchars($data['name']) ?>">
             <div class="poster-info">
-              <strong><a href="<?= URLROOT ?>/consultants/publicProfile/<?= $data['id'] ?>"><?= htmlspecialchars($data['name']); ?></a></strong><br>
+              <strong>
+                <a href="<?= URLROOT ?>/consultants/publicProfile/<?= $_SESSION['user_id'] ?>">
+                  <?= htmlspecialchars($data['name']); ?>
+                </a>
+              </strong><br>
               <small><?= date('M d, Y \a\t H:i', strtotime($post->created_at)); ?></small>
             </div>
           </div>
           <div class="post-content"><?= nl2br(htmlspecialchars($post->content)); ?></div>
+
+          <!-- === ATTACHMENTS BLOCK (UPDATED) === -->
           <?php if (!empty($post->attachments)): ?>
             <div class="post-attachments">
               <?php foreach ($post->attachments as $att): ?>
                 <?php if (strpos($att->mime_type, 'image/') === 0): ?>
-                  <img src="data:<?= $att->mime_type ?>;base64,<?= base64_encode($att->file_data) ?>" />
+                  <!-- Image attachment -->
+                  <img 
+                    src="data:<?= htmlspecialchars($att->mime_type) ?>;base64,<?= base64_encode($att->file_data) ?>" 
+                    class="attachment-img" 
+                    alt="<?= htmlspecialchars($att->filename) ?>">
                 <?php else: ?>
-                  <a href="data:<?= $att->mime_type ?>;base64,<?= base64_encode($att->file_data) ?>" download="<?= htmlspecialchars($att->filename) ?>">
-                    <?= htmlspecialchars($att->filename) ?>
+                  <!-- Other file types -->
+                  <a 
+                    href="data:<?= htmlspecialchars($att->mime_type) ?>;base64,<?= base64_encode($att->file_data) ?>" 
+                    download="<?= htmlspecialchars($att->filename) ?>" 
+                    class="attachment-file"
+                  >
+                    <i class="fas fa-file-alt"></i> <?= htmlspecialchars($att->filename) ?>
                   </a>
                 <?php endif; ?>
               <?php endforeach; ?>
             </div>
           <?php endif; ?>
+          <!-- ================================ -->
+
         </div>
       <?php endforeach; ?>
     <?php else: ?>
@@ -88,37 +127,35 @@
     <?php endif; ?>
   </div>
 
-<script>
-  document.getElementById('fileInput').addEventListener('change', function(evt) {
-  const files = Array.from(evt.target.files);
-  const previewContainer = document.getElementById('previewContainer');
-  const thumbs = document.getElementById('thumbs');
-
-  thumbs.innerHTML = '';      // clear old thumbnails
-  if (files.length === 0) {
-    previewContainer.style.display = 'none';
-    return;
-  }
-  previewContainer.style.display = 'block';
-
-  files.forEach(file => {
-    if (!file.type.startsWith('image/')) return;
-
-    const img = document.createElement('img');
-    img.style.maxWidth = '150px';
-    img.style.maxHeight = '150px';
-    img.style.objectFit = 'cover';
-    img.style.border = '1px solid #ccc';
-    img.style.borderRadius = '4px';
-
-    img.src = URL.createObjectURL(file);
-    img.onload = () => URL.revokeObjectURL(img.src);
-
-    thumbs.appendChild(img);
-  });
-});
-</script>
-
 </div>
+
+<script>
+  // Thumbnail preview for the consultant’s own view
+  document.getElementById('fileInput').addEventListener('change', function(evt) {
+    const files = Array.from(evt.target.files);
+    const previewContainer = document.getElementById('previewContainer');
+    const thumbs = document.getElementById('thumbs');
+
+    thumbs.innerHTML = '';
+    if (files.length === 0) {
+      previewContainer.style.display = 'none';
+      return;
+    }
+    previewContainer.style.display = 'block';
+
+    files.forEach(file => {
+      if (!file.type.startsWith('image/')) return;
+      const img = document.createElement('img');
+      img.style.maxWidth = '150px';
+      img.style.maxHeight = '150px';
+      img.style.objectFit = 'cover';
+      img.style.border = '1px solid #ccc';
+      img.style.borderRadius = '4px';
+      img.src = URL.createObjectURL(file);
+      img.onload = () => URL.revokeObjectURL(img.src);
+      thumbs.appendChild(img);
+    });
+  });
+</script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

@@ -1,0 +1,103 @@
+/* public/css/admin/changePwrd.css */
+
+/* Container */
+.change-password-container {
+    max-width: 400px;
+    margin: 120px auto 40px;      /* Adjust top margin to clear header/sidebar */
+    margin-left: 275px;           /* Offset for sidebar width */
+    background: #ffffff;
+    padding: 30px 25px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  /* Heading */
+  .change-password-container h2 {
+    margin-bottom: 20px;
+    font-size: 1.8rem;
+    color: #333333;
+    text-align: center;
+  }
+  
+  /* Error message */
+  .alert-danger {
+    background-color: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+    padding: 10px 15px;
+    border-radius: 4px;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+  }
+  
+  /* Form groups */
+  .form-group {
+    margin-bottom: 18px;
+  }
+  
+  /* Labels */
+  .form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 600;
+    color: #555555;
+  }
+  
+  /* Input wrappers for toggles */
+  .password-wrapper {
+    position: relative;
+  }
+  
+  /* Inputs */
+  .form-group input {
+    width: 100%;
+    padding: 10px 40px 10px 12px;  /* room for toggle icon */
+    font-size: 1rem;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+  .form-group input:focus {
+    border-color: #4caf50;
+  }
+  
+  /* Toggle-eye icon */
+  .toggle-password {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 1.1rem;
+    color: #888888;
+  }
+  
+  /* Suggest Password button (if you keep it) */
+  #suggest-password {
+    background: none;
+    border: none;
+    color: #4caf50;
+    cursor: pointer;
+    margin-right: 10px;
+    font-size: 0.9rem;
+    text-decoration: underline;
+  }
+  
+  /* Submit button */
+  .submit-btn {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    font-weight: 600;
+    color: #ffffff;
+    background-color: #4caf50;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  .submit-btn:hover {
+    background-color: #45a049;
+  }
+  

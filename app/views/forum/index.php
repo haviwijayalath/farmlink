@@ -46,10 +46,10 @@
                 <a href="<?= URLROOT; ?>/forums/index" class="btn btn-secondary">Cancel</a>
               </form>
             <?php else: ?>
-              <!-- User Meta (Profile Picture, Clickable Name, Date) Above the Question -->
+              <!-- Questioner Meta (Profile Picture, Plain Name, Date) -->
               <div class="user-meta">
-                <img src="<?= URLROOT . '/uploads/profile_pictures/' . htmlspecialchars($question->farmer_profile_picture); ?>" alt="Profile Picture" class="profile-pic">
-                <a href="<?= URLROOT ?>/farmers/publicProfile/<?= $question->farmer_id ?>" class="profile-link"><?= htmlspecialchars($question->farmer_name); ?></a>
+                <img src="<?= URLROOT . '/uploads/consultant/profile/' . htmlspecialchars($question->farmer_profile_picture); ?>" alt="Profile Picture" class="profile-pic">
+                <span class="profile-name"><?= htmlspecialchars($question->farmer_name); ?></span>
                 <span class="meta-date"> • <?= date("M d, Y", strtotime($question->createdAt)); ?></span>
               </div>
               <!-- Question Text -->
@@ -79,9 +79,9 @@
                         <a href="<?= URLROOT; ?>/forums/index" class="btn btn-secondary">Cancel</a>
                       </form>
                     <?php else: ?>
-                      <!-- User Meta for Answer -->
+                      <!-- Answerer Meta (Profile Picture, Clickable Consultant Name, Date) -->
                       <div class="user-meta">
-                        <img src="<?= URLROOT . '/uploads/profile_pictures/' . htmlspecialchars($answer->consultant_profile_picture); ?>" alt="Profile Picture" class="profile-pic">
+                        <img src="<?= URLROOT . '/uploads/consultants/' . htmlspecialchars($answer->consultant_profile_picture); ?>" alt="Profile Picture" class="profile-pic">
                         <a href="<?= URLROOT ?>/consultants/publicProfile/<?= $answer->consultant_id ?>" class="profile-link"><?= htmlspecialchars($answer->consultant_name); ?></a>
                         <span class="meta-date"> • <?= date("M d, Y", strtotime($answer->createdAt)); ?></span>
                       </div>
@@ -116,6 +116,7 @@
                 </div>
               <?php endif; ?>
             <?php endif; ?>
+
           </div>
         <?php endforeach; ?>
       <?php else: ?>
@@ -192,11 +193,16 @@
     border: 1px solid #ccc;
   }
   
+  .profile-name {
+    font-weight: bold;
+    color: #333;
+  }
+  
   .profile-link {
     color: #007BFF;
     text-decoration: none;
     font-weight: bold;
-    font-size: 0.9rem; /* smaller font size can be adjusted */
+    font-size: 0.9rem;
   }
   
   .profile-link:hover {
@@ -248,7 +254,7 @@
   }
   
   .btn-primary { background-color:rgb(31, 156, 38); color: #fff; border: none; }
-  .btn-secondary { background-color:rgb(255, 193, 7); color: #fff; }
+  .btn-secondary { background-color:rgb(236, 184, 11); color: #fff; }
   .btn-danger { background-color: #dc3545; color: #fff; }
   .btn-warning { background-color: #ffc107; color: #212529; }
   

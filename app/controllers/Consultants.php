@@ -22,6 +22,7 @@ class Consultants extends Controller {
         'image' => isset($_FILES['image']) ? $_FILES['image'] : '',
         'specialization' => trim($_POST['specialization']),
         'experience' => trim($_POST['experience']),
+        'verification_doc' => isset($_FILES['verification_doc']) ? $_FILES['verification_doc'] : '',
         'name_err' => '',
         'email_err' => '',
         'phone_number_err' => '',
@@ -29,7 +30,8 @@ class Consultants extends Controller {
         'confirm_password_err' => '',
         'image_err' => '',
         'specialization_err' => '',
-        'experience_err' => ''
+        'experience_err' => '',
+        'verification_doc_err' => ''
       ];
 
       // Validate input (email, name, phone, password, confirm_password, specialization, etc.)
@@ -57,11 +59,31 @@ class Consultants extends Controller {
       if (empty($data['specialization'])) {
         $data['specialization_err'] = 'Please enter your specialization';
       }
+        // Handle verification document upload
+if (isset($_FILES['verification_doc']) && $_FILES['verification_doc']['error'] == 0) {
+  $allowed = ['application/pdf','image/jpeg','image/png','image/gif'];
+  $fileType = $_FILES['verification_doc']['type'];
+  if (!in_array($fileType, $allowed)) {
+    $data['verification_doc_err'] = 'Only PDF, JPG, PNG or GIF allowed.';
+  } else {
+    $docDir = APPROOT . '/../public/uploads/consultants/docs/';
+    if (!is_dir($docDir)) mkdir($docDir, 0777, true);
+    $docName = time() . '_verif_' . basename($_FILES['verification_doc']['name']);
+    if (move_uploaded_file($_FILES['verification_doc']['tmp_name'], $docDir.$docName)) {
+      $data['verification_doc'] = $docName;
+    } else {
+      $data['verification_doc_err'] = 'Upload failed. Try again.';
+    }
+  }
+} else {
+  $data['verification_doc_err'] = 'A verification document is required.';
+}
+
       // Process image upload (omitted here for brevity)
 
       if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) &&
           empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err']) &&
-          empty($data['specialization_err'])) {
+          empty($data['specialization_err'])&& empty($data['verification_doc_err'])) {
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
         if ($this->consultantModel->register($data)) {
           flash('register_success', 'You are successfully registered! Log in now');
@@ -151,6 +173,12 @@ class Consultants extends Controller {
     // 2) On GET, just load profile + posts
     $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
     $posts      = $this->consultantModel->getPostsByConsultant($_SESSION['user_id']);
+    
+    foreach ($posts as $post) {
+      $post->attachments = $this->consultantModel->getPostAttachments($post->post_id);
+    }
+
+    $averageRating = $this->consultantModel->getAverageRating($_SESSION['user_id']);
 
     $data = [
       'name'           => $consultant->name,
@@ -159,7 +187,8 @@ class Consultants extends Controller {
       'phone'          => $consultant->phone,
       'email'          => $consultant->email,
       'image'          => $consultant->image,
-      'posts'          => $posts
+      'posts'          => $posts,
+      'rating'         => $averageRating
     ];
     $this->view('consultant/viewprofile', $data);
   }
@@ -186,11 +215,13 @@ class Consultants extends Controller {
             'new_password' => trim($_POST['new_password']),
             'confirm_password' => trim($_POST['confirm_password']),
             'password' => '',  // This will be set later
-            'image' => '',     // To be handled below
+            'image' => '', 
+            'verification_doc' => '',    
             'name_err' => '',
             'email_err' => '',
             'password_err' => '',
-            'image_err' => ''
+            'image_err' => '',
+            'verification_doc_err' => ''
         ];
         
         // Basic validations
@@ -230,7 +261,33 @@ class Consultants extends Controller {
             $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
             $data['image'] = $consultant->image;
         }
-        
+
+        // Handle verification document upload
+if (isset($_FILES['verification_doc']) && $_FILES['verification_doc']['error'] === 0) {
+  $target_dir = APPROOT . '/../public/uploads/consultants/verifications/';
+  if (!is_dir($target_dir)) mkdir($target_dir, 0777, true);
+
+  $fname = time() . '_' . basename($_FILES['verification_doc']['name']);
+  $ftype = $_FILES['verification_doc']['type'];
+  $allowed = ['application/pdf','image/jpeg','image/png'];
+  if (!in_array($ftype, $allowed)) {
+    $data['verification_doc_err'] = 'Only PDF, JPG or PNG allowed.';
+  } else {
+    if (move_uploaded_file(
+          $_FILES['verification_doc']['tmp_name'],
+          $target_dir . $fname
+        )) {
+      $data['verification_doc'] = $fname;
+    } else {
+      $data['verification_doc_err'] = 'Upload failed. Try again.';
+    }
+  }
+} else {
+  // keep old one
+  $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
+  $data['verification_doc'] = $consultant->verification_doc;
+}
+       
         // Get current consultant data for password checking
         $consultant = $this->consultantModel->getConsultantById($_SESSION['user_id']);
         
@@ -269,10 +326,12 @@ class Consultants extends Controller {
             'experience' => $consultant->experience,
             'address' => $consultant->address,
             'image' => $consultant->image,
+            'verification_doc' => $consultant->verification_doc,    
             'name_err' => '',
             'email_err' => '',
             'password_err' => '',
-            'image_err' => ''
+            'image_err' => '',
+            'verification_doc_err'=> ''
         ];
         $this->view('consultant/editprofile', $data);
     }
@@ -302,7 +361,11 @@ public function publicProfile($id) {
   }
 
   // NEW: Retrieve average rating
-  $averageRating = $this->consultantModel->getAverageRating($id); // Implement in model if not already
+  $averageRating = $this->consultantModel->getAverageRating($id);
+  $userRating = 0;
+  if (isset($_SESSION['user_type']) && $_SESSION['user_type']==='farmer') {
+    $userRating = $this->consultantModel->getUserRating($id, $_SESSION['user_id']);
+  }
 
   // Add data to view
   $data = [

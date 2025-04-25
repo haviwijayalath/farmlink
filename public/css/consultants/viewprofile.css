@@ -12,6 +12,7 @@
 /* Profile Card */
 .profile-card {
   display: flex;
+  position: relative;
   background: #fff;
   border-radius: 8px;
   box-shadow: 0 2px 6px rgba(0,0,0,0.1);
@@ -152,7 +153,8 @@
   gap: 10px;
 }
 .attachment-img {
-  max-width: 120px;
+  max-width: 100%;
+  object-fit: cover;
   border-radius: 4px;
 }
 .attachment-file {
@@ -177,6 +179,29 @@
   color: #666;
   font-style: italic;
   margin-top: 20px;
+}
+
+.profile-rating {
+  position: absolute;
+  top: 12px;      /* adjust vertical offset */
+  right: 16px;    /* adjust horizontal offset */
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1.2rem;
+  color: #f5a623; /* gold */
+}
+
+.profile-rating .fa-star,
+.profile-rating .fa-star-half-alt,
+.profile-rating .far.fa-star {
+  margin: 0 1px;
+}
+
+.profile-rating .rating-value {
+  font-size: 1.3rem;
+  color: #f5a623;
+  margin-left: 6px;
 }
 
 /* Responsive tweaks */

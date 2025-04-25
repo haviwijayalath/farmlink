@@ -152,7 +152,8 @@ class Farmer
         fq.questions AS question, 
         fq.createdAt, 
         fq.farmer_id,
-        f.name AS farmer_name
+        f.name AS farmer_name,
+        f.image AS farmer_profile_picture
       FROM forum_questions fq
       LEFT JOIN farmers f ON fq.farmer_id = f.id
       ORDER BY fq.createdAt DESC
