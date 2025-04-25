@@ -44,8 +44,8 @@ class AdminControllers extends Controller
                 case 'approve':
                     $newStatus = 'approved';
                     break;
-                case 'deactivate':
-                    $newStatus = 'deactivated';
+                case 'deleted':
+                    $newStatus = 'deleted';
                     break;
                 default:
                     $newStatus = 'pending';

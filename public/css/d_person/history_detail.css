@@ -1,61 +1,124 @@
+/* Container */
 .order-container {
-  padding: 20px;
-  margin-top: 60px;
-  margin-left: 250px;
-  margin-bottom: 250px;
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+/* Page Title */
 .page-title {
   text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+  margin-bottom: 30px;
   color: #333;
-  margin-bottom: 20px;
 }
 
+/* Card */
 .order-card {
-  background-color: #f9f9f9;
-  border-radius: 8px;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
   overflow: hidden;
+  transition: transform 0.2s ease;
 }
 
+.order-card:hover {
+  transform: scale(1.01);
+}
+
+/* Header */
 .order-card-header {
-  background-color: #3f51b5;
-  color: #fff;
-  padding: 16px;
-  text-align: center;
+  background-color: #f4f4f4;
+  padding: 16px 24px;
+  border-bottom: 1px solid #ddd;
 }
 
+.order-header-flex {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.order-id-title {
+  font-size: 20px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+
+/* Complaint Button */
+.complaint-btn {
+  background-color: #e63946;
+  color: white;
+  padding: 8px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 14px;
+  transition: background-color 0.3s ease;
+}
+
+.complaint-btn:hover {
+  background-color: #c92836;
+}
+
+/* Card Body */
 .order-card-body {
-  padding: 20px;
+  padding: 24px;
 }
 
+/* Details Table Layout */
 .details-table {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
 }
 
+/* Each row */
 .row {
-  display: contents;
+  display: grid;
+  grid-template-columns: 1fr 1.5fr 1fr 1.5fr;
+  gap: 10px;
+  align-items: center;
 }
 
+/* Cells */
 .cell {
-  padding: 15px;
-  background-color: #ffffff;
-  border: 1px solid #ddd;
-  text-align: center;
+  padding: 8px 12px;
+  font-size: 15px;
+  color: #333;
 }
 
 .cell.title {
-  font-weight: bold;
-  background-color: #f1f1f1;
-  text-align: left;
+  font-weight: 600;
+  color: #555;
+  background-color: #f9f9f9;
+  border-radius: 6px;
 }
 
-.cell img.order-image {
-  width: 100px;
-  height: 100px;
-  object-fit: cover;
-  border-radius: 8px;
+/* Image Styling */
+.order-image {
+  max-width: 150px;
+  border-radius: 6px;
+  border: 1px solid #ddd;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .row {
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+  }
+
+  .order-header-flex {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+  }
+
+  .complaint-btn {
+      align-self: flex-end;
+  }
 }
