@@ -28,7 +28,7 @@
                         </span>
                     </td>
                     <td>
-                        In Stock
+                        <?= number_format($item->stock) ?> KG
                     </td>
                     <td>
                         <div class="added-date">
