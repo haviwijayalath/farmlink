@@ -7,9 +7,9 @@
         <h4 style="color: green;"> <?php flash('reset_password_message'); ?> </h4>
         <h2>Create New Password</h2>
         <p>Please enter your new password below.</p>
-        <form action="<?php echo URLROOT; ?>/users/resetPassword" method="POST">
+        <form action="<?php echo URLROOT; ?>/users/resettingPassword" method="POST">
             <!-- Hidden input for the reset token -->
-            <input type="hidden" name="token" value="<?php echo $data['token'] ?? ''; ?>">
+            <input type="hidden" name="email" value="<?php echo $data['email'] ?? ''; ?>">
             
             <div class="form-group password-container">
                 <input type="password" name="password" id="password" placeholder="Enter new password" 
