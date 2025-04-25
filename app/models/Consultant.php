@@ -22,7 +22,7 @@ class Consultant {
   // Register consultant.
   public function register($data) {
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
-    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image, specialization, experience) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience)');
+    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image, specialization, experience, verification_doc) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience, :verification_doc)');
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
     $this->db->bind(':phone', $data['phone_number']);
@@ -31,6 +31,7 @@ class Consultant {
     $this->db->bind(':address_id', $address_id);
     $this->db->bind(':specialization', $data['specialization']);
     $this->db->bind(':experience', $data['experience']);
+    $this->db->bind(':verification_doc', $data['verification_doc']);
     return $this->db->execute();
   }
 
@@ -77,6 +78,7 @@ class Consultant {
             experience = :experience,
             address = :address,
             image = :image,
+            verification_doc = :verification_doc,
             password = :password
         WHERE id = :id
     ");
@@ -86,6 +88,7 @@ class Consultant {
     $this->db->bind(':experience', $data['experience']);
     $this->db->bind(':address', $data['address']);
     $this->db->bind(':image', $data['image']);
+    $this->db->bind(':verification_doc', $data['verification_doc']);
     $this->db->bind(':password', $data['password']);
     $this->db->bind(':id', $data['id']);
     
@@ -112,7 +115,6 @@ public function storeAnswer($data) {
   return $this->db->execute();
 }
 
-// File: app/models/Consultant.php
 public function fetchAnswers($question_id) {
   $this->db->query("
     SELECT 
@@ -120,7 +122,8 @@ public function fetchAnswers($question_id) {
       fa.answer, 
       fa.createdAt,
       fa.consultant_id, 
-      c.name AS consultant_name
+      c.name AS consultant_name,
+      c.image AS consultant_profile_picture
     FROM forum_answers fa
     JOIN consultants c ON fa.consultant_id = c.id
     WHERE fa.q_id = :q_id

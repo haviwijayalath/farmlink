@@ -2,16 +2,12 @@
 
 <div class="sidebar">
   <ul>
-    <!-- Always show Home and Logout -->
-    <li>
-      <a href="<?= URLROOT ?>/dashboard">
-        <i class="fa-solid fa-house"></i>
-        <span>Home</span>
-      </a>
-    </li>
-
     <?php if(isset($_SESSION['user_role'])): ?>
       <?php if($_SESSION['user_role'] === 'farmer'): ?>
+        <li>
+          <a href="<?php echo URLROOT?>/farmers">
+            <i class="fa-solid fa-house"></i>Home</a>
+        </li>
         <li>
           <a href="<?= URLROOT ?>/farmers/managestocks">
             <i class="fa-solid fa-boxes-stacked"></i>

@@ -1,109 +1,132 @@
-/* editprofile.css */
-
-/* Container styling */
+/* ------------------------------------------------
+   Consultant Edit Profile
+------------------------------------------------ */
 .edit-profile-container {
-    max-width: 600px; /* Limit width for the form */
-    margin: 20px auto; /* Center the container */
-    padding: 20px; /* Add padding for better spacing */
-    background-color: #ffffff; /* Background color */
-    border-radius: 8px; /* Rounded corners */
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Subtle shadow */
-  }
-  
-  .edit-profile-container h2 {
-    text-align: center; /* Center the heading */
-    margin-bottom: 20px; /* Space below the heading */
-    color: #333; /* Heading color */
-    font-weight: bold; /* Bold text */
-  }
-  
-  /* Form group styling */
-  .form-group {
-    margin-bottom: 20px; /* Space between fields */
-  }
-  
-  .form-group label {
-    display: block; /* Block display for labels */
-    margin-bottom: 5px; /* Space below the label */
-    font-weight: bold; /* Bold text for labels */
-    color: #555; /* Text color for labels */
-  }
-  
-  .form-group input {
-    width: 100%; /* Full width inputs */
-    padding: 10px; /* Padding for inputs */
-    border: 1px solid #ccc; /* Border color */
-    border-radius: 5px; /* Rounded corners */
-    transition: border-color 0.3s ease; /* Smooth border transition */
-  }
-  
-  .form-group input:focus {
-    border-color: #007bff; /* Highlighted border color on focus */
-    outline: none; /* Remove default outline */
-  }
-  
-  /* File upload styles */
-  .upload-container input[type="file"] {
-    padding: 8px;
-    font-size: 14px;
-    border: 1px solid #ddd; /* Border for file input */
-    border-radius: 5px; /* Rounded corners */
-  }
-  
-  /* Buttons styling */
-  .form-buttons {
-    display: flex; /* Flexbox for button alignment */
-    justify-content: space-between; /* Space between buttons */
-    gap: 10px; /* Add space between buttons */
-  }
-  
-  .cancel-btn,
-  .save-btn {
-    flex: 1; /* Ensure buttons take equal space */
-    padding: 10px 20px; /* Button padding */
-    border: none; /* Remove border */
-    border-radius: 5px; /* Rounded corners */
-    cursor: pointer; /* Pointer on hover */
-    font-weight: bold; /* Bold text */
-    font-size: 14px; /* Button font size */
-    transition: background-color 0.3s ease, color 0.3s ease; /* Smooth hover effect */
-  }
-  
-  /* Cancel button */
-  .cancel-btn {
-    background-color: #f44336; /* Cancel button color */
-    color: white; /* Text color */
-  }
-  
-  .cancel-btn:hover {
-    background-color: #d32f2f; /* Darker shade on hover */
-  }
-  
-  /* Save button */
-  .save-btn {
-    background-color: #60ba62; /* Save button color */
-    color: white; /* Text color */
-  }
-  
-  .save-btn:hover {
-    background-color: #4da44e; /* Darker shade on hover */
-  }
-  
-  /* Responsive design */
-  @media (max-width: 768px) {
-    .edit-profile-container {
-      margin: 10px; /* Reduce margin on smaller screens */
-      padding: 15px; /* Reduce padding */
-    }
-  
-    .form-buttons {
-      flex-direction: column; /* Stack buttons vertically */
-      gap: 15px; /* Add spacing between stacked buttons */
-    }
-  
-    .cancel-btn,
-    .save-btn {
-      width: 100%; /* Full-width buttons on small screens */
-    }
-  }
-  
+  max-width: 600px;
+  margin: 70px auto;
+  padding: 20px;
+  background-color: #fff;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.edit-profile-container h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: bold;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: #555;
+}
+
+.form-group input[type="text"],
+.form-group input[type="email"],
+.form-group input[type="number"],
+.form-group input[type="password"] {
+  width: 100%;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: border-color 0.3s ease;
+}
+
+.form-group input:focus {
+  border-color: #007bff;
+  outline: none;
+}
+
+/* Image + Verification sections */
+.image-upload-section,
+.verification-section {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.current-image img {
+  max-width: 150px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+.current-doc a {
+  display: inline-block;
+  font-size: 0.95rem;
+  color: #007bff;
+  text-decoration: none;
+}
+.current-doc a:hover {
+  text-decoration: underline;
+}
+
+.upload-container input[type="file"] {
+  padding: 6px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+/* Password toggle icons */
+.password-container {
+  position: relative;
+  margin-bottom: 10px;
+}
+.password-container input {
+  width: 100%;
+  padding-right: 30px;
+}
+.password-container .toggle-password {
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+}
+
+/* Error message */
+.error {
+  color: red;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  display: block;
+}
+
+/* Buttons */
+.form-buttons {
+  display: flex;
+  gap: 10px;
+}
+.cancel-btn,
+.save-btn {
+  flex: 1;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  color: #fff;
+  transition: background-color 0.3s ease;
+}
+.cancel-btn { background-color: #f44336; }
+.cancel-btn:hover { background-color: #d32f2f; }
+.save-btn   { background-color: #60ba62; }
+.save-btn:hover   { background-color: #4da44e; }
+
+/* Responsive */
+@media (max-width: 768px) {
+  .edit-profile-container { margin: 10px; padding: 15px; }
+  .form-buttons { flex-direction: column; }
+  .cancel-btn, .save-btn { width: 100%; }
+}

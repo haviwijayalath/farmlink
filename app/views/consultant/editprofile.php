@@ -7,10 +7,8 @@
 <div class="edit-profile-container">
   <h2>Edit Your Profile</h2>
   <form action="<?= URLROOT; ?>/consultants/editprofile/<?= $data['id']; ?>" method="POST" enctype="multipart/form-data">
-    <!-- Hidden field if needed for an address or any other ID -->
-    <!-- <input type="hidden" name="address_id" value="<?= htmlspecialchars($data['address_id'] ?? '') ?>"> -->
 
-    <div class="form-group">
+  <div class="form-group">
       <label for="name">Name</label>
       <input type="text" name="name" id="name" value="<?= htmlspecialchars($data['name']); ?>" required>
     </div>
@@ -34,21 +32,47 @@
       <label for="address">Address</label>
       <input type="text" name="address" id="address" value="<?= htmlspecialchars($data['address']); ?>" required>
     </div>
-    
+
     <div class="form-group">
       <label for="image">Upload Image (Optional)</label>
       <div class="image-upload-section">
-        <!-- Display current image -->
         <div class="current-image">
-          <img id="currentImage" src="<?= URLROOT ?>/public/uploads/<?= !empty($data['image']) && file_exists(APPROOT . '/../public/uploads/' . $data['image']) ? $data['image'] : 'placeholder.png' ?>" alt="Current Profile Image" style="max-width:150px; border:1px solid #ddd; border-radius:5px;">
+          <img id="currentImage"
+               src="<?= URLROOT ?>/public/uploads/consultants/<?= 
+                     !empty($data['image']) && file_exists(APPROOT . '/../public/uploads/consultants/' . $data['image'])
+                       ? htmlspecialchars($data['image']) : 'placeholder.png' 
+                   ?>"
+               alt="Current Profile Image">
         </div>
-        <!-- New image upload -->
         <div class="upload-container">
-          <input type="file" id="image" name="image" onchange="replaceCurrentImage(event)">
+          <input type="file" id="image" name="image" accept="image/*" onchange="replaceCurrentImage(event)">
         </div>
       </div>
+      <span class="error"><?= $data['image_err'] ?? '' ?></span>
     </div>
-    
+
+    <!-- === NEW: Verification Document === -->
+    <div class="form-group">
+      <label for="verification_doc">Verification Document</label>
+      <div class="verification-section">
+        <?php if (!empty($data['verification_doc'])): ?>
+          <div class="current-doc">
+            <a href="<?= URLROOT ?>/public/uploads/consultants/verifications/<?= htmlspecialchars($data['verification_doc']) ?>"
+               target="_blank">
+              View current document
+            </a>
+          </div>
+        <?php endif; ?>
+        <div class="upload-container">
+          <input type="file"
+                 id="verification_doc"
+                 name="verification_doc"
+                 accept=".pdf,.jpg,.jpeg,.png">
+        </div>
+      </div>
+      <span class="error"><?= $data['verification_doc_err'] ?? '' ?></span>
+    </div>
+
     <div class="form-group">
       <label for="password">Password</label>
       <div class="password-container">
@@ -63,46 +87,44 @@
         <input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm New Password">
         <i class="toggle-password" id="toggleConfirmPassword">&#128065;</i>
       </div>
+      <span class="error"><?= $data['password_err'] ?? '' ?></span>
     </div>
-    
+
     <div class="form-buttons">
-      <a href="<?= URLROOT ?>/consultants/viewprofile" class="cancel-btn">Cancel</a>
       <button type="submit" class="save-btn">Save Changes</button>
+      <a href="<?= URLROOT ?>/consultants/viewprofile" class="cancel-btn">Cancel</a>
     </div>
   </form>
 </div>
 
 <script>
 function replaceCurrentImage(event) {
-    const file = event.target.files[0];
-    if(file) {
-        const currentImage = document.getElementById('currentImage');
-        const newImageURL = URL.createObjectURL(file);
-        currentImage.src = newImageURL;
-        currentImage.onload = () => URL.revokeObjectURL(newImageURL);
-    }
+  const file = event.target.files[0];
+  if (file) {
+    const img = document.getElementById('currentImage');
+    img.src = URL.createObjectURL(file);
+    img.onload = () => URL.revokeObjectURL(img.src);
+  }
 }
 
 function togglePasswordVisibility(inputId, iconId) {
-    const passwordField = document.getElementById(inputId);
-    const icon = document.getElementById(iconId);
-    if(passwordField.type === 'password') {
-        passwordField.type = 'text';
-        icon.textContent = '🙈';
-    } else {
-        passwordField.type = 'password';
-        icon.textContent = '👁️';
-    }
+  const fld = document.getElementById(inputId);
+  const icon = document.getElementById(iconId);
+  if (fld.type === 'password') {
+    fld.type = 'text'; icon.textContent = '🙈';
+  } else {
+    fld.type = 'password'; icon.textContent = '👁️';
+  }
 }
 
-document.getElementById('toggleCurrentPassword').addEventListener('click', function() {
-    togglePasswordVisibility('current_password', 'toggleCurrentPassword');
-});
-document.getElementById('toggleNewPassword').addEventListener('click', function() {
-    togglePasswordVisibility('new_password', 'toggleNewPassword');
-});
-document.getElementById('toggleConfirmPassword').addEventListener('click', function() {
-    togglePasswordVisibility('confirm_password', 'toggleConfirmPassword');
+['Current','New','Confirm'].forEach(kind => {
+  document
+    .getElementById(`toggle${kind}Password`)
+    .addEventListener('click', () => togglePasswordVisibility(
+      kind === 'Current' ? 'current_password' :
+      kind === 'New'     ? 'new_password' : 'confirm_password',
+      `toggle${kind}Password`
+    ));
 });
 </script>
 
