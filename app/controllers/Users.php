@@ -347,5 +347,63 @@ class Users extends Controller {
             $this->view('users/forgotPassword', $data);
         }
     }
+
+    public function resetPassword() {
+        $token = $_GET['token'] ?? null;
+        if ($token) {
+            // Check if the token is valid
+            if ($this->userModel->isTokenValid($token, $_GET['email'])) {
+                if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+                    // Process form
+                    $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+        
+                    $data = [
+                        'password' => trim($_POST['password']),
+                        'confirm_password' => trim($_POST['confirm_password']),
+                        'password_err' => '',
+                        'confirm_password_err' => ''
+                    ];
+        
+                    if (empty($data['password'])) {
+                        $data['password_err'] = 'Please enter a password';
+                    } elseif (strlen($data['password']) < 6) {
+                        $data['password_err'] = 'Password must be at least 6 characters';
+                    }
+        
+                    if (empty($data['confirm_password'])) {
+                        $data['confirm_password_err'] = 'Please confirm your password';
+                    } else {
+                        if ($data['password'] != $data['confirm_password']) {
+                            $data['confirm_password_err'] = 'Passwords do not match';
+                        }
+                    }
+        
+                    if (empty($data['password_err']) && empty($data['confirm_password_err'])) {
+                        // Reset the password
+                        $this->userModel->resetPassword($token, $data['password']);
+                        flash('reset_success', 'Your password has been reset successfully. You can now log in.');
+                        redirect('users/login');
+                    } else {
+                        $this->view('users/resetPassword', $data);
+                    }
+                } else {
+                    $data = [
+                        'password' => '',
+                        'confirm_password' => '',
+                        'password_err' => '',
+                        'confirm_password_err' => ''
+                    ];
+        
+                    $this->view('users/resetPassword', $data);
+                }
+            } else {
+                flash('reset_error', 'Invalid or expired token.');
+                redirect('users/login');
+            }
+        } else {
+            flash('reset_error', 'No token provided.');
+            redirect('users/login');
+        }
+    }
 }
 ?>
