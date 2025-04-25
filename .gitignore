@@ -10,3 +10,8 @@ public/upload/
 public/d_uploads/
 public/public/
 
+# ignoring the vendor dir
+vendor/
+
+# ignoring the composer.lock file
+composer.lock
