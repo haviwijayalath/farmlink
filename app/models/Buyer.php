@@ -103,7 +103,7 @@ class Buyer extends Database
     public function getCartItems()
     {
         $this->db->query('
-            SELECT c.cart_id, c.quantity, c.price, p.name,  p.price, c.product_id 
+            SELECT c.cart_id, c.quantity, c.price, p.name,  p.price, c.product_id, c.status
             FROM buyer_carts c
             JOIN fproducts p ON c.product_id = p.fproduct_id
             WHERE c.buyer_id = :buyer_id
@@ -139,7 +139,7 @@ class Buyer extends Database
             // If an item exists, update it instead of adding a new one
             $this->db->query('
             UPDATE buyer_carts 
-            SET product_id = :product_id, quantity = :quantity, price = :price 
+            SET product_id = :product_id, quantity = :quantity, price = :price , status = "pending" 
             WHERE buyer_id = :buyer_id
             ');
 
@@ -147,11 +147,12 @@ class Buyer extends Database
             $this->db->bind(':quantity', $data['quantity']);
             $this->db->bind(':buyer_id', $data['buyer_id']);
             $this->db->bind(':price', $product->price);
+
         } else {
             // If no item exists, insert a new one
             $this->db->query('
-            INSERT INTO buyer_carts (buyer_id, product_id, quantity, price) 
-            VALUES (:buyer_id, :product_id, :quantity, :price)
+            INSERT INTO buyer_carts (buyer_id, product_id, quantity, price, status) 
+            VALUES (:buyer_id, :product_id, :quantity, :price , "pending")
             ');
 
             $this->db->bind(':buyer_id', $data['buyer_id']);
@@ -434,7 +435,7 @@ class Buyer extends Database
     {
         $this->db->query('
             SELECT op.orderProcessID, op.productId, p.name AS productName, op.quantity, 
-                   op.farmerFee, op.deliveryFee, op.dropAddress
+                   op.farmerFee, op.deliveryFee, op.dropAddress ,op.cartID
             FROM order_process op
             JOIN fproducts p ON op.productId = p.fproduct_id
             WHERE op.orderProcessID = :id
@@ -479,5 +480,17 @@ class Buyer extends Database
 
         // Return the stock value or null if no result is found
         return $row ? $row->stock : null;
+    }
+
+    public function update_cart_status($cartID) {
+        // Prepare the SQL query
+        $this->db->query('UPDATE buyer_carts SET status = :status WHERE cart_id = :id');
+        
+        // Bind values
+        $this->db->bind(':id', $cartID);
+        $this->db->bind(':status', 'success');
+    
+        // Execute the query and return the result
+        return $this->db->execute();
     }
 }

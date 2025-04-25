@@ -388,7 +388,7 @@ class Buyercontrollers extends Controller {
             $total += $item->price * $item->quantity;
         }
     
-        if(!empty($cartItems)){
+        if(!empty($cartItems) && $cartItems[0]->status === 'pending'){
             
             $availableQuantity = $this->buyerModel->getQuantity($cartItems[0]->cart_id);
 
@@ -776,11 +776,14 @@ class Buyercontrollers extends Controller {
                 'deliveryFee' => $orderDetails->deliveryFee, // Delivery fee from order_process
                 'dropAddress' => $orderDetails->dropAddress, // Address from POST data
                 'status' => 'pending', // Default status
-                'dperson_id' => '0'
+                'dperson_id' => '0',
             ];
+
+            $cartID = $orderDetails->cartID;
+
     
             // Save to database
-            if ($this->buyerModel->saveOrderSuccess($data)) {    
+            if ($this->buyerModel->saveOrderSuccess($data) && $this->buyerModel->update_cart_status($cartID)) { 
                 echo json_encode(['success' => true]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to save order details.']);
