@@ -114,7 +114,7 @@ class User extends Database
 
       // Use your mailer function here to send the email
       $mail = mailerConfig();
-      $mail->setFrom('no-reply-farmlink@demomailtrap.co', 'Support');
+      $mail->setFrom('no-reply-farmlink@demomailtrap.co', 'Support Farmlink');
       $mail->addAddress($email);
       $mail->Subject = $subject;
       $mail->Body = $message;
