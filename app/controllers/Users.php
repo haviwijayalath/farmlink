@@ -314,5 +314,38 @@ class Users extends Controller {
             $this->view('users/support_other', $data);
         }
     }
+
+    public function forgotPassword() {
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // Process form
+            $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+    
+            $data = [
+                'email' => trim($_POST['email']),
+                'email_err' => ''
+            ];
+    
+            if (empty($data['email'])) {
+                $data['email_err'] = 'Please enter your Email';
+            }
+    
+            if ($this->userModel->findUserByEmail($data['email'])) {
+                // User found
+                $this->userModel->sendResetLink($data['email']);
+                flash('reset_link', 'A password reset link has been sent to your email.');
+                redirect('users/login');
+            } else {
+                $data['email_err'] = 'No user found with that email';
+                $this->view('users/forgotPassword', $data);
+            }
+        } else {
+            $data = [
+                'email' => '',
+                'email_err' => ''
+            ];
+    
+            $this->view('users/forgotPassword', $data);
+        }
+    }
 }
 ?>
