@@ -94,7 +94,7 @@ class Buyer extends Database
             update buyers set status = :status where id = :userID
         ');
         $this->db->bind(':userID', $userID);
-        $this->db->bind(':status', 'deleted');
+        $this->db->bind(':status', 'deactivated');
 
         // Execute the query and return true if successful, false otherwise
         return $this->db->execute();

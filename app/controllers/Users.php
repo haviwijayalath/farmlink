@@ -61,7 +61,7 @@ class Users extends Controller {
                         flash('log in failed', 'Your account has been suspended till ' . date('Y-m-d', strtotime($loggedInUser->suspend_date)) . '. Please contact support.');
                         $this->view('users/login', $data);
                         return;
-                    } elseif ($loggedInUser->status === 'deleted') {
+                    } elseif ($loggedInUser->status === 'deactivated') {
                         $data['email_err'] = 'Your account has been deactivated. Please <a href="/farmlink/users/support" style="color: blue; text-decoration: underline;">contact support</a>.';
                         flash('log in failed', 'Your account has been deactivated. Please contact support.');
                         $this->view('users/login', $data);

@@ -325,7 +325,7 @@ class Dperson extends Database{
         $sql = "UPDATE delivery_persons SET status = :status WHERE id = :userId";
         $this->db->query($sql);
         $this->db->bind(':userId', $userId);
-        $this->db->bind(':status', 'deleted');
+        $this->db->bind(':status', 'deactivated');
 
         // Execute the query and return true if successful, false otherwise
         return $this->db->execute();
