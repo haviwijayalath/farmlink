@@ -29,24 +29,45 @@
         <input type="text" name="number" placeholder="House number">
 
         <label>Street Address *</label>
-        <input type="text" name="street_address" placeholder="Street name" required>
+        <input type="text" name="street_address" placeholder="Street name" pattern="^[A-Za-z0-9\s.,'-]{5,100}$" 
+    title="Street address must be 5-100 characters and can contain letters, numbers, spaces, commas, periods, apostrophes, and hyphens." required>
 
         <label>City *</label>
         <select name="city" required>
             <option value="">Select a city</option>
+            <option value="Ampara">Ampara</option>
+            <option value="Anuradhapura">Anuradhapura</option>
+            <option value="Badulla">Badulla</option>
+            <option value="Batticaloa">Batticaloa</option>
+            <option value="Chilaw">Chilaw</option>
             <option value="Colombo">Colombo</option>
+            <option value="Dambulla">Dambulla</option>
+            <option value="Vavuniya">Embilipitiya</option>
+            <option value="Galle">Galle</option>
+            <option value="Gampaha">Gampaha</option>
+            <option value="Hambantota">Hambantota</option>
+            <option value="Hatton">Hatton</option>
+            <option value="Jaffna">Jaffna</option>
+            <option value="Kalmunai">Kalmunai</option>
+            <option value="Kalutara">Kalutara</option>
             <option value="Kandy">Kandy</option>
             <option value="Kegalle">Kegalle</option>
+            <option value="Kilinochchi">Kilinochchi</option>
+            <option value="Kurunegala">Kurunegala</option>
+            <option value="Mannar">Mannar</option>
             <option value="Matale">Matale</option>
-            <option value="Nuwaraeliya">Nuwaraeliya</option>
+            <option value="Matara">Matara</option>
+            <option value="Monaragala">Monaragala</option>
+            <option value="Mullaitivu">Mullaitivu</option>
+            <option value="Negombo">Negombo</option>
+            <option value="Nuwara Eliya">Nuwara Eliya</option>
+            <option value="Polonnaruwa">Polonnaruwa</option>
+            <option value="Puttalam">Puttalam</option>
             <option value="Ratnapura">Ratnapura</option>
-            <option value="Gampaha">Gampaha</option>
-            <option value="Kalutara">Kalutara</option>
-            <option value="Galle">Galle</option>
-            <option value="Kurunagala">Kurunagala</option>
-            <option value="Badulla">Badulla</option>
+            <option value="Trincomalee">Trincomalee</option>
+            <option value="Vavuniya">Vavuniya</option>
         </select>
-
+        
         <label>Country *</label>
         <input type="text" value="Sri Lanka" disabled>
 

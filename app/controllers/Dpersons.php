@@ -86,7 +86,12 @@ class Dpersons extends Controller {
         $confirmedOrder = $this->userModel->confirmOrder($_SESSION['user_id'],$orderId);
 
         if ($confirmedOrder) {
-            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $confirmedOrder->buyerID, 'Order Confirmed', 'Your ' . $confirmedOrder->product . '  order is confirmed by the delivery ', '/farmlink/buyercontrollers/buyerOrders', 'info');
+            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $confirmedOrder->buyerID, 'Order Confirmed',
+                 'Your ' . $confirmedOrder->product . '  order is confirmed by the delivery ', '/farmlink/buyercontrollers/buyerOrders', 'info');
+
+            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'f', $confirmedOrder->farmer_id, 'Order Confirmed', 
+                 'The order' . $confirmedOrder->orderId .' for product ' . $product. ' is confirmed by the delivery ', '/farmlink/farmers/index', 'info');
+                 
             header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
         } else {
             die('Something went wrong.');
@@ -196,12 +201,75 @@ class Dpersons extends Controller {
             redirect('dpersons/proof');
         }
     }
+
+    public function confirmpickup(){
+        if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+            // You may need to get order ID from a session or hidden form field
+            if (!isset($_SESSION['order_id'])) {
+                flash('order_error', 'Order ID not found in session.');
+                redirect('dpersons/ongoing');
+            }
+
+            $orderId = $_SESSION['order_id'];
+
+            // Update the status in ordersuccess table
+            if ($this->userModel->updateOrderStatus($orderId)) {
+                // Fetch the order details
+                $orderDetails = $this->userModel->getOrderById($orderId);
+
+                if ($orderDetails) {
+                    $product = $orderDetails->product;
+                    $buyerId = $orderDetails->buyerID;
+                    $farmerId = $orderDetails->farmer_id;
+                    $dpId = $_SESSION['user_id'];
+
+                    $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $buyerId, 'Order has picked up', 
+                        'Your order' . $orderId .' for product' . $product. ' has been picked up by the delivery ', '/farmlink/buyercontrollers/buyerOrders', 'info');
+                    
+                    $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'f', $farmerId, 'Order has picked up', 
+                        'The order' . $orderId .' for product ' . $product. ' has been picked up by the delivery ', '/farmlink/farmers/index', 'info');
+
+                    redirect('dpersons/ongoingDeliveries');
+
+                } else {
+                    flash('order_error', 'Order not found.');
+                    redirect('dpersons/ongoingDeliveries');
+                }
+            } else {
+                flash('order_error', 'Failed to update order status.');
+                redirect('dpersons/ongoingDeliveries');
+            }
+        } else {
+            redirect('dpersons/ongoingDeliveries');
+        }
+    }
         
     public function endDelivery() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
         }
     
+        // Get delivery ID from session
+        $orderId = $_SESSION['order_id'];
+    
+        // Load model and fetch summary
+        $summary = $this->userModel->getDeliverySummary($orderId);
+    
+        if ($summary) {
+            $orderId = $summary->orderID;
+            $product = $summary->product;
+            $buyerId = $summary->buyerID;
+            $farmerId = $summary->farmer_id;
+    
+            // Now trigger notifications to buyer and farmer
+            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $buyerId, 'Order id delivered', 
+                'Your order' . $orderId .' for product' . $product. ' is delivered successfully by the delivery person', '/farmlink/buyercontrollers/buyerOrders', 'info');
+                    
+            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'f', $farmerId, 'Order id delivered', 
+                'The order' . $orderId .' for product ' . $product. ' is delivered successfully by the delivery person ', '/farmlink/farmers/index', 'info');
+        }
+    
+        // Clear session values
         unset($_SESSION['pickup_image']);
         unset($_SESSION['dropoff_image']);
         unset($_SESSION['order_id']);
@@ -209,7 +277,7 @@ class Dpersons extends Controller {
     
         redirect('dpersons/history');
     }
-
+    
     public function deliveryUploadDropoff() {
 
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {

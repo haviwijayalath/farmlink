@@ -53,7 +53,7 @@ class Users extends Controller {
                         flash('log in failed', 'Your account has been suspended till ' . date('Y-m-d', strtotime($loggedInUser->suspend_date)) . '. Please contact support.');
                         $this->view('users/login', $data);
                         return;
-                    } elseif ($loggedInUser->status === 'deactivated') {
+                    } elseif ($loggedInUser->status === 'deleted') {
                         $data['email_err'] = 'Your account has been deactivated. Please <a href="/farmlink/users/support" style="color: blue; text-decoration: underline;">contact support</a>.';
                         flash('log in failed', 'Your account has been deactivated. Please contact support.');
                         $this->view('users/login', $data);
@@ -63,7 +63,7 @@ class Users extends Controller {
                         return;
                     }
                 } else {
-                    $data['password_err'] = 'Invalid email or password.';
+                    $data['password_err'] = 'Invalid password.';
                     $this->view('users/login', $data);
                     return;
                 }
@@ -138,7 +138,7 @@ class Users extends Controller {
                 $_SESSION['user_delivery_area'] = $user->area;
                 $_SESSION['user_password'] = $user->password;
                 $_SESSION['user_type'] = 'delivery_person'; // Added
-                redirect('dpersons/neworder');
+                redirect('dpaccounts/revenueCheck');
                 break;
 
             case 'consultants':

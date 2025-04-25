@@ -9,9 +9,12 @@
 
     <?php if (isset($data['orders']) && !empty($data['orders'])) : ?>
         <div class="order-card">
-            <div class="order-card-header">
-                <h3>Order ID: <?= htmlspecialchars($data['orders']->order_id); ?></h3>
+        <div class="order-card-header">
+            <div class="order-header-flex">
+                <h3 class="order-id-title">Order ID: <?= htmlspecialchars($data['orders']->order_id); ?></h3>
+                <a href="<?= URLROOT ?>/orderControllers/showcomplaint/<?= $data['orders']->order_id ?>" class="complaint-btn">Complaint</a>
             </div>
+        </div>
             <div class="order-card-body">
                 
                 <!-- Table-like layout for order details -->
