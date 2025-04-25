@@ -23,3 +23,13 @@ create a "config.php" file here and add the following.
 """
 
 I have added "config.php" to ".gitignore" beacuse the configurations may different from one to another.
+
+
+There's a .env file to be added for email sending configurations. 
+
+Also you might need to install the following packages using composer:
+- phpmailer/phpmailer
+- vlucas/phpdotenv
+
+You can install them using the following command:
+composer install
