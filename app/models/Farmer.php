@@ -1,13 +1,16 @@
 <?php
-class Farmer {
+class Farmer
+{
   private $db;
 
-  public function __construct() {
+  public function __construct()
+  {
     $this->db = new Database;
   }
 
   // Save address and return inserted address ID.
-  public function saveAddress($no, $street, $city) {
+  public function saveAddress($no, $street, $city)
+  {
     $this->db->query('INSERT INTO address (number, Street, City) VALUES(:number, :street, :city)');
     $this->db->bind(':number', $no);
     $this->db->bind(':street', $street);
@@ -20,9 +23,12 @@ class Farmer {
   }
 
   // Register farmer.
-  public function register($data) {
+  public function register($data)
+  {
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
-    $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image) VALUES(:name, :password, :email, :address_id, :phone, :image)');
+
+    $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image, rate, status) VALUES(:name, :password, :email, :address_id, :phone, :image, :rate, :status)');
+    // Bind values
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
     $this->db->bind(':phone', $data['phone_number']);
@@ -30,6 +36,7 @@ class Farmer {
     $this->db->bind(':password', $data['password']);
     $this->db->bind(':address_id', $address_id);
     $this->db->bind(':rate', 0);
+    $this->db->bind(':status', 'pending');
 
     // Execute
     if ($this->db->execute()) {
@@ -58,37 +65,37 @@ class Farmer {
     }
   }
 
-  // Update password
-  // public function updatePassword($data)
-  // {
-  //   $this->db->query('UPDATE farmers SET password = :password WHERE id = :id');
-  //   // Bind values
-  //   $this->db->bind(':id', $_SESSION['user_id']);
-  //   $this->db->bind(':password', $data['password']);
+  // Update password ---------
+  public function updatePassword($data)
+  {
+    //   $this->db->query('UPDATE farmers SET password = :password WHERE id = :id');
+    //   // Bind values
+    //   $this->db->bind(':id', $_SESSION['user_id']);
+    //   $this->db->bind(':password', $data['password']);
 
-  //   // Execute
-  //   if ($this->db->execute()) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+    //   // Execute
+    //   if ($this->db->execute()) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+  }
 
-  // verify password
-  // public function verifyPassword($password)
-  // {
-  //   $this->db->query('SELECT * FROM farmers WHERE id = :id');
-  //   $this->db->bind(':id', $_SESSION['user_id']);
+  // verify password ---------
+  public function verifyPassword($password)
+  {
+    //   $this->db->query('SELECT * FROM farmers WHERE id = :id');
+    //   $this->db->bind(':id', $_SESSION['user_id']);
 
-  //   $row = $this->db->single();
-  //   $hashed_password = $row->password;
+    //   $row = $this->db->single();
+    //   $hashed_password = $row->password;
 
-  //   if (password_verify($password, $hashed_password)) {
-  //     return true;
-  //   } else {
-  //     return false;
-  //   }
-  // }
+    //   if (password_verify($password, $hashed_password)) {
+    //     return true;
+    //   } else {
+    //     return false;
+    //   }
+  }
 
   // Find farmer by email
   public function findFarmerByEmail($email)
@@ -100,7 +107,8 @@ class Farmer {
   }
 
   // Login farmer.
-  public function login($email, $password) {
+  public function login($email, $password)
+  {
     $this->db->query('SELECT * FROM farmers WHERE email = :email');
     $this->db->bind(':email', $email);
     $row = $this->db->single();
@@ -112,16 +120,17 @@ class Farmer {
   }
 
   // Get farmer by id.
-  public function getFarmerById($id) {
+  public function getFarmerById($id)
+  {
     $this->db->query('SELECT * FROM farmers WHERE id = :id');
     $this->db->bind(':id', $id);
     return $this->db->single();
   }
 
-  
   // --- Forum Functionality (for questions) ---
   // Store a question asked by a farmer.
-  public function storeQuestion($data) {
+  public function storeQuestion($data)
+  {
     // Assuming the logged-in farmer's ID is in $_SESSION['user_id']
     $this->db->query("
       INSERT INTO forum_questions (farmer_id, questions, createdAt)
@@ -132,7 +141,8 @@ class Farmer {
     return $this->db->execute();
   }
 
-  public function fetchQuestions() {
+  public function fetchQuestions()
+  {
     $this->db->query("
       SELECT 
         fq.q_id AS id, 
@@ -149,27 +159,29 @@ class Farmer {
   }
 
   // Fetch a single question by ID
-  public function getQuestionById($q_id) {
+  public function getQuestionById($q_id)
+  {
     $this->db->query("SELECT q_id AS id, farmer_id, questions AS question, createdAt FROM forum_questions WHERE q_id = :q_id");
     $this->db->bind(':q_id', $q_id);
     return $this->db->single();
-}
+  }
 
+  // Update a question (only updates the question text)
+  public function updateQuestion($q_id, $data)
+  {
+    $this->db->query("UPDATE forum_questions SET questions = :question WHERE q_id = :q_id");
+    $this->db->bind(':question', $data['question']);
+    $this->db->bind(':q_id', $q_id);
+    return $this->db->execute();
+  }
 
-// Update a question (only updates the question text)
-public function updateQuestion($q_id, $data) {
-  $this->db->query("UPDATE forum_questions SET questions = :question WHERE q_id = :q_id");
-  $this->db->bind(':question', $data['question']);
-  $this->db->bind(':q_id', $q_id);
-  return $this->db->execute();
-}
-
-// Delete a question
-public function deleteQuestion($q_id) {
-  $this->db->query("DELETE FROM forum_questions WHERE q_id = :q_id");
-  $this->db->bind(':q_id', $q_id);
-  return $this->db->execute();
-}
+  // Delete a question
+  public function deleteQuestion($q_id)
+  {
+    $this->db->query("DELETE FROM forum_questions WHERE q_id = :q_id");
+    $this->db->bind(':q_id', $q_id);
+    return $this->db->execute();
+  }
 
   // list stocks
   public function getStocks()
@@ -191,7 +203,7 @@ public function deleteQuestion($q_id) {
 
     return $row;
   }
-  
+
   // Add stock
   public function addStock($data)
   {
@@ -214,7 +226,7 @@ public function deleteQuestion($q_id) {
     }
   }
 
-  public function updateStock($id, $data) 
+  public function updateStock($id, $data)
   {
     $this->db->query('UPDATE fproducts SET name = :name, description = :description, price = :price, stock = :stock, exp_date = :exp_date, image = :image WHERE fproduct_id = :id');
     // Bind values
@@ -230,7 +242,7 @@ public function deleteQuestion($q_id) {
     if ($this->db->execute()) {
       return true;
     } else {
-        return false;
+      return false;
     }
   }
 
@@ -274,6 +286,138 @@ public function deleteQuestion($q_id) {
 
     $results = $this->db->resultSet();
 
+    return $results;
+  }
+
+  // Get expiring stocks
+  public function getExpiringStocks()
+  {
+    $this->db->query('SELECT * FROM fproducts WHERE exp_date < DATE_ADD(CURDATE(), INTERVAL 2 DAY)');
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
+  // Get total products
+  public function getTotalProducts()
+  {
+    $this->db->query('SELECT COUNT(*) as total FROM fproducts WHERE farmer_id = :farmer_id');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+    
+    $row = $this->db->single();
+    return $row->total;
+  }
+
+  // Get top 5 products
+  public function getTopProducts()
+  {
+    $this->db->query('
+      SELECT fp.*, SUM(os.quantity) as total_quantity
+      FROM fproducts fp
+      LEFT JOIN order_success os ON fp.fproduct_id = os.productID
+      WHERE fp.farmer_id = :farmer_id
+      GROUP BY fp.fproduct_id
+      ORDER BY total_quantity DESC
+      LIMIT 5
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
+  // Get orders
+  public function getOrders()
+  {
+    $this->db->query('
+      SELECT os.*, fp.name AS product_name, f.name AS farmer_name, b.name AS buyer_name, d.name AS dperson_name
+      FROM order_success os
+      INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+      INNER JOIN buyers b ON os.buyerID = b.id
+      INNER JOIN delivery_persons d ON os.dperson_id = d.id
+      INNER JOIN farmers f ON fp.farmer_id = f.id
+      WHERE f.id = :farmer_id
+      ORDER BY os.orderDate DESC
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
+  // Get pending orders
+  public function getPendingOrders()
+  {
+    $this->db->query('
+      SELECT os.*, fp.name AS product_name, f.name AS farmer_name, b.name AS buyer_name, d.name AS dperson_name
+      FROM order_success os
+      INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+      INNER JOIN buyers b ON os.buyerID = b.id
+      INNER JOIN delivery_persons d ON os.dperson_id = d.id
+      INNER JOIN farmers f ON fp.farmer_id = f.id
+      WHERE f.id = :farmer_id AND os.status = :status
+      ORDER BY os.orderDate DESC
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+    $this->db->bind(':status', 'pending');
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
+  // Marking orders as ready to pick up
+  public function orderReady($orderID)
+  {
+    $this->db->query('UPDATE order_success SET status = :status WHERE orderID = :order_id');
+    $this->db->bind(':status', 'ready');
+    $this->db->bind(':order_id', $orderID);
+    if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  // Get delivery person id by orderID
+  public function dpersonIdOfOrder($orderID)
+  {
+    $this->db->query('SELECT dperson_id FROM order_success WHERE orderID = :order_id');
+    $this->db->bind(':order_id', $orderID);
+    $row = $this->db->single();
+    return $row->dperson_id;
+  }
+
+  public function getSales()
+  {
+    $this->db->query('
+      SELECT os.*, fp.name AS product_name
+      FROM order_success os
+      INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+      INNER JOIN farmers f ON fp.farmer_id = f.id
+      WHERE f.id = :farmer_id
+      ORDER BY os.orderDate DESC
+    ');
+    $this->db->bind(':farmer_id', $_SESSION['user_id']);
+
+    $results = $this->db->resultSet();
+
+    return $results;
+  }
+
+  // Get buyers who has added the product to wishlist
+  public function wishToBuyBuyers($productName)
+  {
+    $this->db->query('
+      SELECT w.buyer_id FROM wishlist w
+      INNER JOIN fproducts fp ON w.product_id = fp.fproduct_id
+      WHERE fp.name = :product_name
+    ');
+    $this->db->bind(':product_name', $productName);
+    $results = $this->db->resultSet();
     return $results;
   }
 }

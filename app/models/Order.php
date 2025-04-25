@@ -110,4 +110,50 @@ public function getComplaints($userId, $role) {
     return $this->db->resultSet(); // fetch all results
     }
 
+    public function getOrderDetailsWithFarmer($orderID) {
+        $this->db->query("
+            SELECT os.orderID, os.buyerID, fp.farmer_id
+            FROM order_success os
+            INNER JOIN fproducts fp ON os.productID = fp.fproduct_id
+            WHERE os.orderID = :orderID
+        ");
+        $this->db->bind(':orderID', $orderID);
+        return $this->db->single(); // returns associative array/object
+    }
+    
+    public function addReview($data) {
+        $this->db->query("
+            INSERT INTO farmer_reviews (order_id, buyer_id, farmer_id, description, rating, image, created_at)
+            VALUES (:orderID, :buyerID, :farmerID, :description, :rating, :images, NOW())
+        ");
+        $this->db->bind(':orderID', $data['orderID']);
+        $this->db->bind(':buyerID', $data['buyerID']);
+        $this->db->bind(':farmerID', $data['farmerID']);
+        $this->db->bind(':description', $data['description']);
+        $this->db->bind(':rating', $data['rating']);
+        $this->db->bind(':images', $data['images']); // comma-separated or JSON if multiple
+    
+        return $this->db->execute();
+    }
+
+    public function getBuyerAddress($buyerId) {
+        $this->db->query('
+           SELECT 
+            b.name,b.email,b.phone,a.number,a.Street,a.City
+            FROM 
+                buyers b
+            JOIN 
+                address a
+            ON 
+                b.address_id = a.address_id
+            WHERE 
+                b.id = :buyerId; 
+        ');
+
+        $this->db->bind(':buyerId', $buyerId);
+
+        return $this->db->single(); // Fetch a single result
+    }
+    
+
 }

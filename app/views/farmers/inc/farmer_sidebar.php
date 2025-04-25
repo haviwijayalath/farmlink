@@ -13,6 +13,8 @@
     <li><a href="<?php echo URLROOT?>/forums/index"><i class="fa-solid fa-comment"></i>Forum</a></li>
     <li><a href="<?php echo URLROOT?>/farmers/bookconsultant"><i class="fa-solid fa-user-tie"></i>Consultants</a></li>
     <li><a href="<?php echo URLROOT?>/appointments/index"><i class="fa-solid fa-calendar-check"></i>Appointments</a></li>
+    <div class="sidebar-spacer" style="height: 200px; width: 100%; display: block;"></div>
+    <li><a href="<?php echo URLROOT?>/farmers/viewprofile"><i class="fa-solid fa-user"></i>Profile</a></li>
     <li><a href="javascript:void(0)" onclick="showLogoutPopup()"><i class="fas fa-sign-out-alt"></i><span>Logout</span></a></li>
   </ul>
 </div>

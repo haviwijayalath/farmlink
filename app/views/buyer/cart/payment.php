@@ -5,23 +5,34 @@
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
 <div class="content">
-    <div class="order-summery">
-        <h2>CART TOTAL</h2>
-        <div class="item">
-            <div class="lable">SUB TOTAL</div> 
-            <div class="value">Rs.<?= number_format($data['farmer_fee'], 2) ?></div>
-        </div>
-        <div class="divider"></div>
+<div class="order-summery">
+    <h2>CART TOTAL</h2>
+
+    <div class="item">
+        <div class="lable">SUB TOTAL</div> 
+        <div class="value">Rs.<?= number_format($data['farmer_fee'], 2) ?></div>
+    </div>
+
+    <div class="divider"></div>
+
+    <?php 
+        $deliveryFee = isset($data['delivery_fee']) ? $data['delivery_fee'] : 0;
+    ?>
+    
+    <?php if ($deliveryFee > 0): ?>
         <div class="item">
             <div class="lable">DELIVERY FEE</div>
-            <div class="value">Rs.<?= number_format($data['delivery_fee'], 2) ?></div>
+            <div class="value">Rs.<?= number_format($deliveryFee, 2) ?></div>
         </div>
         <div class="divider"></div>
-        <div class="item">
-            <div class="lable">TOTAL</div>
-            <div class="value">Rs.<?= number_format($data['farmer_fee'] + $data['delivery_fee'], 2) ?></div>
-        </div>
+    <?php endif; ?>
+
+    <div class="item">
+        <div class="lable">TOTAL</div>
+        <div class="value">Rs.<?= number_format($data['farmer_fee'] + $deliveryFee, 2) ?></div>
     </div>
+</div>
+
 
     <div class="payment-option">
         
@@ -54,70 +65,104 @@
 
 <script>
 
-    function payNow(){
-
+function payNow() {
     var xhttp = new XMLHttpRequest();
 
-    xhttp.onreadystatechange = ()=>{
-        if(xhttp.readyState == 4 && xhttp.status == 200){
-            //alert(xhttp.responseText); // display the respone
+    xhttp.onreadystatechange = () => {
+        if (xhttp.readyState == 4 && xhttp.status == 200) {
+            try {
+                var obj = JSON.parse(xhttp.responseText);
 
-            var obj = JSON.parse(xhttp.responseText);
-
-            // Payment completed. It can be a successful failure.
-            payhere.onCompleted = function onCompleted(orderId) {
-                console.log("Payment completed. OrderID:" + orderId);
-                // Note: validate the payment and show success or failure page to the customer
-
-                  // Redirect to confirmOrder page only on success
-                  if (orderId) {
-                    window.location.href = "<?= URLROOT ?>/Buyercontrollers/orderConfirm";
+                if (obj.error) {
+                    alert(obj.error); // Display error message
+                    return;
                 }
-            };
 
-            // Payment window closed
-            payhere.onDismissed = function onDismissed() {
-                // Note: Prompt user to pay again or show an error page
-                console.log("Payment dismissed");
-            };
+                // Payment completed callback
+                payhere.onCompleted = function onCompleted(orderId) {
+                    console.log("Payment completed. OrderID:" + orderId);
 
-            // Error occurred
-            payhere.onError = function onError(error) {
-                // Note: show an error page
-                console.log("Error:"  + error);
-            };
+                    // Send order details to the server for saving
+                    var saveOrderXhttp = new XMLHttpRequest();
+                    // saveOrderXhttp.onreadystatechange = () => {
+                    //     if (saveOrderXhttp.readyState == 4 && saveOrderXhttp.status == 200) {
+                    //         console.log(responseText);
+                    //         var response = JSON.parse(saveOrderXhttp.responseText);
+                    //         if (response.success) {
+                    //             console.log("success");
+                    //             window.location.href = "<?= URLROOT ?>/Buyercontrollers/orderConfirm";
+                    //         } else {
+                    //             console.log("fail");
+                    //             alert('Failed to save order details.');
+                    //         }
+                    //     }
+                    // };
 
-            // Put the payment variables here
-            var payment = {
-                "sandbox": true,
-                "merchant_id": "1229272",    // Replace your Merchant ID
-                "return_url": "localhost/farmlink/buyercontrollers/paymentDetails",     // Important
-                "cancel_url": "localhost/farmlink/buyercontrollers/paymentDetails",     // Important
-                "notify_url": "http://sample.com/notify",
-                "order_id": obj["order_id"],
-                "items": obj["item"],
-                "amount": obj["amount"],
-                "currency": obj["currency"],
-                "hash": obj["hash"], // *Replace with generated hash retrieved from backend
-                "first_name": obj["first_name"],
-                "last_name": obj["last_name"],
-                "email": obj["email"],
-                "phone": obj["phone"],
-                "address": obj["address"],
-                "city": obj["city"],
-                "country": "Sri Lanka",
-                "delivery_address": "No. 46, Galle road, Kalutara South",
-                "delivery_city": "Kalutara",
-                "delivery_country": "Sri Lanka",
-                "custom_1": "",
-                "custom_2": ""
-            };
-
-            payhere.startPayment(payment);
-
+                    saveOrderXhttp.onreadystatechange = () => {
+    if (saveOrderXhttp.readyState == 4 && saveOrderXhttp.status == 200) {
+        try {
+            var response = JSON.parse(saveOrderXhttp.responseText); // Use saveOrderXhttp.responseText
+            if (response.success) {
+                window.location.href = "<?= URLROOT ?>/Buyercontrollers/orderConfirm";
+            } else {
+                alert('Failed to save order details: ' + (response.message || 'Unknown error'));
+            }
+        } catch (e) {
+            console.error("Invalid JSON response:", saveOrderXhttp.responseText);
+            alert("An error occurred while processing the server's response.");
         }
     }
-    xhttp.open("GET","<?= URLROOT ?>/Buyercontrollers/payhereProcess",true);
+};
+
+                    saveOrderXhttp.open("POST", "<?= URLROOT ?>/Buyercontrollers/saveOrderSuccess", true);
+                    saveOrderXhttp.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+                    saveOrderXhttp.send(`order_id=${encodeURIComponent(orderId)}`);
+                };
+
+                // Payment dismissed callback
+                payhere.onDismissed = function onDismissed() {
+                    console.log("Payment dismissed");
+                };
+
+                // Payment error callback
+                payhere.onError = function onError(error) {
+                    console.log("Error:" + error);
+                };
+
+                // Pass payment details to PayHere
+                var payment = {
+                    "sandbox": true, // Set to false for production
+                    "merchant_id": obj["merchant_id"],
+                    "return_url": "<?= URLROOT ?>/Buyercontrollers/paymentDetails",
+                    "cancel_url": "<?= URLROOT ?>/Buyercontrollers/paymentDetails",
+                    "notify_url": "<?= URLROOT ?>/Buyercontrollers/saveOrderSuccess",
+                    "order_id": obj["order_id"],
+                    "items": obj["item"],
+                    "amount": obj["amount"],
+                    "currency": obj["currency"],
+                    "hash": obj["hash"],
+                    "first_name": obj["first_name"],
+                    "last_name": obj["last_name"],
+                    "email": obj["email"],
+                    "phone": obj["phone"],
+                    "address": obj["address"],
+                    "city": obj["city"],
+                    "country": "Sri Lanka",
+                    "delivery_address": obj["address"],
+                    "delivery_city": obj["city"],
+                    "delivery_country": "Sri Lanka"
+                };
+
+                payhere.startPayment(payment);
+            } catch (e) {
+                console.error("Invalid JSON response:", xhttp.responseText);
+                alert("An error occurred while processing your request.");
+            }
+        }
+    };
+
+    // Send request to fetch payment details
+    xhttp.open("GET", "<?= URLROOT ?>/Buyercontrollers/payhereProcess", true);
     xhttp.send();
 }
 

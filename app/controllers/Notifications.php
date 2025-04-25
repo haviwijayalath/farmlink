@@ -78,4 +78,27 @@ class Notifications extends Controller {
         echo json_encode(['success' => (bool)$result]);
     }
     
+    // Dismiss/delete a notification
+    public function dismissNotification() {
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            http_response_code(405);
+            echo json_encode(['error' => 'Method not allowed']);
+            exit;
+        }
+        
+        $data = json_decode(file_get_contents('php://input'));
+        $to_type = getUserType();
+        
+        if (!isset($data->notification_id)) {
+            http_response_code(400);
+            echo json_encode(['error' => 'Missing required data']);
+            exit;
+        }
+        
+        $notification = new Notification();
+        $result = $notification->dismissNotification($data->notification_id, $to_type);
+        
+        echo json_encode(['success' => (bool)$result]);
+    }
+    
 }

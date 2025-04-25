@@ -35,8 +35,8 @@ class Dperson extends Database{
         }
     
         // Insert the delivery person data
-        $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, area, address_id, vehicle_id) 
-                          VALUES (:name, :password, :email, :phone, :image, :area, :address_id, :vehicle_id)');
+        $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, area, address_id, vehicle_id, license_image, status) 
+                          VALUES (:name, :password, :email, :phone, :image, :area, :address_id, :vehicle_id, :limage, :status)');
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':phone', $data['phone']);
@@ -45,6 +45,8 @@ class Dperson extends Database{
         $this->db->bind(':password', $data['password']);
         $this->db->bind(':address_id', $addressId); // Use the address ID as a foreign key
         $this->db->bind(':vehicle_id', $vehicleId); // Use the vehicle ID as a foreign key
+        $this->db->bind(':limage', $data['l_image']);
+        $this->db->bind(':status', 'pending');
     
         // Execute the delivery person insertion
         return $this->db->execute();
@@ -138,6 +140,7 @@ class Dperson extends Database{
       $this->db->query('
           SELECT 
               order_success.orderID,
+              order_success.status,
               CONCAT(address.number, ", ", address.Street, ", ", address.City) AS pickup_address,
               CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address,
               order_success.quantity,
@@ -163,7 +166,7 @@ class Dperson extends Database{
               address ON farmers.address_id = address.address_id
           WHERE 
               address.City = :deliveryArea  
-              AND  order_success.status = "new"
+              AND  (order_success.status = "ready" OR order_success.status = "processing")
       ');
       
       $this->db->bind(':deliveryArea', $deliveryArea);
@@ -173,18 +176,25 @@ class Dperson extends Database{
   
 
     // Update order status to "ongoing" when confirmed
-    public function confirmOrder($orderId) {
-        $this->db->query('UPDATE order_success SET status = "ongoing" WHERE orderID = :orderId');
+    public function confirmOrder($userId, $orderId) {
+        // Update the order status
+        $this->db->query('UPDATE order_success SET dperson_id = :userId, status = "ongoing" WHERE orderID = :orderId');
+        $this->db->bind(':userId', $userId);
         $this->db->bind(':orderId', $orderId);
-
-        return $this->db->execute();
-    }
+        $this->db->execute();
+    
+        // Retrieve buyer_id and product_name after the update
+        $this->db->query('SELECT buyerID, product FROM order_success WHERE orderID = :orderId');
+        $this->db->bind(':orderId', $orderId);
+        return $this->db->single(); // returns an associative array with buyer_id and product_name
+    }    
 
     // Fetch ongoing orders filtered by delivery area
     public function getOrdersByArea($deliveryArea) {
         $this->db->query('
             SELECT 
                 order_success.orderID,
+                order_success.status,
                 CONCAT(address.number, ", ", address.Street, ", ", address.City) AS pickup_address,
                 CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address,
                 order_success.quantity,
@@ -262,13 +272,6 @@ class Dperson extends Database{
         // If any step fails, return false
         return false;
     }
-    
-        public function fetchOrderStatus($id){
-            $this->db->query('SELECT status FROM farmer_buyer_orders WHERE id = :orderId');
-            $this->db->bind(':orderId', $id);
-            return $this->db->resultSet();
-
-        }
 
         public function deleteAccount($userId)
         {
@@ -285,6 +288,7 @@ class Dperson extends Database{
             $this->db->query('
                 SELECT 
                     order_success.orderID,
+                    order_success.status,
                     CONCAT(address.number, ", ", address.Street, ", ", address.City) AS pickup_address,
                     CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address,
                     order_success.quantity,
@@ -319,33 +323,6 @@ class Dperson extends Database{
         
             return $this->db->single();
         }
-
-        // Get order details by ID
-        public function getOrderById($orderId) {
-            $this->db->query('SELECT 
-                orders.id, 
-                farmers.name AS farmer, 
-                farmers.phone AS fphone, 
-                buyers.name AS buyer, 
-                buyers.phone, 
-                orders.pickup_address, 
-                orders.dropoff_address, 
-                orders.capacity, 
-                orders.amount, 
-                orders.delivered_date, 
-                orders.pic_before, 
-                orders.pic_after, 
-                orders.products 
-                FROM orders 
-                INNER JOIN farmers ON orders.farmer_id = farmers.id 
-                INNER JOIN buyers ON orders.buyer_id = buyers.id 
-                WHERE orders.id = :order_id
-            ');
-
-            $this->db->bind(':order_id', $orderId);
-            $result = $this->db->single();
-            return $result;
-    }
 
     public function history($id){
         $this->db->query('
@@ -431,6 +408,7 @@ class Dperson extends Database{
     $this->db->query('
         SELECT 
             order_success.orderID,
+            order_success.status,
             CONCAT(address.number, ", ", address.Street, ", ", address.City) AS pickup_address,
             CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address,
             order_success.quantity,

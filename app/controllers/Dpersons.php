@@ -3,9 +3,11 @@
 class Dpersons extends Controller {
     
     private $userModel;
+    private $notificationHelper;
     
     public function __construct() {
         $this->userModel = $this->model('Dperson'); 
+        $this->notificationHelper = new NotificationHelper();
     }
 
     public function index() {
@@ -14,7 +16,7 @@ class Dpersons extends Controller {
             redirect('users/login');
           }
         // Default method content here
-        echo "Welcome to the Orders page!";
+        redirect('dpersons/neworder');
     }
 
     // Show new orders page
@@ -81,7 +83,10 @@ class Dpersons extends Controller {
             redirect('users/login');
           }
 
-        if ($this->userModel->confirmOrder($orderId)) {
+        $confirmedOrder = $this->userModel->confirmOrder($_SESSION['user_id'],$orderId);
+
+        if ($confirmedOrder) {
+            $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $confirmedOrder->buyerID, 'Order Confirmed', 'Your ' . $confirmedOrder->product . '  order is confirmed by the delivery ', '/farmlink/buyercontrollers/buyerOrders', 'info');
             header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
         } else {
             die('Something went wrong.');
@@ -276,27 +281,38 @@ class Dpersons extends Controller {
         $this->view('d_person/history', $data);
     }
 
-    public function tracking(){
-
+    public function tracking() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
-          }
-
-        $orderStatus = $this->userModel->fetchOrderStatus($_SESSION['order_id']);
-
-        // Check if we received any status
-        $status = $orderStatus ? $orderStatus[0]->status : 'new';  // Default to 'PLACED' if no status found
-
-        $this->view('d_person/ongoing/tracking',['status' => $status]);
-
-    }
+        }
+    
+        $orderId = $_SESSION['order_id'];
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+    
+        // Fetch order details
+        $order = $this->userModel->getongoingbyID($deliveryArea, $orderId); // You'll need this function in your model
+    
+        if (!$order) {
+            // Handle case if no order found
+            flash('order_error', 'Order not found');
+            redirect('dpersons/ongoing'); // or wherever fits best
+        }
+    
+        // Build data array
+        $data = [
+            'status' => $order->status,
+            'pickup' => $order->pickup_address,
+            'dropoff' => $order->dropoff_address,
+            'fee' => $order->amount,
+            'orderId' => $order->orderID
+        ];
+    
+        // Load view
+        $this->view('d_person/ongoing/tracking', $data);
+    }    
 
 
     public function register() {
-
-        if (isLoggedIn()) {
-            redirect('dpersons/index');
-        }
 
         // Check for POST
         if($_SERVER['REQUEST_METHOD'] == 'POST') {
@@ -318,6 +334,7 @@ class Dpersons extends Controller {
                 'regno' => trim($_POST['regno']),
                 'capacity' => trim($_POST['capacity']),
                 'v_image' => isset($_POST['saved_vehicle_image']) ? $_POST['saved_vehicle_image'] : '', // Keep previously uploaded vehicle image
+                'l_image' => isset($_POST['saved_liscene_image']) ? $_POST['saved_liscene_image'] : '',
                 'password' => trim($_POST['password']),
                 'confirm_password' => trim($_POST['confirm_password']),
                 'role' => trim($_POST['role']),// Pass role to view
@@ -334,6 +351,7 @@ class Dpersons extends Controller {
                 'regno_err' => '',
                 'capacity_err' => '',
                 'v_image_err' => '',
+                'l_image_err' => '',
                 'password_err' => '',
                 'confirm_password_err' => ''
             ];
@@ -393,6 +411,7 @@ class Dpersons extends Controller {
                 // Now handle the image upload (if no errors from above)
                 $image = $_FILES["image"]['name'];
                 $v_image = $_FILES["v_image"]['name']; // Handle vehicle image upload
+                $l_image = $_FILES["l_image"]['name'];
                 $_picuploaded = 0;
                 $upload_dir = APPROOT . '/../public/uploads/';
 
@@ -425,26 +444,49 @@ class Dpersons extends Controller {
                 }
 
                 // Validate and move the vehicle image
-            if (!empty($v_image)) {
-                if (move_uploaded_file($_FILES['v_image']['tmp_name'], $upload_dir . $v_image)) {
-                    $_target_file = $upload_dir . $v_image;
-                    $v_imageFileType = strtolower(pathinfo($_target_file, PATHINFO_EXTENSION));
+                if (!empty($v_image)) {
+                    if (move_uploaded_file($_FILES['v_image']['tmp_name'], $upload_dir . $v_image)) {
+                        $_target_file = $upload_dir . $v_image;
+                        $v_imageFileType = strtolower(pathinfo($_target_file, PATHINFO_EXTENSION));
 
-                    // Validate image extension for vehicle image
-                    if ($v_imageFileType != "jpg" && $v_imageFileType != "jpeg" && $v_imageFileType != "png") {
-                        $data['v_image_err'] = 'Please upload a vehicle image with extension .jpg, .jpeg, or .png';
-                    } elseif ($_FILES["v_image"]["size"] > 2000000) { // Check if image exceeds 2MB
-                        $data['v_image_err'] = 'Your vehicle image exceeds the size limit of 2MB';
+                        // Validate image extension for vehicle image
+                        if ($v_imageFileType != "jpg" && $v_imageFileType != "jpeg" && $v_imageFileType != "png") {
+                            $data['v_image_err'] = 'Please upload a vehicle image with extension .jpg, .jpeg, or .png';
+                        } elseif ($_FILES["v_image"]["size"] > 2000000) { // Check if image exceeds 2MB
+                            $data['v_image_err'] = 'Your vehicle image exceeds the size limit of 2MB';
+                        } else {
+                            $data['v_image'] = $v_image; // Save the vehicle image name to data
+                            $_picuploaded = 1; // Mark that vehicle image was uploaded successfully
+                        }
                     } else {
-                        $data['v_image'] = $v_image; // Save the vehicle image name to data
-                        $_picuploaded = 1; // Mark that vehicle image was uploaded successfully
+                        $data['v_image_err'] = 'Failed to upload vehicle image';
                     }
                 } else {
-                    $data['v_image_err'] = 'Failed to upload vehicle image';
+                    $data['v_image_err'] = 'Please upload a vehicle image';
                 }
-            } else {
-                $data['v_image_err'] = 'Please upload a vehicle image';
-            }
+
+                // Validate and move the license image
+                if (!empty($l_image)) {
+                    if (move_uploaded_file($_FILES['l_image']['tmp_name'], $upload_dir . $l_image)) {
+                        $_target_file = $upload_dir . $l_image;
+                        $l_imageFileType = strtolower(pathinfo($_target_file, PATHINFO_EXTENSION));
+
+                        // Validate image extension for license image
+                        if ($l_imageFileType != "jpg" && $l_imageFileType != "jpeg" && $l_imageFileType != "png") {
+                            $data['l_image_err'] = 'Please upload a license image with extension .jpg, .jpeg, or .png';
+                        } elseif ($_FILES["l_image"]["size"] > 2000000) { // Check if image exceeds 2MB
+                            $data['l_image_err'] = 'Your license image exceeds the size limit of 2MB';
+                        } else {
+                            $data['l_image'] = $l_image; // Save the license image name to data
+                            $_picuploaded = 1; // Mark that license image was uploaded successfully
+                        }
+                    } else {
+                        $data['l_image_err'] = 'Failed to upload license image';
+                    }
+                } else {
+                    $data['l_image_err'] = 'Please upload a license image';
+                }
+
 
                 // If the image is uploaded successfully, proceed with registration
                 if($_picuploaded) {
@@ -485,6 +527,7 @@ class Dpersons extends Controller {
                 'regno' => '',
                 'capacity' => '',
                 'v_image' => '',
+                'l_image' => '',
                 'password' => '',
                 'confirm_password' => '',
                 'role' => '',
@@ -501,6 +544,7 @@ class Dpersons extends Controller {
                 'regno_err' => '',
                 'capacity_err' => '',
                 'v_image_err' => '',
+                'l_image_err' => '',
                 'password_err' => '',
                 'confirm_password_err' => '',
                 'confirm_password_err' => ''

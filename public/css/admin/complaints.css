@@ -99,7 +99,7 @@ header h1 {
 .complaint-table td button {
   padding: 8px 12px;
   background-color: #78897c;
-  color: white;
+  color: rgb(67, 23, 23);
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -109,6 +109,33 @@ header h1 {
 .complaint-table td button:hover {
   background-color: #218838;
 }
+
+/* Style for anchor buttons like "Manage" or Complaint ID */
+a.btn-manage,
+a.btn-complaint-id {
+    display: inline-block;
+    padding: 8px 14px;
+    background-color: #b9e0c5;
+    color: rgb(8, 3, 3);
+    text-decoration: none;
+    border-radius: 6px;
+    font-weight: 600;
+    transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 14px;
+}
+
+a.btn-manage:hover,
+a.btn-complaint-id:hover {
+    background-color: #1f9771;
+    transform: translateY(-2px);
+}
+
+a.btn-manage:active,
+a.btn-complaint-id:active {
+    transform: translateY(0);
+    background-color: #036047;
+}
+
 
 /* Responsive adjustments */
 @media screen and (max-width: 768px) {

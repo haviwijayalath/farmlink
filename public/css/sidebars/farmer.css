@@ -1,7 +1,7 @@
 /* Sidebar styling */
 .sidebar {
   position: fixed;
-  width: 200px;
+  width: 220px;
   min-height: 86vh;
   background: #042331;
   transition: all 0.5s ease;
@@ -187,7 +187,7 @@ ul li:hover a {
 /* Larger screens (sidebar fully expanded) */
 @media (min-width: 769px) {
   .sidebar {
-    width: 200px; /* Default expanded width */
+    width: 220px; /* Default expanded width */
     padding-top: 20px;
   }
 

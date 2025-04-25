@@ -20,12 +20,16 @@
         <li><a href="<?php echo URLROOT ?>/Admins/viewReports">
             <i class="fas fa-chart-line"></i> Reports
         </a></li>
+        <li><a href="<?php echo URLROOT ?>/AdminControllers/viewSupport">
+            <i class="fas fa-headset"></i> Support Requests
+        </a></li>
+        <div class="sidebar-spacer" style="height: 250px; width: 100%; display: block;"></div>
         <li><a href="<?php echo URLROOT ?>/Admins/account">
             <i class="fas fa-cog"></i> Settings
         </a></li>
         <!-- Logout -->
         <li><a href="javascript:void(0)" onclick="showPopup()">
-            <i class="fas fa-sign-out-alt"></i> Logout
+            <i class="fa-solid fa-right-from-bracket fa-rotate-180"></i> Logout
         </a></li>
     </ul>
 </div>

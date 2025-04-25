@@ -127,6 +127,31 @@ tbody tr:hover {
   box-shadow: 0 0 5px rgba(217, 83, 79, 0.8);
 }
 
+.ready-btn {
+  background-color: #5cb85c; /* Green color for success action */
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  font-size: 14px;
+  font-weight: bold;
+  cursor: pointer;
+  border-radius: 5px;
+  transition: background-color 0.3s ease-in-out;
+}
+
+.ready-btn:hover {
+  background-color: #4cae4c; /* Darker green for hover effect */
+}
+
+.ready-btn:active {
+  background-color: #449d44; /* Even darker green when clicked */
+}
+
+.ready-btn:focus {
+  outline: none;
+  box-shadow: 0 0 5px rgba(92, 184, 92, 0.8);
+}
+
 
 /* Responsive Design */
 @media screen and (max-width: 768px) {
@@ -137,4 +162,55 @@ tbody tr:hover {
   table, th, td {
     font-size: 12px;
   }
+}
+
+/* Sales Summary Styles */
+.sales-summary {
+  margin: 20px 0;
+}
+
+.summary-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.summary-container h3 {
+  color: #333;
+  font-size: 1.3rem;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #eee;
+}
+
+.summary-details {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.summary-item {
+  flex: 1;
+  min-width: 200px;
+  background-color: #f9f9f9;
+  padding: 15px;
+  border-radius: 6px;
+  border-left: 4px solid #4CAF50;
+}
+
+.summary-label {
+  display: block;
+  font-weight: bold;
+  color: #666;
+  margin-bottom: 5px;
+}
+
+.summary-value {
+  display: block;
+  font-size: 1.4rem;
+  color: #333;
+  font-weight: 600;
 }

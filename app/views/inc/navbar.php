@@ -25,8 +25,6 @@
             </div>
         </div>
         
-        <a href="<?php echo URLROOT; ?>/Users/logout" class="login-btn"><i class="fa-solid fa-user"></i> Logout</a>
-
     <?php else : ?>
 
         <span><a href="<?php echo URLROOT; ?>/home/home"><i class="fa-solid fa-house"></i> Home</a></span> 
