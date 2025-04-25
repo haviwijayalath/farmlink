@@ -23,7 +23,7 @@
         <li><a href="<?php echo URLROOT ?>/AdminControllers/viewSupport">
             <i class="fas fa-headset"></i> Support Requests
         </a></li>
-        <div class="sidebar-spacer" style="height: 250px; width: 100%; display: block;"></div>
+        <div class="sidebar-spacer"></div>
         <li><a href="<?php echo URLROOT ?>/Admins/account">
             <i class="fas fa-cog"></i> Settings
         </a></li>
