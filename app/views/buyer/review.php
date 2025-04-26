@@ -7,7 +7,7 @@ $orderID = isset($data['orderID']) ? $data['orderID'] : '';
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/review.css">
 
-<div class="review-form-container">
+<div class="review-form-container" style="margin-top: 100px; margin-left: 450px;">
     <h2>Submit a Review</h2>
 
     <form action="<?= URLROOT ?>/ordercontrollers/submitReview" method="post" enctype="multipart/form-data">
