@@ -2,7 +2,10 @@
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/view_product.css">
 
-<div class="container">
+<?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
+
+
+<div class="container" style="margin-left: 250px;">
   <div class="row">
     <div class="col-md-6">
       <img src="<?= URLROOT ?>/public/uploads/farmer/products/<?= !empty(htmlspecialchars($data['pImage'])) && file_exists(APPROOT . '/../public/uploads/farmer/products/' . htmlspecialchars($data['pImage'])) ? htmlspecialchars($data['pImage']) : 'Farmer-bro.jpg' ?>"  alt="<?php echo htmlspecialchars($data['pName']); ?>" class="product_picture">

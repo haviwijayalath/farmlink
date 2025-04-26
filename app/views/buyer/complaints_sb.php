@@ -9,8 +9,8 @@ $prefilledOrderID = isset($data['selectedOrderID']) ? $data['selectedOrderID'] :
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/complaints_sb.css">
 
-<div class="complaint-container">
-<div class="complaint-list">
+<div class="complaint-container" style="margin-top: 120px; margin-left: 300px" >
+<div class="complaint-list" style="margin-top: 5px;">
     <h2>Your Past Complaints</h2>
 
     <?php if (!empty($complaints) && count($complaints) > 0): ?>
