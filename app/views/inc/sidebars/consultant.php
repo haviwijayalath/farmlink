@@ -7,8 +7,8 @@
     <li><a href="<?= URLROOT ?>/consultants/viewprofile"><i class="fas fa-user"></i>My Profile</a></li>
     <li><a href="<?= URLROOT ?>/consultants/editprofile"><i class="fas fa-edit"></i>Edit Profile</a></li>
     <li><a href="<?= URLROOT ?>/consultants/setAvailability"><i class="fas fa-calendar-alt"></i>Availability</a></li>
-    <li><a href="<?= URLROOT ?>/forums/index"><i class="fa-solid fa-comment"></i>Forum</a></li>
     <li><a href="<?= URLROOT ?>/appointments/consultantAppointments"><i class="fa-solid fa-calendar-check"></i>Appointments</a></li>
+    <li><a href="<?= URLROOT ?>/forums/index"><i class="fa-solid fa-comment"></i>Forum</a></li>
     <li><a href="javascript:void(0)" onclick="showLogoutPopup()"><i class="fas fa-sign-out-alt"></i>Logout</a></li>
   </ul>
 </div>

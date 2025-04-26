@@ -19,6 +19,17 @@ class Appointment {
     $this->db->bind(':notes', $data['notes']);
     return $this->db->execute();
   }
+
+  public function getAvailability($consultant_id) {
+    $this->db->query("
+      SELECT available_date
+        FROM consultant_availability
+       WHERE consultant_id = :cid
+       ORDER BY available_date ASC
+    ");
+    $this->db->bind(':cid', $consultant_id);
+    return $this->db->resultSet();
+  }
   
   // Retrieve appointments for a farmer
   public function getAppointmentsByFarmer($farmer_id) {
@@ -52,6 +63,23 @@ class Appointment {
       ORDER BY a.appointment_date DESC");
     $this->db->bind(':consultant_id', $consultant_id);
     return $this->db->resultSet();
+  }
+
+  /**
+   * Fetch a single appointment by its ID.
+   */
+  public function getAppointmentById($appointment_id) {
+    $this->db->query("
+      SELECT *
+        FROM appointments
+       WHERE appointment_id = :id
+    ");
+    $this->db->bind(':id', $appointment_id);
+    return $this->db->single();
+  }
+
+  public function getLastInsertId() {
+    return $this->db->lastInsertId();
   }
   
   // Cancel an appointment. (You may wish to update the status rather than deleting.)

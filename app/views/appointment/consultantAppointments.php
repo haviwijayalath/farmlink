@@ -34,7 +34,9 @@
                 <a href="<?= URLROOT ?>/appointments/decline/<?= $appointment->id ?>" class="btn btn-danger">Decline</a>
               <?php elseif ($appointment->status == 'Accepted'): ?>
                 <a href="<?= URLROOT ?>/appointments/cancel/<?= $appointment->id ?>" class="btn btn-warning" onclick="return confirm('Are you sure you want to cancel this appointment?');">Cancel</a>
-              <?php else: ?>
+                <?php elseif ($appointment->status === 'Cancelled'): ?>
+                  <span class="text-muted">Cancelled</span>
+                <?php else: ?>
                 <span><?= htmlspecialchars($appointment->status) ?></span>
               <?php endif; ?>
             </td>
