@@ -1,153 +1,220 @@
 <?php
 class Appointments extends Controller {
-
   private $appointmentModel;
   private $consultantModel;
   private $farmerModel;
+  private $notificationHelper;
 
   public function __construct() {
-    $this->appointmentModel = $this->model('Appointment');
-    $this->consultantModel = $this->model('Consultant');
-    $this->farmerModel = $this->model('Farmer');
+    $this->appointmentModel  = $this->model('Appointment');
+    $this->consultantModel   = $this->model('Consultant');
+    $this->farmerModel       = $this->model('Farmer');
+    $this->notificationHelper= new NotificationHelper();
   }
 
   public function book($consultant_id) {
-    if (!isLoggedIn()) {
-      redirect('users/login');
-    }
-    
-    // Retrieve consultant details
+    if (!isLoggedIn()) redirect('users/login');
     $consultant = $this->consultantModel->getConsultantById($consultant_id);
-    if (!$consultant) {
-      flash('appointment_error', 'Consultant not found', 'alert alert-danger');
-      redirect('farmers/bookconsultant');
-    }
-    
-    // Prepare data for the booking form.
+    if (!$consultant) redirect('pages/notfound');
+
+    // Pull available dates from Appointment model:
+    $slots = $this->appointmentModel->getAvailability($consultant_id);
+    $dates = array_map(fn($s) => $s->available_date, $slots);
+
     $data = [
-      'consultant'      => $consultant,
+      'consultant'     => $consultant,
+      'availableDates' => $dates,
       'appointment_date'=> '',
       'appointment_time'=> '',
-      'notes'           => '',
-      'date_err'      => '',
-      'time_err'      => '',
-      'notes_err'     => ''
+      'notes'          => '',
+      'date_err'       => '',
+      'time_err'       => '',
+      'notes_err'      => ''
     ];
-    
     $this->view('appointment/book', $data);
   }
 
-
+  /**
+   * Handle the form POST.  Only allow dates in $availableDates.
+   */
   public function create($consultant_id) {
-    if (!isLoggedIn()) {
-      redirect('users/login');
+    if (!isLoggedIn()) redirect('users/login');
+    if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+      return redirect("appointments/book/$consultant_id");
     }
-    
-    // Process only POST requests
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST data (dates, times, notes)
-      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-      
-      $data = [
-        'consultant_id'    => $consultant_id,
-        'farmer_id'        => $_SESSION['user_id'], // assuming the farmer is logged in
-        'appointment_date' => trim($_POST['appointment_date']),
-        'appointment_time' => trim($_POST['appointment_time']),
-        'notes'            => trim($_POST['notes']),
-        'date_err'         => '',
-        'time_err'         => '',
-        'notes_err'        => ''
-      ];
-      
-      // Validate data
-      if (empty($data['appointment_date'])) {
-        $data['date_err'] = 'Please select an appointment date.';
-      }
-      if (empty($data['appointment_time'])) {
-        $data['time_err'] = 'Please select an appointment time.';
-      }
-      
-      // You can add other validation, e.g., check that the date is in an available slot.
-      
-      if (empty($data['date_err']) && empty($data['time_err'])) {
-        if ($this->appointmentModel->bookAppointment($data)) {
-          flash('appointment_success', 'Appointment booked successfully!');
-          redirect('appointments/index'); // or to a confirmation page
-        } else {
-          die('Something went wrong. Please try again.');
-        }
-      } else {
-        // Reload the booking form with errors and previously entered data
-        $consultant = $this->consultantModel->getConsultantById($consultant_id);
-        $data['consultant'] = $consultant;
-        $this->view('appointment/book', $data);
-      }
-    } else {
-      redirect('appointments/book/' . $consultant_id);
-    }
-  }
 
-  public function index() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
-    }
-    
-    // Retrieve appointments for the current farmer.
-    $appointments = $this->appointmentModel->getAppointmentsByFarmer($_SESSION['user_id']);
+    $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+    $date = trim($_POST['appointment_date']);
+    $time = trim($_POST['appointment_time']);
+    $notes = trim($_POST['notes']);
+
+    // re-fetch availability
+    $slots = $this->appointmentModel->getAvailability($consultant_id);
+    $dates = array_map(fn($s) => $s->available_date, $slots);
+
     $data = [
-      'appointments' => $appointments
+      'consultant_id'    => $consultant_id,
+      'farmer_id'        => $_SESSION['user_id'],
+      'appointment_date' => $date,
+      'appointment_time' => $time,
+      'notes'            => $notes,
+      'availableDates'   => $dates,
+      'date_err'         => '',
+      'time_err'         => ''
     ];
-    $this->view('appointment/index', $data);
-  }
-  
-  public function consultantAppointments() {
-    if (!isLoggedIn()) {
-      redirect('users/login');
+
+    // Validate presence
+    if (empty($date)) {
+      $data['date_err'] = 'Please select a date.';
     }
-    
-    $appointments = $this->appointmentModel->getAppointmentsByConsultant($_SESSION['user_id']);
-    $data = ['appointments' => $appointments];
-    $this->view('appointment/consultantAppointments', $data);
+    // Validate that the chosen date is actually in the consultant’s availability
+    elseif (!in_array($date, $dates)) {
+      $data['date_err'] = 'That date is not available. Please choose one from the list.';
+    }
+
+    if (empty($time)) {
+      $data['time_err'] = 'Please select a time.';
+    }
+
+    if (empty($data['date_err']) && empty($data['time_err'])) {
+      if ($this->appointmentModel->bookAppointment($data)) {
+        $lastId = $this->appointmentModel->getLastInsertId();
+        $appt   = $this->appointmentModel->getAppointmentById($lastId);
+
+        // 2) fetch farmer name (so we can personalize the notification)
+        $farmer = $this->farmerModel->getFarmerById($_SESSION['user_id']);
+        $farmerName = $farmer->name ?? 'Farmer';
+
+        // 3) build & send notification to the consultant
+        $subject = "New appointment request";
+        $content = "{$farmerName} requested ";
+        $content .= "a slot on " . date('M d, Y', strtotime($appt->appointment_date))
+                  . " at {$appt->appointment_time}.";
+        $url     = URLROOT . "/appointments/consultantAppointments";
+
+        $this->notificationHelper->send_notification(
+          'f', $appt->farmer_id,
+          'c', $appt->consultant_id,
+          $subject, $content, $url, 'info'
+        );
+        flash('appointment_success','Appointment booked!');
+        return redirect('appointments/index');
+      }
+      die('Something went wrong.');
+    }
+
+    // on error, re-load the form
+    $data['consultant'] = $this->consultantModel->getConsultantById($consultant_id);
+    $this->view('appointment/book', $data);
   }
-  
+
+  // Consultant approves
   public function accept($appointment_id) {
-    if (!isLoggedIn()) {
-        redirect('users/login');
-    }
-    
+    if (!isLoggedIn()) redirect('users/login');
     if ($this->appointmentModel->updateStatus($appointment_id, 'Accepted')) {
-        flash('appointment_success', 'Appointment accepted successfully.');
+      $appt = $this->appointmentModel->getAppointmentById($appointment_id);
+
+      // notify farmer
+      $consultantName = $_SESSION['user_name'] ?? 'Consultant';
+      $subject        = "Appointment accepted";
+      $content        = "{$consultantName} accepted your appointment on "
+                      . date('M d, Y', strtotime($appt->appointment_date))
+                      . " at {$appt->appointment_time}.";
+      $url            = URLROOT . "/appointments/index";
+
+      $this->notificationHelper->send_notification(
+        'c', $appt->consultant_id,
+        'f', $appt->farmer_id,
+        $subject, $content, $url, 'success'
+      );
+
+      flash('appointment_success','Appointment accepted.');
     } else {
-        flash('appointment_error', 'Failed to update appointment status.', 'alert alert-danger');
+      flash('appointment_error','Could not update.', 'alert alert-danger');
     }
     redirect('appointments/consultantAppointments');
-}
+  }
 
-public function decline($appointment_id) {
-    if (!isLoggedIn()) {
-        redirect('users/login');
-    }
-    
+  // Consultant declines
+  public function decline($appointment_id) {
+    if (!isLoggedIn()) redirect('users/login');
     if ($this->appointmentModel->updateStatus($appointment_id, 'Declined')) {
-        flash('appointment_success', 'Appointment declined successfully.');
+      $appt = $this->appointmentModel->getAppointmentById($appointment_id);
+
+      // notify farmer
+      $consultantName = $_SESSION['user_name'] ?? 'Consultant';
+      $subject        = "Appointment declined";
+      $content        = "{$consultantName} declined your appointment on "
+                      . date('M d, Y', strtotime($appt->appointment_date))
+                      . " at {$appt->appointment_time}.";
+      $url            = URLROOT . "/appointments/index";
+
+      $this->notificationHelper->send_notification(
+        'c', $appt->consultant_id,
+        'f', $appt->farmer_id,
+        $subject, $content, $url, 'warning'
+      );
+
+      flash('appointment_success','Appointment declined.');
     } else {
-        flash('appointment_error', 'Failed to update appointment status.', 'alert alert-danger');
+      flash('appointment_error','Could not update.', 'alert alert-danger');
     }
     redirect('appointments/consultantAppointments');
-}
+  }
 
-public function cancel($appointment_id) {
-    if (!isLoggedIn()) {
-        redirect('users/login');
-    }
-    
-    // You can either update the status or cancel the appointment
+  // Either party cancels
+  public function cancel($appointment_id) {
+    if (!isLoggedIn()) redirect('users/login');
     if ($this->appointmentModel->updateStatus($appointment_id, 'Cancelled')) {
-        flash('appointment_success', 'Appointment cancelled successfully.');
+      $appt = $this->appointmentModel->getAppointmentById($appointment_id);
+
+      // decide direction
+      if ($_SESSION['user_type'] === 'consultant') {
+        // consultant → farmer
+        $fromType  = 'c';  $toType = 'f';
+        $fromId    = $appt->consultant_id;
+        $toId      = $appt->farmer_id;
+        $who       = 'Consultant';
+      } else {
+        // farmer → consultant
+        $fromType  = 'f';  $toType = 'c';
+        $fromId    = $appt->farmer_id;
+        $toId      = $appt->consultant_id;
+        $who       = 'Farmer';
+      }
+
+      $subject = "Appointment cancelled";
+      $content = "{$who} cancelled the appointment on "
+               . date('M d, Y', strtotime($appt->appointment_date))
+               . " at {$appt->appointment_time}.";
+      $url     = ($_SESSION['user_type']==='consultant')
+               ? URLROOT . "/appointments/consultantAppointments"
+               : URLROOT . "/appointments/index";
+
+      $this->notificationHelper->send_notification(
+        $fromType, $fromId,
+        $toType,   $toId,
+        $subject,  $content, $url, 'info'
+      );
+
+      flash('appointment_success','Appointment cancelled.');
     } else {
-        flash('appointment_error', 'Failed to cancel appointment.', 'alert alert-danger');
+      flash('appointment_error','Could not cancel.', 'alert alert-danger');
     }
     redirect('appointments/consultantAppointments');
-}
+  }
 
+  // farmer’s list
+  public function index() {
+    if (!isLoggedIn()) redirect('users/login');
+    $appts = $this->appointmentModel->getAppointmentsByFarmer($_SESSION['user_id']);
+    $this->view('appointment/index', ['appointments'=>$appts]);
+  }
+
+  // consultant’s list
+  public function consultantAppointments() {
+    if (!isLoggedIn()) redirect('users/login');
+    $appts = $this->appointmentModel->getAppointmentsByConsultant($_SESSION['user_id']);
+    $this->view('appointment/consultantAppointments', ['appointments'=>$appts]);
+  }
 }
