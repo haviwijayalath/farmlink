@@ -653,7 +653,7 @@ class Farmers extends Controller
           // Notify buyers who wish to buy this product
           $buyers = $this->farmerModel->wishToBuyBuyers($data['name']);
           foreach ($buyers as $buyer) {
-            $this->notificationHelper->send_notification('b', $buyer->buyer_id, 'f', $_SESSION['user_id'], 'Product Available', 'The product ' . $data['name'] . ' is now available in stock', '/farmlink/buyers/viewproduct/' . $data['name'], 'product');
+            $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'b', $buyer->buyer_id, 'Product Available', 'The product ' . $data['name'] . ' is now available in stock', '/farmlink/buyers/viewproduct/' . $data['name'], 'product');
           }
 
           redirect('farmers/managestocks');
