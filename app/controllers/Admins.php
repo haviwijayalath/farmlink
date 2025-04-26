@@ -60,10 +60,41 @@ class Admins extends Controller
     $data = [
       'complaint' => $complaint
     ];
+  }
+
+  public function manageComplaint($complaint_id)
+  {
+    $complaint = $this->complaintModel->getComplaintById($complaint_id);
+    $data = [
+      'complaint' => $complaint
+    ];
 
     $this->view('admin/complaints/manage', $data);
   }
 
+  public function show($id)
+  {
+    // Fetch all complaints using the existing model function
+    $complaints = $this->complaintModel->getComplaints();
+
+    // Filter the complaint matching the ID
+    $selectedComplaint = null;
+    foreach ($complaints as $complaint) {
+      if ($complaint->complaint_id == $id) {
+        $selectedComplaint = $complaint;
+        break;
+      }
+    }
+
+    if (!$selectedComplaint) {
+      // Optional: flash message or redirect
+      flash('complaint_msg', 'Complaint not found');
+      redirect('admin/complaints');
+    }
+
+    // Send data to the view
+    $this->view('admin/complaints/show', ['complaint' => $selectedComplaint]);
+  }
   public function show($id)
   {
     // Fetch all complaints using the existing model function
@@ -124,6 +155,57 @@ class Admins extends Controller
       redirect('admins/viewComplaints');
     }
   }
+  public function resolve($complaint_id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $faultBy = $_POST['fault_by'];
+      $adminNotes = trim($_POST['admin_notes']);
+
+      // Sanitize inputs (basic level, can enhance as needed)
+      $faultBy = htmlspecialchars($faultBy);
+      $adminNotes = htmlspecialchars($adminNotes);
+
+      // Load the complaint
+      $complaint = $this->complaintModel->getComplaintById($complaint_id);
+
+      if (!$complaint) {
+        die("Complaint not found");
+      }
+
+      $order_id = $complaint->order_id;
+
+      // Fetch involved users based on order ID
+      $farmer_id = $complaint->farmer_id;
+      $delivery_id = $complaint->delivery_person_id;
+
+      // Update complaint record with decision and notes
+      $this->complaintModel->resolveComplaint($complaint_id, $faultBy, $adminNotes);
+
+      // Take action based on decision
+      if ($faultBy === 'farmer') {
+        $this->complaintModel->deductFarmerRating($farmer_id);
+      }
+      flash('complaint_msg', 'Complaint resolved and action taken.');
+      redirect('admins/viewComplaints');
+    } else {
+      redirect('admins/viewComplaints');
+    }
+  }
+
+  public function filterComplaints()
+  {
+    $role = $_GET['role'] ?? '';
+    $status = $_GET['status'] ?? '';
+
+    $complaints = $this->complaintModel->getFilteredComplaints($role, $status);
+
+    $data = [
+      'complaints' => $complaints
+    ];
+
+    $this->view('admin/complaints/complaints', $data);
+
+  }
 
   public function filterComplaints()
   {
@@ -144,12 +226,55 @@ class Admins extends Controller
     $role = $_GET['role'] ?? '';
 
     $reports = $this->complaintModel->getFilteredReports($role);
+    $reports = $this->complaintModel->getFilteredReports($role);
 
     $data = [
       'users' => $reports,
       'selected_role' => $role
     ];
+    $data = [
+      'users' => $reports,
+      'selected_role' => $role
+    ];
 
+    $this->view('admin/reports', $data);
+  }
+
+
+  public function viewReports()
+{
+    $users = $this->adminModel->getUsers();
+
+    $farmers = [];
+    $deliveryPersons = [];
+    $totalFarmerRevenue = 0;
+    $totalDeliveryRevenue = 0;
+
+    foreach ($users as $user) {
+        if ($user->role === 'Farmer') {
+            $user->revenues = $this->adminModel->getTotalRevenue($user->id, null);
+            $farmers[] = $user;
+            $totalFarmerRevenue += $user->revenues->total_farmer_fee ?? 0;
+        } elseif ($user->role === 'Delivery_Person') {
+            $user->revenues = $this->adminModel->getTotalRevenue(null, $user->id);
+            $deliveryPersons[] = $user;
+            $totalDeliveryRevenue += $user->revenues->total_delivery_fee ?? 0;
+        }
+    }
+
+    $data = [
+        'farmers' => $farmers,
+        'deliveryPersons' => $deliveryPersons,
+        'totalFarmerRevenue' => $totalFarmerRevenue,
+        'totalDeliveryRevenue' => $totalDeliveryRevenue
+    ];
+
+    $this->view('admin/reports', $data);
+}
+
+public function viewMonthlyRevenue($userId, $role)
+{
+    $monthlyRevenue = $this->adminModel->getMonthlyRevenue($userId, $role);
     $this->view('admin/reports', $data);
   }
 
@@ -195,6 +320,7 @@ public function viewMonthlyRevenue($userId, $role)
     ]);
 }
 
+
   public function viewProducts()
   {
 
@@ -203,9 +329,13 @@ public function viewMonthlyRevenue($userId, $role)
     $data = [
       'products' => $products
     ];
+    $data = [
+      'products' => $products
+    ];
 
     $this->view('admin/products', $data);
   }
+
 
   // Single product
   public function productDetails($id) {
