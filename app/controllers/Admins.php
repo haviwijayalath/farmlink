@@ -1,17 +1,18 @@
 <?php
-  class Admins extends Controller {
-    private $adminModel;
-    private $complaintModel;
-    
-    public function __construct() {
-      if (!isAdmin()) {
-        redirect('users/login');
+class Admins extends Controller
+{
+  private $adminModel;
+  private $complaintModel;
+
+  public function __construct()
+  {
+    if (!isAdmin()) {
+      redirect('users/login');
     }
 
-    $this->adminModel = $this->model('Admin'); 
+    $this->adminModel = $this->model('Admin');
     $this->complaintModel = $this->model('Complaint');
-    
-    }
+  }
 
   // Dashboard
   public function index() {
@@ -36,132 +37,175 @@
     $this->view('admin/orders', ['orders' => $orders]);
   }
 
-    public function order_details() { 
-      
-      $this->view('admin/order_detail');
+  public function order_details()
+  {
 
+    $this->view('admin/order_detail');
+  }
+
+  public function viewComplaints()
+  {
+    $complaints = $this->complaintModel->getComplaints();
+
+    $data = [
+      'complaints' => $complaints
+    ];
+
+    $this->view('admin/complaints/complaints', $data);
+  }
+
+  public function manageComplaint($complaint_id)
+  {
+    $complaint = $this->complaintModel->getComplaintById($complaint_id);
+    $data = [
+      'complaint' => $complaint
+    ];
+
+    $this->view('admin/complaints/manage', $data);
+  }
+
+  public function show($id)
+  {
+    // Fetch all complaints using the existing model function
+    $complaints = $this->complaintModel->getComplaints();
+
+    // Filter the complaint matching the ID
+    $selectedComplaint = null;
+    foreach ($complaints as $complaint) {
+      if ($complaint->complaint_id == $id) {
+        $selectedComplaint = $complaint;
+        break;
+      }
     }
 
-    public function viewComplaints() {
-      $complaints = $this->complaintModel->getComplaints();
-
-      $data = [
-          'complaints' => $complaints
-      ];
-
-      $this->view('admin/complaints/complaints', $data);
+    if (!$selectedComplaint) {
+      // Optional: flash message or redirect
+      flash('complaint_msg', 'Complaint not found');
+      redirect('admin/complaints');
     }
 
-    public function manageComplaint($complaint_id) {
+    // Send data to the view
+    $this->view('admin/complaints/show', ['complaint' => $selectedComplaint]);
+  }
+
+  public function resolve($complaint_id)
+  {
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+      $faultBy = $_POST['fault_by'];
+      $adminNotes = trim($_POST['admin_notes']);
+
+      // Sanitize inputs (basic level, can enhance as needed)
+      $faultBy = htmlspecialchars($faultBy);
+      $adminNotes = htmlspecialchars($adminNotes);
+
+      // Load the complaint
       $complaint = $this->complaintModel->getComplaintById($complaint_id);
-      $data = [
-          'complaint' => $complaint
-      ];
 
-      $this->view('admin/complaints/manage', $data);
-    }
-
-    public function show($id) {
-      // Fetch all complaints using the existing model function
-      $complaints = $this->complaintModel->getComplaints();
-  
-      // Filter the complaint matching the ID
-      $selectedComplaint = null;
-      foreach ($complaints as $complaint) {
-          if ($complaint->complaint_id == $id) {
-              $selectedComplaint = $complaint;
-              break;
-          }
+      if (!$complaint) {
+        die("Complaint not found");
       }
-  
-      if (!$selectedComplaint) {
-          // Optional: flash message or redirect
-          flash('complaint_msg', 'Complaint not found');
-          redirect('admin/complaints');
-      }
-  
-      // Send data to the view
-      $this->view('admin/complaints/show', ['complaint' => $selectedComplaint]);
-    }
 
-    public function resolve($complaint_id) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $faultBy = $_POST['fault_by'];
-            $adminNotes = trim($_POST['admin_notes']);
-    
-            // Sanitize inputs (basic level, can enhance as needed)
-            $faultBy = htmlspecialchars($faultBy);
-            $adminNotes = htmlspecialchars($adminNotes);
-    
-            // Load the complaint
-            $complaint = $this->complaintModel->getComplaintById($complaint_id);
-    
-            if (!$complaint) {
-                die("Complaint not found");
-            }
-    
-            $order_id = $complaint->order_id;
-    
-            // Fetch involved users based on order ID
-            $farmer_id = $complaint->farmer_id;
-            $delivery_id = $complaint->delivery_person_id;
-    
-            // Update complaint record with decision and notes
-            $this->complaintModel->resolveComplaint($complaint_id, $faultBy, $adminNotes);
-    
-            // Take action based on decision
-            if ($faultBy === 'farmer') {
-                $this->complaintModel->deductFarmerRating($farmer_id);
-            }
-            flash('complaint_msg', 'Complaint resolved and action taken.');
-            redirect('admins/viewComplaints');
-        } else {
-            redirect('admins/viewComplaints');
+      $order_id = $complaint->order_id;
+
+      // Fetch involved users based on order ID
+      $farmer_id = $complaint->farmer_id;
+      $delivery_id = $complaint->delivery_person_id;
+
+      // Update complaint record with decision and notes
+      $this->complaintModel->resolveComplaint($complaint_id, $faultBy, $adminNotes);
+
+      // Take action based on decision
+      if ($faultBy === 'farmer') {
+        $this->complaintModel->deductFarmerRating($farmer_id);
+      }
+      flash('complaint_msg', 'Complaint resolved and action taken.');
+      redirect('admins/viewComplaints');
+    } else {
+      redirect('admins/viewComplaints');
+    }
+  }
+
+  public function filterComplaints()
+  {
+    $role = $_GET['role'] ?? '';
+    $status = $_GET['status'] ?? '';
+
+    $complaints = $this->complaintModel->getFilteredComplaints($role, $status);
+
+    $data = [
+      'complaints' => $complaints
+    ];
+
+    $this->view('admin/complaints/complaints', $data);
+  }
+
+  public function filterReports()
+  {
+    $role = $_GET['role'] ?? '';
+
+    $reports = $this->complaintModel->getFilteredReports($role);
+
+    $data = [
+      'users' => $reports,
+      'selected_role' => $role
+    ];
+
+    $this->view('admin/reports', $data);
+  }
+
+
+  public function viewReports()
+{
+    $users = $this->adminModel->getUsers();
+
+    $farmers = [];
+    $deliveryPersons = [];
+    $totalFarmerRevenue = 0;
+    $totalDeliveryRevenue = 0;
+
+    foreach ($users as $user) {
+        if ($user->role === 'Farmer') {
+            $user->revenues = $this->adminModel->getTotalRevenue($user->id, null);
+            $farmers[] = $user;
+            $totalFarmerRevenue += $user->revenues->total_farmer_fee ?? 0;
+        } elseif ($user->role === 'Delivery_Person') {
+            $user->revenues = $this->adminModel->getTotalRevenue(null, $user->id);
+            $deliveryPersons[] = $user;
+            $totalDeliveryRevenue += $user->revenues->total_delivery_fee ?? 0;
         }
     }
 
-    public function filterComplaints() {
-      $role = $_GET['role'] ?? '';
-      $status = $_GET['status'] ?? '';
-  
-      $complaints = $this->complaintModel->getFilteredComplaints($role, $status);
-  
-      $data = [
-          'complaints' => $complaints
-      ];
-  
-      $this->view('admin/complaints/complaints', $data);
-  }
+    $data = [
+        'farmers' => $farmers,
+        'deliveryPersons' => $deliveryPersons,
+        'totalFarmerRevenue' => $totalFarmerRevenue,
+        'totalDeliveryRevenue' => $totalDeliveryRevenue
+    ];
 
-    public function filterReports() {
-      $role = $_GET['role'] ?? '';
+    $this->view('admin/reports', $data);
+}
 
-      $reports = $this->complaintModel->getFilteredReports($role);
+public function viewMonthlyRevenue($userId, $role)
+{
+    $monthlyRevenue = $this->adminModel->getMonthlyRevenue($userId, $role);
 
-      $data = [
-          'users' => $reports,
-          'selected_role' => $role
-      ];
+    $this->view('admin/monthly_revenue', [
+        'monthlyRevenue' => $monthlyRevenue,
+        'role' => $role
+    ]);
+}
 
-      $this->view('admin/reports', $data);
-    }
-  
-    
-    public function viewReports() { 
+  public function viewProducts()
+  {
 
-      $users = $this->adminModel->getUsers();
-      $data = ['users' => $users];
-      
-      $this->view('admin/reports', $data);
-
-    }
-
-  // Products list
-  public function products() {
     $products = $this->adminModel->getProducts();
-    $this->view('admin/products', ['products' => $products]);
+
+    $data = [
+      'products' => $products
+    ];
+
+    $this->view('admin/products', $data);
   }
-  public function viewProducts() { $this->products(); }
 
   // Single product
   public function productDetails($id) {

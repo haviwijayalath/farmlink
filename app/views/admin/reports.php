@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/complaints.css">
+<link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/reports1.css">
 <?php require APPROOT . '/views/inc/sidebars/admin.php'; ?>
 
 <div class="container">
@@ -7,42 +7,47 @@
         <h1>Reports</h1>
     </header>
 
-    <?php require APPROOT . '/views/admin/filter_repots.php'; ?>
-
     <section class="complaint-table">
-        <table id="complaintsTable">
+        <h2>Farmers (Total Revenue: <?= number_format($data['totalFarmerRevenue'], 2) ?> Rs)</h2>
+        <table id="farmersTable">
             <thead>
                 <tr>
                     <th>Name</th>
-                    <th>Role</th>
                     <th>Revenue</th>
+                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
-            <?php if (!empty($data['users'])): ?>
-                    <?php foreach ($data['users'] as $user): ?>
-                        <tr>
-                            <td><?= $user->name ?></td>
-                            <td><?= $user->role ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <tr><td colspan="6">No users found.</td></tr>
-                <?php endif; ?>
+                <?php foreach ($data['farmers'] as $farmer): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($farmer->name) ?></td>
+                        <td><?= number_format($farmer->revenues->total_farmer_fee, 2) ?> Rs</td>
+                        <td><a href="<?= URLROOT ?>/admin/viewMonthlyRevenue/<?= $farmer->id ?>/Farmer" class="btn btn-primary">View Monthly Revenue</a></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
 
+        <h2>Delivery Persons (Total Revenue: <?= number_format($data['totalDeliveryRevenue'], 2) ?> Rs)</h2>
+        <table id="deliveryTable">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Revenue</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($data['deliveryPersons'] as $dp): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($dp->name) ?></td>
+                        <td><?= number_format($dp->revenues->total_delivery_fee, 2) ?> Rs</td>
+                        <td><a href="<?= URLROOT ?>/admins/viewMonthlyRevenue/<?= htmlspecialchars($dp->id)?>/<?= urlencode('Delivery_Person') ?>" class="btn btn-primary">View Monthly Revenue</a></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
     </section>
 </div>
-
-<script>
-    function filterComplaints() {
-        let input = document.getElementById('complaintSearch').value.toLowerCase();
-        let rows = document.querySelectorAll('#complaintsTable tbody tr');
-        rows.forEach(row => {
-            row.style.display = row.innerText.toLowerCase().includes(input) ? '' : 'none';
-        });
-    }
-</script>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>
