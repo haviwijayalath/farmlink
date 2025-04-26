@@ -8,7 +8,7 @@
         <li><a href="<?php echo URLROOT ?>/AdminControllers/index">
             <i class="fas fa-users"></i> Users
         </a></li>
-        <li><a href="<?php echo URLROOT ?>/Admins/viewProducts">
+        <li><a href="<?php echo URLROOT ?>/Admins/products">
             <i class="fas fa-shopping-basket"></i> Products
         </a></li>
         <li><a href="<?php echo URLROOT ?>/Admins/viewComplaints">

@@ -56,11 +56,16 @@
     margin-bottom: 10px;
   }
   
-  .card h3 {
-    font-size: 20px;
-    margin-bottom: 10px;
+  .cards-container .card h3 a {
+    color: rgb(2, 179, 40);;             /* dark grey for visibility on white */
+    text-decoration: none;   /* remove the underline (optional) */
+    font-weight: bold;       /* emphasize the name */
   }
-  
+
+  .cards-container .card h3 a:hover {
+    color:rgb(4, 253, 58);          /* a little hover effect */
+  }
+
   .card p {
     font-size: 14px;
     color: #666;

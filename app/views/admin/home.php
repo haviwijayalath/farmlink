@@ -1,54 +1,48 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/home.css">
-
 <?php require APPROOT . '/views/inc/sidebars/admin.php'; ?>
 
-<!-- Main Content -->
 <main class="main-content">
-
+  
   <!-- Dashboard Overview -->
   <section class="dashboard-overview">
-    <div class="card">
-      <h3>Total Sales</h3>
-      <p>RS 34,456.00</p>
-    </div>
-    <div class="card">
-      <h3>Total Orders</h3>
-      <p>3456</p>
-    </div>
-    <div class="card">
-      <h3>Top Selling Products</h3>
-      <p>Organic Tomatoes</p>
-    </div>
-    <div class="card">
-      <h3>Total Customers</h3>
-      <p>42,456</p>
-    </div>
+    <?php foreach ([
+      'Total Customers'  => $data['stats']['totalUsers']      ?? 0,
+      'Total Orders'     => $data['stats']['totalOrders']     ?? 0,
+      'Total Complaints' => $data['stats']['totalComplaints'] ?? 0,
+      'Total Reports'    => $data['stats']['totalReports']    ?? 0,
+    ] as $title => $val): ?>
+      <div class="card">
+        <h3><?= $title ?></h3>
+        <p><?= number_format($val) ?></p>
+      </div>
+    <?php endforeach; ?>
   </section>
 
   <!-- Reports Section -->
   <section class="reports">
+    <!-- 1) Monthly revenue (static/demo dataset) -->
     <div class="report-chart">
-      <h3>Revenue</h3>
+      <h3>Monthly Revenue</h3>
       <canvas id="revenueChart"></canvas>
     </div>
+    <!-- 2) Sales by location -->
     <div class="sales-location">
       <h3>Sales By Location</h3>
       <ul>
-        <li>Colombo: 72K</li>
-        <li>Jaffna: 39K</li>
-        <li>Galle: 25K</li>
-        <li>N.Eliya: 61K</li>
+        <?php foreach ($data['salesByLocation'] as $city => $amt): ?>
+          <li><?= htmlspecialchars($city) ?>: Rs <?= number_format($amt,2) ?></li>
+        <?php endforeach; ?>
       </ul>
     </div>
+    <!-- 3) Sales by category -->
     <div class="total-sales">
-      <h3>Total Sales</h3>
+      <h3>Sales by Category</h3>
       <canvas id="salesPieChart"></canvas>
     </div>
   </section>
 
-  <!-- Table Section -->
+  <!-- Top Products Table -->
   <section class="top-products">
     <h3>Top Selling Products</h3>
     <table>
@@ -57,21 +51,28 @@
           <th>Product Name</th>
           <th>Price</th>
           <th>Category</th>
-          <th>Quantity</th>
-          <th>Amount</th>
+          <th>Qty Sold</th>
+          <th>Revenue</th>
           <th>Action</th>
         </tr>
       </thead>
       <tbody>
-        <tr>
-          <td>Organic Tomatoes</td>
-          <td>Rs 76.89</td>
-          <td>Vegetables</td>
-          <td>128</td>
-          <td>Rs 6,647.15</td>
-          <td><button>Edit</button></td>
-        </tr>
-        <!-- More rows -->
+        <?php if (!empty($data['topProducts'])): ?>
+          <?php foreach ($data['topProducts'] as $p): ?>
+            <tr>
+              <td><?= htmlspecialchars($p['name']) ?></td>
+              <td>Rs <?= number_format($p['revenue'] / max(1,$p['quantity']),2) ?></td>
+              <td><?= htmlspecialchars($p['category']) ?></td>
+              <td><?= $p['quantity'] ?></td>
+              <td>Rs <?= number_format($p['revenue'],2) ?></td>
+              <td>
+                <a href="<?= URLROOT ?>/admins/productDetails/<?= $p['id'] ?>" class="btn">Edit</a>
+              </td>
+            </tr>
+          <?php endforeach; ?>
+        <?php else: ?>
+          <tr><td colspan="6">No top products data.</td></tr>
+        <?php endif; ?>
       </tbody>
     </table>
   </section>
@@ -79,81 +80,41 @@
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-  // Line Chart for Revenue
-  const ctx = document.getElementById('revenueChart').getContext('2d');
-  const revenueChart = new Chart(ctx, {
+  // REVENUE CHART (demo data)
+  new Chart(document.getElementById('revenueChart'), {
     type: 'line',
     data: {
-      labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
-      datasets: [
-        {
-          label: 'Current Week',
-          data: [58, 60, 63, 65, 70, 75],
-          borderColor: '#4caf50',
-          tension: 0.4,
-          fill: false,
-        },
-        {
-          label: 'Previous Week',
-          data: [50, 52, 54, 58, 60, 64],
-          borderColor: '#f44336',
-          tension: 0.4,
-          fill: false,
-        },
-      ],
+      labels: ['Jan','Feb','Mar','Apr','May','Jun'],
+      datasets: [{
+        label: 'This Month',
+        data: [58,60,63,65,70,75],
+        tension: 0.3,
+        fill: false,
+        borderColor: '#4caf50'
+      },{
+        label: 'Last Month',
+        data: [50,52,54,58,60,64],
+        tension: 0.3,
+        fill: false,
+        borderColor: '#f44336'
+      }]
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'top',
-        },
-      },
-    },
+    options: { responsive: true, plugins: { legend: { position: 'top' } } }
   });
 
-  // Doughnut Chart for Total Sales
-  const pieCtx = document.getElementById('salesPieChart').getContext('2d');
-  const salesPieChart = new Chart(pieCtx, {
+  // CATEGORY DOUGHNUT
+  const catLabels = <?= json_encode(array_keys($data['salesByCategory'])) ?>;
+  const catData   = <?= json_encode(array_values($data['salesByCategory'])) ?>;
+  new Chart(document.getElementById('salesPieChart'), {
     type: 'doughnut',
     data: {
-      labels: ['Vegetable', 'Fruits', 'Grains'],
-      datasets: [
-        {
-          data: [38.6, 15.5, 22.1],
-          backgroundColor: ['#4caf50', '#2196f3', '#ffc107'],
-        },
-      ],
+      labels: catLabels,
+      datasets: [{
+        data: catData,
+        backgroundColor: ['#4caf50','#2196f3','#ffc107','#ff6384','#36a2eb']
+      }]
     },
-    options: {
-      responsive: true,
-      plugins: {
-        legend: {
-          position: 'right',
-        },
-      },
-    },
-  });
-
-  // Sorting Table Rows
-  const table = document.querySelector("table tbody");
-  const rows = Array.from(table.rows);
-
-  function sortTable(columnIndex) {
-    const sortedRows = rows.sort((a, b) => {
-      const aText = a.cells[columnIndex].textContent.trim();
-      const bText = b.cells[columnIndex].textContent.trim();
-      return aText.localeCompare(bText, undefined, { numeric: true });
-    });
-
-    // Rebuild the table
-    table.innerHTML = "";
-    sortedRows.forEach((row) => table.appendChild(row));
-  }
-
-  // Attach sorting to column headers
-  document.querySelectorAll("table thead th").forEach((th, index) => {
-    th.addEventListener("click", () => sortTable(index));
+    options: { responsive:true, plugins:{ legend:{ position:'right' } } }
   });
 </script>
 
