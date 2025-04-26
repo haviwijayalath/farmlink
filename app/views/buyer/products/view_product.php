@@ -12,20 +12,30 @@
         <?php if (!empty($data['reviews'])): ?>
           <?php foreach ($data['reviews'] as $review): ?>
             <div class="review">
-              <strong><?= htmlspecialchars($review->buyerName) ?></strong>
-              <p class="review-date"><?= date('F j, Y', strtotime($review->created_at)) ?></p>
+  <div class="review-rating">
+    <?= str_repeat('⭐', htmlspecialchars($review->rating)) ?>
+  </div>
 
-              <?php if (!empty($review->description)): ?>
-                <p class="review-text"><?= htmlspecialchars($review->description) ?></p>
-              <?php endif; ?>
+  <div class="review-date">
+    <?= date('jS M, Y', strtotime($review->created_at)) ?>
+  </div>
 
-              <p class="review-rating">Rating: <?= htmlspecialchars($review->rating) ?> ⭐</p>
+  <?php if (!empty($review->description)): ?>
+    <p class="review-text"><?= htmlspecialchars($review->description) ?></p>
+  <?php endif; ?>
 
-              <?php if (!empty($review->reviewImage)): ?>
-                <img src="<?= URLROOT ?>/public/public/uploads/<?= htmlspecialchars($review->reviewImage) ?>" alt="Review Image" class="review-image">
-              <?php endif; ?>
-              <hr>
-            </div>
+  <?php if (!empty($review->reviewImage)): ?>
+                <img src="<?= URLROOT ?>/public/public/uploads/<?= htmlspecialchars($review->reviewImage) ?>" alt="Review Image" class="product_picture">
+  <?php endif; ?>
+
+  <div class="reviewer-profile">
+      <div class="reviewer-info">
+      <strong><?= htmlspecialchars($review->buyerName) ?></strong>
+      <span>Verified Buyer</span>
+    </div>
+  </div>
+</div>
+
           <?php endforeach; ?>
         <?php else: ?>
           <p class="no-reviews">No reviews yet. Be the first to leave one after ordering!</p>
