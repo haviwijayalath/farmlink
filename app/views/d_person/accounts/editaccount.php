@@ -34,12 +34,29 @@
         </div>
 
         <div class="form-group">
-            <label for="area">Delivery Area</label>
-            <input type="text" name="area" id="area" value="<?= htmlspecialchars($data['area'])?>">
-        </div>
+    <label for="area">Delivery Area</label>
+    <select name="area" id="area" required>
+        <option value="<?= htmlspecialchars($data['area']) ?>"><?= htmlspecialchars($data['area']) ?> (current)</option>
+        <?php 
+            $districts = [
+                'Ampara', 'Anuradhapura', 'Badulla', 'Batticaloa', 'Colombo', 'Galle',
+                'Gampaha', 'Hambantota', 'Jaffna', 'Kalutara', 'Kandy', 'Kegalle',
+                'Kilinochchi', 'Kurunegala', 'Mannar', 'Matale', 'Matara', 'Monaragala',
+                'Mullaitivu', 'Nuwara Eliya', 'Polonnaruwa', 'Puttalam', 'Ratnapura',
+                'Trincomalee', 'Vavuniya'
+            ];
+
+            foreach ($districts as $district) {
+                echo "<option value=\"$district\">$district</option>";
+            }
+        ?>
+    </select>
+</div>
+
+
 
         <div class="form-group">
-    <label for="image">Upload Image</label>
+    <label for="image">Profile Image</label>
     <div class="image-upload-section">
         <!-- Display the existing image -->
         <div class="current-image">
@@ -68,7 +85,7 @@
                 <i class="toggle-password" id="toggleNewPassword">&#128065;</i>
             </div>
             <div class="password-container">
-                <input type="password" name="confirm_password" id="confirm_password" placeholder="confirm new password">
+                <input type="password" name="confirm_password" id="confirm_password" title = "Enter the password to confirm" placeholder="confirm new password" required>
                 <i class="toggle-password" id="toggleConfirmPassword">&#128065;</i>
             </div>
         </div>
