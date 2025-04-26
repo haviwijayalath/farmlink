@@ -4,7 +4,7 @@
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
-<div class="addr-container">
+<div class="addr-container" style="margin-top: 110px; margin-left: 520px;">
     <h2>Billing & Shipping</h2>
     <form action="<?php echo URLROOT; ?>/orderControllers/saveAddress" method="POST" enctype="multipart/form-data">
 
