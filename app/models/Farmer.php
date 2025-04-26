@@ -152,7 +152,8 @@ class Farmer
         fq.questions AS question, 
         fq.createdAt, 
         fq.farmer_id,
-        f.name AS farmer_name
+        f.name AS farmer_name,
+        f.image AS farmer_profile_picture
       FROM forum_questions fq
       LEFT JOIN farmers f ON fq.farmer_id = f.id
       ORDER BY fq.createdAt DESC
@@ -269,13 +270,7 @@ class Farmer
     // Move expired stocks to exp_products table
     $this->db->query('INSERT INTO exp_products (fproduct_id, farmer_id, name, type, price, stock, exp_date) SELECT fproduct_id, farmer_id, name, type, price, stock, exp_date FROM fproducts WHERE exp_date < CURDATE()');
     if ($this->db->execute()) {
-      // Delete expired stocks from fproducts table
-      $this->db->query('DELETE FROM fproducts WHERE exp_date < CURDATE()');
-      if ($this->db->execute()) {
-        return true;
-      } else {
-        return false;
-      }
+      return true;
     } else {
       return false;
     }
@@ -378,6 +373,19 @@ class Farmer
     $this->db->bind(':status', 'ready');
     $this->db->bind(':order_id', $orderID);
     if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public function deliveryRequested($orderID)
+  {
+    $this->db->query('SELECT dropAddress FROM order_success WHERE orderID = :order_id');
+    $this->db->bind(':order_id', $orderID);
+    $row = $this->db->single();
+
+    if ($row) {
       return true;
     } else {
       return false;

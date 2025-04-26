@@ -251,15 +251,6 @@ class Dpaccounts extends Controller {
     }
     }
 
-
-    /*private function setFlash($key, $message)
-    {
-        if (!isset($_SESSION)) {
-            session_start();
-        }
-        $_SESSION['flash'][$key] = $message;
-    }*/
-
     public function confirmdelete($id) {
         $this->view('d_person/accounts/confirmation', $id);
     }

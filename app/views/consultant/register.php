@@ -43,6 +43,10 @@
         
         <span style="color: red;"><?php echo $data['image_err']; ?></span>
       </div>
+
+      <label for="verification_doc">Verification Document <span style="color:red;">*</span></label>
+      <input type="file" id="verification_doc" name="verification_doc" accept=".pdf,image/*" required>
+      <span style="color: red;"><?= $data['verification_doc_err'] ?? ''; ?></span>
       
       <label for="password">Password</label>
             <div class="password-container">

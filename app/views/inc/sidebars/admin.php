@@ -8,7 +8,7 @@
         <li><a href="<?php echo URLROOT ?>/AdminControllers/index">
             <i class="fas fa-users"></i> Users
         </a></li>
-        <li><a href="<?php echo URLROOT ?>/Admins/viewProducts">
+        <li><a href="<?php echo URLROOT ?>/Admins/products">
             <i class="fas fa-shopping-basket"></i> Products
         </a></li>
         <li><a href="<?php echo URLROOT ?>/Admins/viewComplaints">
@@ -20,12 +20,12 @@
         <li><a href="<?php echo URLROOT ?>/Admins/viewReports">
             <i class="fas fa-chart-line"></i> Reports
         </a></li>
-        <!-- <li><a href="<?php echo URLROOT ?>/AdminControllers/viewSupport">
+        <li><a href="<?php echo URLROOT ?>/AdminControllers/viewSupport">
             <i class="fas fa-headset"></i> Support Requests
         </a></li>
         <div class="sidebar-spacer"></div>
         <li><a href="<?php echo URLROOT ?>/Admins/account">
-            <i class="fas fa-cog"></i> Settings -->
+            <i class="fas fa-cog"></i> Settings
         </a></li>
         <!-- Logout -->
         <li><a href="javascript:void(0)" onclick="showPopup()">

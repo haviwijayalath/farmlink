@@ -653,7 +653,7 @@ class Farmers extends Controller
           // Notify buyers who wish to buy this product
           $buyers = $this->farmerModel->wishToBuyBuyers($data['name']);
           foreach ($buyers as $buyer) {
-            $this->notificationHelper->send_notification('b', $buyer->buyer_id, 'f', $_SESSION['user_id'], 'Product Available', 'The product ' . $data['name'] . ' is now available in stock', '/farmlink/buyers/viewproduct/' . $data['name'], 'product');
+            $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'b', $buyer->buyer_id, 'Product Available', 'The product ' . $data['name'] . ' is now available in stock', '/farmlink/buyers/viewproduct/' . $data['name'], 'product');
           }
 
           redirect('farmers/managestocks');
@@ -872,8 +872,17 @@ class Farmers extends Controller
       $orderID = trim($_POST['order_id']);
 
       if ($this->farmerModel->orderReady($orderID)) {
-        // send a notification to the delivery person
-        $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'd', $this->farmerModel->dpersonIdOfOrder($orderID), 'Order ready', 'Order ' . $orderID . ' is ready for delivery', '/farmlink/deliveryperson/manageorders', 'confirmation');
+        if ($this->farmerModel->deliveryRequested($orderID)) {
+          // send a notification to the delivery person
+          $msg = 'Order ' . $orderID . ' is ready for delivery';
+          $url = '/farmlink/deliveryperson/manageorders';
+          $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'd', $this->farmerModel->dpersonIdOfOrder($orderID), 'Order ready', $msg, $url, 'confirmation');
+        } else {
+          // send a notification to the buyer
+          $msg = 'Order ' . $orderID . ' is ready for pickup';
+          $url = '/farmlink/buyers/manageorders';
+          $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'b', $this->farmerModel->buyerIdOfOrder($orderID), 'Order ready', $msg, $url, 'confirmation');
+        }
         flash('order_message', 'Order marked as ready');
         redirect('farmers/manageorders');
       } else {

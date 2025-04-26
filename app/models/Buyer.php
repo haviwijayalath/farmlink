@@ -94,7 +94,7 @@ class Buyer extends Database
             update buyers set status = :status where id = :userID
         ');
         $this->db->bind(':userID', $userID);
-        $this->db->bind(':status', 'deleted');
+        $this->db->bind(':status', 'deactivated');
 
         // Execute the query and return true if successful, false otherwise
         return $this->db->execute();
@@ -208,7 +208,7 @@ class Buyer extends Database
     public function getProducts($filter_vars)
     {
 
-        $query = 'SELECT * FROM fproducts';
+        $query = 'SELECT * FROM fproducts WHERE exp_date > NOW() AND stock > 0';
         $orderBy = [];
         $whereConditions = [];
 
@@ -238,7 +238,7 @@ class Buyer extends Database
 
             // Add WHERE clause if conditions exist
             if (!empty($whereConditions)) {
-                $query .= ' WHERE ' . implode(' AND ', $whereConditions);
+                $query .= implode(' AND ', $whereConditions);
             }
 
             // Add ORDER BY clause if ordering exists
@@ -435,7 +435,7 @@ class Buyer extends Database
     {
         $this->db->query('
             SELECT op.orderProcessID, op.productId, p.name AS productName, op.quantity, 
-                   op.farmerFee, op.deliveryFee, op.dropAddress ,op.cartID
+                   op.farmerFee, op.deliveryFee, op.dropAddress ,op.cartID, p.farmer_id 
             FROM order_process op
             JOIN fproducts p ON op.productId = p.fproduct_id
             WHERE op.orderProcessID = :id

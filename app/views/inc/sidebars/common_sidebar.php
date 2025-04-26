@@ -2,16 +2,12 @@
 
 <div class="sidebar">
   <ul>
-    <!-- Always show Home and Logout -->
-    <li>
-      <a href="<?= URLROOT ?>/dashboard">
-        <i class="fa-solid fa-house"></i>
-        <span>Home</span>
-      </a>
-    </li>
-
     <?php if(isset($_SESSION['user_role'])): ?>
       <?php if($_SESSION['user_role'] === 'farmer'): ?>
+        <li>
+          <a href="<?php echo URLROOT?>/farmers">
+            <i class="fa-solid fa-house"></i>Home</a>
+        </li>
         <li>
           <a href="<?= URLROOT ?>/farmers/managestocks">
             <i class="fa-solid fa-boxes-stacked"></i>
@@ -52,7 +48,7 @@
         <li>
           <a href="<?= URLROOT ?>/consultants/viewprofile">
             <i class="fas fa-user"></i>
-            <span>View Profile</span>
+            <span>My Profile</span>
           </a>
         </li>
         <li>
@@ -71,6 +67,12 @@
           <a href="<?= URLROOT ?>/appointments/consultantAppointments">
             <i class="fa-solid fa-calendar-check"></i>
             <span>Appointments</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= URLROOT ?>/forums/index">
+            <i class="fa-solid fa-comment"></i>
+            <span>Forum</span>
           </a>
         </li>
       <?php endif; ?>

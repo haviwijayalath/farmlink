@@ -30,7 +30,7 @@
                         <td><?= htmlspecialchars($order->quantity) ?></td>
                         <td><?= htmlspecialchars($order->status) ?></td>
                         <td>
-                            <?php if (strtolower($order->status) === 'processing'): ?>
+                            <?php if (strtolower($order->status) === 'pending'): ?>
                                 <button class="newbtn newbtn-confirm" disabled style="opacity: 0.6; cursor: not-allowed;">Confirm</button>
                             <?php else: ?>
                                 <a href="#" 

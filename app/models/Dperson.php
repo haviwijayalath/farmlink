@@ -166,7 +166,8 @@ class Dperson extends Database{
               address ON farmers.address_id = address.address_id
           WHERE 
               address.City = :deliveryArea  
-              AND  (order_success.status = "ready" OR order_success.status = "processing")
+              AND  (order_success.status = "ready" OR order_success.status = "pending")
+              AND order_success.dropAddress IS NOT NULL
       ');
       
       $this->db->bind(':deliveryArea', $deliveryArea);
@@ -322,9 +323,10 @@ class Dperson extends Database{
 
         public function deleteAccount($userId)
         {
-        $sql = "DELETE FROM delivery_persons WHERE id = :userId";
+        $sql = "UPDATE delivery_persons SET status = :status WHERE id = :userId";
         $this->db->query($sql);
         $this->db->bind(':userId', $userId);
+        $this->db->bind(':status', 'deactivated');
 
         // Execute the query and return true if successful, false otherwise
         return $this->db->execute();

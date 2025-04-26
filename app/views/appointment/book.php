@@ -2,41 +2,85 @@
 <?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
 
 <div class="appointment-container">
-  <h1 class="page-title">Make an Appointment with <?= htmlspecialchars($data['consultant']->name); ?></h1>
+  <h1 class="page-title">
+    Make an Appointment with <?= htmlspecialchars($data['consultant']->name); ?>
+  </h1>
   
   <div class="consultant-details">
     <div class="consultant-image">
-      <img src="<?= URLROOT ?>/public/uploads/consultants/<?= !empty($data['consultant']->image) ? $data['consultant']->image : 'placeholder.png' ?>" alt="<?= htmlspecialchars($data['consultant']->name); ?>">
+      <img 
+        src="<?= URLROOT ?>/public/uploads/consultants/<?= 
+          !empty($data['consultant']->image) 
+            ? $data['consultant']->image 
+            : 'placeholder.png' 
+        ?>" 
+        alt="<?= htmlspecialchars($data['consultant']->name); ?>"
+      >
     </div>
     <div class="consultant-info">
       <p><strong>Specialization:</strong> <?= htmlspecialchars($data['consultant']->specialization); ?></p>
       <p><strong>Experience:</strong> <?= htmlspecialchars($data['consultant']->experience); ?> years</p>
-      <!-- You can add more details about the consultant if needed -->
     </div>
   </div>
   
-  <form action="<?= URLROOT; ?>/appointments/create/<?= $data['consultant']->id; ?>" method="POST" class="appointment-form">
+  <form 
+    action="<?= URLROOT; ?>/appointments/create/<?= $data['consultant']->id; ?>" 
+    method="POST" 
+    class="appointment-form"
+  >
+    <!-- DATE DROPDOWN -->
     <div class="form-group">
       <label for="appointment_date">Appointment Date</label>
-      <input type="date" name="appointment_date" id="appointment_date" value="<?= htmlspecialchars($data['appointment_date'] ?? '') ?>" required>
+      <select 
+        name="appointment_date" 
+        id="appointment_date"
+        required
+        class="<?= !empty($data['date_err']) ? 'is-invalid' : '' ?>"
+      >
+        <option value="">-- Select a Date --</option>
+        <?php foreach($data['availableDates'] as $d): ?>
+          <option 
+            value="<?= $d ?>" 
+            <?= (isset($data['appointment_date']) && $data['appointment_date']===$d) ? 'selected' : '' ?>
+          >
+            <?= date('F j, Y', strtotime($d)); ?>
+          </option>
+        <?php endforeach; ?>
+      </select>
       <span class="error"><?= $data['date_err'] ?? ''; ?></span>
     </div>
+
+    <!-- TIME INPUT -->
     <div class="form-group">
       <label for="appointment_time">Appointment Time</label>
-      <input type="time" name="appointment_time" id="appointment_time" value="<?= htmlspecialchars($data['appointment_time'] ?? '') ?>" required>
+      <input 
+        type="time" 
+        name="appointment_time" 
+        id="appointment_time" 
+        value="<?= htmlspecialchars($data['appointment_time'] ?? '') ?>" 
+        required
+        class="<?= !empty($data['time_err']) ? 'is-invalid' : '' ?>"
+      >
       <span class="error"><?= $data['time_err'] ?? ''; ?></span>
     </div>
+
+    <!-- NOTES -->
     <div class="form-group">
       <label for="notes">Notes (Optional)</label>
-      <textarea name="notes" id="notes" rows="3" placeholder="Enter any additional details..."><?= htmlspecialchars($data['notes'] ?? '') ?></textarea>
+      <textarea 
+        name="notes" 
+        id="notes" 
+        rows="3" 
+        placeholder="Enter any additional details..."
+      ><?= htmlspecialchars($data['notes'] ?? '') ?></textarea>
       <span class="error"><?= $data['notes_err'] ?? ''; ?></span>
     </div>
+
     <button type="submit" class="btn btn-primary">Make Appointment</button>
   </form>
 </div>
 
 <style>
-  /* Overall container and page title */
   .appointment-container {
     margin-left: 240px;
     margin-top: 70px;
@@ -48,14 +92,12 @@
     box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
   }
   .page-title {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', sans-serif;
     font-size: 1.8rem;
     margin-bottom: 25px;
     text-align: center;
     color: #333;
   }
-
-  /* Consultant details styling */
   .consultant-details {
     display: flex;
     align-items: center;
@@ -76,8 +118,6 @@
     font-size: 1rem;
     color: #555;
   }
-
-  /* Appointment form styling */
   .appointment-form {
     display: flex;
     flex-direction: column;
@@ -93,6 +133,7 @@
     font-size: 1rem;
     color: #333;
   }
+  .form-group select,
   .form-group input,
   .form-group textarea {
     padding: 10px;
@@ -101,19 +142,22 @@
     border-radius: 4px;
     font-family: inherit;
   }
+  .form-group select.is-invalid,
+  .form-group input.is-invalid {
+    border-color: #e74c3c;
+  }
   .form-group input:focus,
-  .form-group textarea:focus {
+  .form-group textarea:focus,
+  .form-group select:focus {
     outline: none;
     border-color: #007bff;
     box-shadow: 0 0 5px rgba(0,123,255,0.3);
   }
   .error {
-    color: red;
+    color: #e74c3c;
     font-size: 0.9rem;
     margin-top: 4px;
   }
-  
-  /* Button styling */
   .btn {
     padding: 10px 20px;
     font-size: 1rem;
@@ -132,8 +176,6 @@
   .btn-primary:hover {
     background-color: #0056b3;
   }
-  
-  /* Responsive adjustments */
   @media (max-width: 768px) {
     .appointment-container {
       margin-left: 0;

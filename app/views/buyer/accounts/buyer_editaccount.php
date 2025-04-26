@@ -4,7 +4,7 @@
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
-<div class="edit-profile-container">
+<div class="edit-profile-container" style="margin-top: 90px; margin-left: 550px;">
     <h2>Edit Your Profile</h2>
     <form method="POST" action="<?php echo URLROOT; ?>/Buyercontrollers/editprofile/<?php echo $data['id']; ?>">
         <div class="form-group">
