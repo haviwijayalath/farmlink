@@ -7,91 +7,63 @@
 <div class="delivery-container">
     <h2>Upload Delivery Images</h2>
 
-    <!-- Pickup Image Form -->
-    <form action="<?= URLROOT; ?>/dpersons/deliveryUploadPickup" method="POST" enctype="multipart/form-data">
-        <div class="form-group">
-            <label for="pickup_image">Pickup Image</label>
-            <div class="upload-container">
+   <!-- Pickup Image Form + Confirm -->
+    <div class="form-group">
+        <label for="pickup_image">Pickup Image</label>
+
+        <div class="upload-container">
+            <!-- ✅ FORM STARTS HERE -->
+            <form action="<?= URLROOT; ?>/dpersons/deliveryUploadPickup" method="POST" enctype="multipart/form-data">
                 <input type="file" name="pickup_image" id="pickup_image" onchange="previewPickupImage(event)" required>
-            </div>
-            <div id="image-preview" style="margin: 20px;">
-                <img id="output" src="<?= isset($_SESSION['pickup_image']) ? URLROOT . '/' . htmlspecialchars($_SESSION['pickup_image']) : ''; ?>" style="max-width: 400px">
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Upload Pickup Image" class="btn-submit">
-            </div>
+
+                <div id="image-preview">
+                    <img id="output" 
+                        src="<?= isset($_SESSION['pickup_image']) ? URLROOT . '/' . htmlspecialchars($_SESSION['pickup_image']) : ''; ?>">
+                </div>
+
+                <input type="submit" class="btn-upload" value="Upload Pickup Image">
+            </form>
+            <!-- ✅ FORM ENDS HERE -->
         </div>
-    </form>
 
-    <form action="<?= URLROOT; ?>/dpersons/deliveryUploadDropoff" method="POST" enctype="multipart/form-data">
-        <!-- Dropoff Image -->
-    <div class="form-group">
-            <label for="dropoff_image">Dropoff Image</label>
-            <div class="upload-container">
-                <input type="file" name="dropoff_image" id="dropoff_image" onchange="previewDropoffImage(event)" required>
-            </div>
-
-            <div id="dropoff-preview" style="margin: 20px;">
-            <img id="dropoff_output" src="<?= isset($_SESSION['dropoff_image']) ? URLROOT . '/' . htmlspecialchars($_SESSION['dropoff_image']) 
-                    : ''; ?>" style="max-width: 400px">
-            </div>
-
-        <!-- Submit Button -->
-        <div class="form-group">
-            <input type="submit" value="Upload Drop-off Image" class="btn-submit">
+        <div class="button-row">
+            <form action="<?= URLROOT; ?>/dpersons/confirmpickup" method="POST">
+                <input type="submit" class="btn-confirm" value="Confirm pickup">
+            </form>
         </div>
     </div>
-    </form>
 
-    <!--end delivery by clicking end button -->
-    <form action="<?= URLROOT; ?>/dpersons/endDelivery" method="POST" enctype="multipart/form-data">
-    <div class="form-group">
-            <input type="submit" value="End the delivery" class="btn-submit">
-        </div>
-</div>
 
-<!-- Order Summary Modal -->
-<div id="orderSummaryModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <h2>Order Summary</h2>
-        <p><strong>Order ID:</strong> <span id="summaryOrderId"><?= $_SESSION['summary']['order_id'] ?? 'N/A' ?></span></p>
-        <p><strong>Delivery Earnings:</strong> <span id="summaryEarnings">$<?= $_SESSION['summary']['earnings'] ?? '0.00' ?></span></p>
-        <p><strong>Total Earnings:</strong> <span id="totearnings">$<?= $_SESSION['summary']['total_earnings'] ?? '0.00' ?></span></p>
-        <button class="btn-submit" id="confirmEndDelivery">Confirm</button>
+
+    <!-- Drop-off Image Form + Confirm -->
+<div class="form-group">
+    <label for="dropoff_image">Dropoff Image</label>
+
+    <div class="upload-container">
+        <!-- ✅ FORM STARTS HERE -->
+        <form action="<?= URLROOT; ?>/dpersons/deliveryUploadDropoff" method="POST" enctype="multipart/form-data">
+            <input type="file" name="dropoff_image" id="dropoff_image" onchange="previewDropoffImage(event)" required>
+
+            <div id="dropoff-preview">
+                <img id="dropoff_output" 
+                     src="<?= isset($_SESSION['dropoff_image']) ? URLROOT . '/' . htmlspecialchars($_SESSION['dropoff_image']) : ''; ?>">
+            </div>
+
+            <input type="submit" class="btn-upload" value="Upload Drop-off Image">
+        </form>
+        <!-- ✅ FORM ENDS HERE -->
+    </div>
+
+    <div class="button-row">
+        <form action="<?= URLROOT; ?>/dpersons/endDelivery" method="POST">
+            <input type="submit" class="btn-confirm" value="End the delivery">
+        </form>
     </div>
 </div>
 
-<!-- Modal Styles -->
-<style>
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-}
+</div>
 
-.modal-content {
-    background-color: white;
-    margin: 10% auto;
-    padding: 20px;
-    border-radius: 5px;
-    width: 50%;
-    text-align: center;
-}
-
-.close {
-    float: right;
-    font-size: 28px;
-    cursor: pointer;
-}
-</style>
-
-<!-- JavaScript to Handle Image Preview and Popup -->
+<!-- JavaScript to Handle Image Preview -->
 <script>
 function previewPickupImage(event) {
     const imagePreview = document.getElementById('output');

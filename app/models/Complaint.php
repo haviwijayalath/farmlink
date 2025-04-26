@@ -77,18 +77,36 @@ class Complaint extends Database {
     return $this->db->execute();
 }
 
-public function deactivateFarmer($farmer_id) {
-    $this->db->query("UPDATE farmers SET status = 'deactivated' WHERE id = :id");
-    $this->db->bind(':id', $farmer_id);
+// public function deactivateFarmer($farmer_id) {
+//     $this->db->query("UPDATE farmers SET status = 'deactivated' WHERE id = :id");
+//     $this->db->bind(':id', $farmer_id);
 
-    return $this->db->execute();
-}
+//     return $this->db->execute();
+// }
 
-public function deactivateDperson($delivery_id) {
-    $this->db->query("UPDATE delivery_persons SET status = 'deactivated' WHERE id = :id");
-    $this->db->bind(':id', $delivery_id);
+// public function deactivateDperson($delivery_id) {
+//     $this->db->query("UPDATE delivery_persons SET status = 'deactivated' WHERE id = :id");
+//     $this->db->bind(':id', $delivery_id);
 
-    return $this->db->execute();
+//     return $this->db->execute();
+// }
+
+public function deductFarmerRating($farmerID, $deduction = 1.0) {
+    // Get current rating
+    $this->db->query("SELECT rate FROM farmers WHERE id = :farmerID");
+    $this->db->bind(':farmerID', $farmerID);
+    $farmer = $this->db->single();
+
+    if ($farmer) {
+        $newRating = max(0, $farmer->rate - $deduction); // Avoid negative ratings
+
+        $this->db->query("UPDATE farmers SET rate = :newRating WHERE id = :farmerID");
+        $this->db->bind(':newRating', $newRating);
+        $this->db->bind(':farmerID', $farmerID);
+        return $this->db->execute();
+    }
+
+    return false;
 }
 
 public function getComplaintById($complaint_id) {
@@ -133,6 +151,22 @@ public function getFilteredComplaints($role, $status) {
 
     if (!empty($status)) {
         $this->db->bind(':status', $status);
+    }
+
+    return $this->db->resultSet();
+}
+
+public function getFilteredReports($role) {
+    $sql = "SELECT *, id AS complaint_id FROM complaints WHERE 1=1";
+
+    if (!empty($role)) {
+        $sql .= " AND role = :role";
+    }
+
+    $this->db->query($sql);
+
+    if (!empty($role)) {
+        $this->db->bind(':role', $role);
     }
 
     return $this->db->resultSet();

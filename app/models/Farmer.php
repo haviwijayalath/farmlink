@@ -27,12 +27,15 @@ class Farmer
   {
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
-    $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image, rate, status) VALUES(:name, :password, :email, :address_id, :phone, :image, :rate, :status)');
+    $this->db->query('INSERT INTO farmers (name, password, email, address_id, phone, image, id_card_front, id_card_back, rate, status) 
+                  VALUES(:name, :password, :email, :address_id, :phone, :image, :id_card_front, :id_card_back, :rate, :status)');
     // Bind values
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
     $this->db->bind(':phone', $data['phone_number']);
     $this->db->bind(':image', $data['image']);
+    $this->db->bind(':id_card_front', $data['id_card_front']);
+    $this->db->bind(':id_card_back', $data['id_card_back']);
     $this->db->bind(':password', $data['password']);
     $this->db->bind(':address_id', $address_id);
     $this->db->bind(':rate', 0);
@@ -267,13 +270,7 @@ class Farmer
     // Move expired stocks to exp_products table
     $this->db->query('INSERT INTO exp_products (fproduct_id, farmer_id, name, type, price, stock, exp_date) SELECT fproduct_id, farmer_id, name, type, price, stock, exp_date FROM fproducts WHERE exp_date < CURDATE()');
     if ($this->db->execute()) {
-      // Delete expired stocks from fproducts table
-      $this->db->query('DELETE FROM fproducts WHERE exp_date < CURDATE()');
-      if ($this->db->execute()) {
-        return true;
-      } else {
-        return false;
-      }
+      return true;
     } else {
       return false;
     }
@@ -376,6 +373,19 @@ class Farmer
     $this->db->bind(':status', 'ready');
     $this->db->bind(':order_id', $orderID);
     if ($this->db->execute()) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
+  public function deliveryRequested($orderID)
+  {
+    $this->db->query('SELECT dropAddress FROM order_success WHERE orderID = :order_id');
+    $this->db->bind(':order_id', $orderID);
+    $row = $this->db->single();
+
+    if ($row) {
       return true;
     } else {
       return false;

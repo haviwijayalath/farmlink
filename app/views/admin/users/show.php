@@ -10,7 +10,7 @@
 
         <div class="user-details-card">
             <div class="profile-section">
-                <img src="<?= URLROOT ?>/public/uploads/<?= $data['user']->image ?? 'default.png' ?>" alt="Profile Image">
+                <img src="<?= URLROOT ?>/public/uploads/<?= substr(strtolower($data['role']), 0, -1) ?>/profile/<?= $data['user']->image ?? 'default.png' ?>" alt="Profile Image">
                 <h2><?= $data['user']->name ?></h2>
                 <p class="role-badge"><?= ucfirst($data['role']) ?></p>
                 <p class="status <?= strtolower($data['user']->status ?? 'approved') ?>"><?= ucfirst($data['user']->status ?? 'N/A') ?></p>
@@ -92,6 +92,26 @@
                     <div class="info-row vehicle-image">
                         <strong>Vehicle Image:</strong><br>
                         <img src="<?= URLROOT ?>/public/uploads/<?= $data['user']->v_image ?>" alt="Vehicle Image">
+                    </div>
+                <?php endif; ?>
+              
+                <!-- ID Card Section -->
+                <?php if (!empty($data['user']->id_card_front) || !empty($data['user']->id_card_back)): ?>
+                    <div class="info-row id-cards">
+                        <strong>ID Card:</strong>
+                        <div class="id-card-images">
+                            <?php if (!empty($data['user']->id_card_front)): ?>
+                                <div class="id-card">
+                                    <img src="<?= URLROOT ?>/public/uploads/<?= substr(strtolower($data['role']), 0, -1) ?>/id_cards/<?= $data['user']->id_card_front ?>" alt="ID Card Front" height="250">
+                                </div>
+                            <?php endif; ?>
+                            
+                            <?php if (!empty($data['user']->id_card_back)): ?>
+                                <div class="id-card">
+                                    <img src="<?= URLROOT ?>/public/uploads/<?= substr(strtolower($data['role']), 0, -1) ?>/id_cards/<?= $data['user']->id_card_back ?>" alt="ID Card Back" height="250">
+                                </div>
+                            <?php endif; ?>
+                        </div>
                     </div>
                 <?php endif; ?>
 

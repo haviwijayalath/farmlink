@@ -4,10 +4,13 @@ class Buyercontrollers extends Controller {
 
     private $buyerModel;
     private $farmerModel;
+    private $notificationHelper;
+
 
     public function __construct() {
         $this->buyerModel = $this->model('Buyer'); 
         $this->farmerModel = $this->model('Farmer');
+        $this->notificationHelper = new NotificationHelper();
     }
 
     public function register(){
@@ -289,12 +292,15 @@ class Buyercontrollers extends Controller {
             }
             if (empty($data['phone'])) {
                 $data['phone_err'] = 'Please enter your phone number';
-            } if (empty($data['password'])) {
-                $data['password_err'] = 'Please enter your phone number';
-            } if (empty($data['new_password'])) {
-                $data['new_password_err'] = 'Please enter your phone number';
-            } if (empty($data['confirm_password'])) {
-                $data['confirm_password_err'] = 'Please enter your phone number';
+            } 
+            if (empty($data['password'])) {
+                $data['password_err'] = 'Please enter your password';
+            } 
+            if (empty($data['new_password'])) {
+                $data['new_password_err'] = 'Please enter new password';
+            } 
+            if (empty($data['confirm_password'])) {
+                $data['confirm_password_err'] = 'Please enter correct new password';
             }
     
             // Validate current password
@@ -379,14 +385,16 @@ class Buyercontrollers extends Controller {
 
         // get the cart items from database
         $cartItems = $this->buyerModel->getCartItems(); 
-        $availableQuantity = $this->buyerModel->getQuantity($cartItems[0]->cart_id);
         $total = 0;
 
         foreach ($cartItems as $item) {
             $total += $item->price * $item->quantity;
         }
     
-        if(!empty($cartItems)){
+        if(!empty($cartItems) && $cartItems[0]->status === 'pending'){
+            
+            $availableQuantity = $this->buyerModel->getQuantity($cartItems[0]->cart_id);
+
         $data = [
             'cartID' => $cartItems[0]->cart_id,
             'cartItems' => $cartItems,
@@ -643,6 +651,7 @@ class Buyercontrollers extends Controller {
         $this->view('buyer/products/browse_products', $data);
     }
 
+
     public function removeWishlist($id){
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             redirect('users/login');
@@ -657,7 +666,11 @@ class Buyercontrollers extends Controller {
 
     // Function to display a single product
     public function viewproduct($id) {
-        $product = $this->buyerModel->getProductById($id);
+        $result = $this->buyerModel->getProductById($id); // Get the full result: product + reviews
+    
+        $product = $result->product;
+        $reviews = $result->reviews;
+    
         $data = [
             'pName' => $product->productName,
             'description' => $product->description,
@@ -668,10 +681,14 @@ class Buyercontrollers extends Controller {
             'fId' => $id,
             'fName' => $product->farmerName,
             'fImage' => $product->farmerImage,
-            'fEmail' => $product->email
+            'fEmail' => $product->email,
+            'rate' => $product->rate,
+            'reviews' => $reviews // this is now an array of objects
         ];
+    
         $this->view('buyer/products/view_product', $data);
     }
+    
 
     public function payhereProcess(){
 
@@ -762,11 +779,21 @@ class Buyercontrollers extends Controller {
                 'deliveryFee' => $orderDetails->deliveryFee, // Delivery fee from order_process
                 'dropAddress' => $orderDetails->dropAddress, // Address from POST data
                 'status' => 'pending', // Default status
-                'dperson_id' => '0'
+                'dperson_id' => '0',
             ];
+
+            $cartID = $orderDetails->cartID;
+            $farmerID = $orderDetails->farmer_id;
+            $pName = $orderDetails->productName;
+            $quantity = $orderDetails->quantity;
+
     
             // Save to database
-            if ($this->buyerModel->saveOrderSuccess($data)) {    
+            if ($this->buyerModel->saveOrderSuccess($data) && $this->buyerModel->update_cart_status($cartID)) { 
+
+                $this->notificationHelper->send_notification('b', $_SESSION['user_id'], 'f', $farmerID, 'Order Placed', 
+                'Ordered ' . $quantity .' KG of ' . $pName. ' ', '/farmlink/farmers/index', 'info');
+             
                 echo json_encode(['success' => true]);
             } else {
                 echo json_encode(['success' => false, 'message' => 'Failed to save order details.']);

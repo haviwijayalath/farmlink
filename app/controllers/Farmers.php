@@ -31,12 +31,16 @@ class Farmers extends Controller
         'addr_street' => trim($_POST['addr_street']),
         'addr_city' => trim($_POST['addr_city']),
         'image' => isset($_FILES['image']) ? $_FILES['image'] : '',
+        'id_card_front' => isset($_FILES['id_card_front']) ? $_FILES['id_card_front'] : '',
+        'id_card_back' => isset($_FILES['id_card_back']) ? $_FILES['id_card_back'] : '',
         'name_err' => '',
         'email_err' => '',
         'phone_number_err' => '',
         'password_err' => '',
         'confirm_password_err' => '',
-        'image_err' => ''
+        'image_err' => '',
+        'id_card_front_err' => '',
+        'id_card_back_err' => ''
       ];
 
       // Validate Email
@@ -115,8 +119,92 @@ class Farmers extends Controller
         }
       }
 
+      // Process ID card front image
+      $id_front_uploaded = true;
+      $id_front_filename = '';
+      if(isset($_FILES['id_card_front']) && !empty($_FILES['id_card_front']['name'])) {
+        $id_front_target_dir = APPROOT . '/../public/uploads/farmer/id_cards/';
+        $id_front_filename = time() . '_front_' . basename($_FILES['id_card_front']['name']);
+        $id_front_target_file = $id_front_target_dir . $id_front_filename;
+        $id_front_FileType = strtolower(pathinfo($id_front_target_file, PATHINFO_EXTENSION));
+        
+        // Check if image file is a actual image
+        $check = getimagesize($_FILES['id_card_front']['tmp_name']);
+        if($check === false) {
+          $data['id_card_front_err'] = 'File is not an image';
+          $id_front_uploaded = false;
+        }
+        
+        // Check file size (2MB limit)
+        if($_FILES['id_card_front']['size'] > 2000000) {
+          $data['id_card_front_err'] = 'Your file exceeds the size limit of 2MB';
+          $id_front_uploaded = false;
+        }
+        
+        // Allow certain file formats
+        if($id_front_FileType != 'jpg' && $id_front_FileType != 'png' && $id_front_FileType != 'jpeg') {
+          $data['id_card_front_err'] = 'Please upload an image with extension .jpg, .jpeg, or .png';
+          $id_front_uploaded = false;
+        }
+        
+        // Upload the file if no errors
+        if($id_front_uploaded) {
+          if(!is_dir($id_front_target_dir)) {
+            mkdir($id_front_target_dir, 0755, true);
+          }
+          if(move_uploaded_file($_FILES['id_card_front']['tmp_name'], $id_front_target_file)) {
+            $data['id_card_front'] = $id_front_filename;
+          } else {
+            $data['id_card_front_err'] = 'Sorry, there was an error uploading your file';
+            $id_front_uploaded = false;
+          }
+        }
+      }
+
+      // Process ID card back image
+      $id_back_uploaded = true;
+      $id_back_filename = '';
+      if(isset($_FILES['id_card_back']) && !empty($_FILES['id_card_back']['name'])) {
+        $id_back_target_dir = APPROOT . '/../public/uploads/farmer/id_cards/';
+        $id_back_filename = time() . '_back_' . basename($_FILES['id_card_back']['name']);
+        $id_back_target_file = $id_back_target_dir . $id_back_filename;
+        $id_back_FileType = strtolower(pathinfo($id_back_target_file, PATHINFO_EXTENSION));
+        
+        // Check if image file is a actual image
+        $check = getimagesize($_FILES['id_card_back']['tmp_name']);
+        if($check === false) {
+          $data['id_card_back_err'] = 'File is not an image';
+          $id_back_uploaded = false;
+        }
+        
+        // Check file size (2MB limit)
+        if($_FILES['id_card_back']['size'] > 2000000) {
+          $data['id_card_back_err'] = 'Your file exceeds the size limit of 2MB';
+          $id_back_uploaded = false;
+        }
+        
+        // Allow certain file formats
+        if($id_back_FileType != 'jpg' && $id_back_FileType != 'png' && $id_back_FileType != 'jpeg') {
+          $data['id_card_back_err'] = 'Please upload an image with extension .jpg, .jpeg, or .png';
+          $id_back_uploaded = false;
+        }
+        
+        // Upload the file if no errors
+        if($id_back_uploaded) {
+          if(!is_dir($id_back_target_dir)) {
+            mkdir($id_back_target_dir, 0755, true);
+          }
+          if(move_uploaded_file($_FILES['id_card_back']['tmp_name'], $id_back_target_file)) {
+            $data['id_card_back'] = $id_back_filename;
+          } else {
+            $data['id_card_back_err'] = 'Sorry, there was an error uploading your file';
+            $id_back_uploaded = false;
+          }
+        }
+      }
+
       // Make sure no other errors before uploading the picture
-      if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err'])) {
+      if (empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_number_err']) && empty($data['password_err']) && empty($data['confirm_password_err']) && empty($data['image_err']) && empty($data['id_card_front_err']) && empty($data['id_card_back_err'])) {
         // hashing password
         $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
@@ -145,13 +233,17 @@ class Farmers extends Controller
         'addr_street' => '',
         'addr_city' => '',
         'image' => '',
+        'id_card_front' => '',
+        'id_card_back' => '',
 
         'name_err' => '',
         'email_err' => '',
         'phone_number_err' => '',
         'password_err' => '',
         'confirm_password_err' => '',
-        'image_err' => ''
+        'image_err' => '',
+        'id_card_front_err' => '',
+        'id_card_back_err' => ''
       ];
 
       // Load view
@@ -561,7 +653,7 @@ class Farmers extends Controller
           // Notify buyers who wish to buy this product
           $buyers = $this->farmerModel->wishToBuyBuyers($data['name']);
           foreach ($buyers as $buyer) {
-            $this->notificationHelper->send_notification('b', $buyer->buyer_id, 'f', $_SESSION['user_id'], 'Product Available', 'The product ' . $data['name'] . ' is now available in stock', '/farmlink/buyers/viewproduct/' . $data['name'], 'product');
+            $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'b', $buyer->buyer_id, 'Product Available', 'The product ' . $data['name'] . ' is now available in stock', '/farmlink/buyers/viewproduct/' . $data['name'], 'product');
           }
 
           redirect('farmers/managestocks');
@@ -780,8 +872,17 @@ class Farmers extends Controller
       $orderID = trim($_POST['order_id']);
 
       if ($this->farmerModel->orderReady($orderID)) {
-        // send a notification to the delivery person
-        $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'd', $this->farmerModel->dpersonIdOfOrder($orderID), 'Order ready', 'Order ' . $orderID . ' is ready for delivery', '/farmlink/deliveryperson/manageorders', 'confirmation');
+        if ($this->farmerModel->deliveryRequested($orderID)) {
+          // send a notification to the delivery person
+          $msg = 'Order ' . $orderID . ' is ready for delivery';
+          $url = '/farmlink/deliveryperson/manageorders';
+          $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'd', $this->farmerModel->dpersonIdOfOrder($orderID), 'Order ready', $msg, $url, 'confirmation');
+        } else {
+          // send a notification to the buyer
+          $msg = 'Order ' . $orderID . ' is ready for pickup';
+          $url = '/farmlink/buyers/manageorders';
+          $this->notificationHelper->send_notification('f', $_SESSION['user_id'], 'b', $this->farmerModel->buyerIdOfOrder($orderID), 'Order ready', $msg, $url, 'confirmation');
+        }
         flash('order_message', 'Order marked as ready');
         redirect('farmers/manageorders');
       } else {

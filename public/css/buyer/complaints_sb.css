@@ -1,0 +1,72 @@
+/* Container for all complaints */
+.complaint-container {
+  max-width: 1000px;
+  margin: 40px auto;
+  padding: 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #f8f9fa;
+}
+
+/* Complaint List Title */
+.complaint-list h2 {
+  text-align: center;
+  font-size: 2rem;
+  color: #343a40;
+  margin-bottom: 30px;
+}
+
+/* Each complaint card */
+.complaint {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 6px 18px rgba(0, 0, 0, 0.06);
+  padding: 20px 25px;
+  margin-bottom: 25px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.complaint:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+}
+
+.complaint strong {
+  font-size: 1.1rem;
+  color: #0056b3;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.complaint p {
+  margin: 10px 0;
+  line-height: 1.5;
+  color: #444;
+}
+
+.complaint small {
+  display: block;
+  margin-top: 10px;
+  color: #6c757d;
+}
+
+/* Extra fields: status, faultby, admin notes */
+.complaint p strong {
+  color: #222;
+}
+
+/* Status color highlight */
+.complaint p:has(strong:contains('Status')) {
+  color: #007bff;
+  font-weight: bold;
+}
+
+/* Responsive styling */
+@media screen and (max-width: 768px) {
+  .complaint-container {
+    padding: 10px;
+  }
+
+  .complaint {
+    padding: 15px 18px;
+  }
+}
