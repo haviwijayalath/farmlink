@@ -142,7 +142,7 @@ class Dperson extends Database{
               order_success.orderID,
               order_success.status,
               CONCAT(address.number, ", ", address.Street, ", ", address.City) AS pickup_address,
-              CONCAT(order_buyer_addr.number, ", ", order_buyer_addr.street, ", ", order_buyer_addr.city) AS dropoff_address,
+               order_success.dropaddress AS dropoff_address,
               order_success.quantity,
               CONCAT(order_buyer.fname, " ", order_buyer.lname) AS buyer,
               order_success.deliveryFee AS amount,
@@ -363,7 +363,7 @@ class Dperson extends Database{
                     order_buyer_addr ON order_buyer_addr.address_id = order_buyer.address_id
                 WHERE 
                     farmers.location = :deliveryArea 
-                    AND order_success.status = "new"
+                    AND order_success.status = "ready"
                     AND order_success.orderID = :order_id
             ');
             

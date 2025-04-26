@@ -227,7 +227,7 @@ class Dpaccounts extends Controller {
         } else {
             // Load the form
             $id = $_SESSION['user_id'];
-            $this->view('d_person/vehicles/addvehicle', $id);
+            $this->view('d_person/vehicles/addvehicle', ['id' => $id]);
         }
     }
 
@@ -252,7 +252,7 @@ class Dpaccounts extends Controller {
     }
 
     public function confirmdelete($id) {
-        $this->view('d_person/accounts/confirmation', $id);
+        $this->view('d_person/accounts/confirmation', ['id' => $id]);
     }
 
 

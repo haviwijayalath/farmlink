@@ -675,7 +675,6 @@ class Dpersons extends Controller
                 'v_image_err' => '',
                 'l_image_err' => '',
                 'password_err' => '',
-                'confirm_password_err' => '',
                 'confirm_password_err' => ''
             ];
 

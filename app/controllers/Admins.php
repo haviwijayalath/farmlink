@@ -61,12 +61,55 @@ class Admins extends Controller
   public function manageComplaint($complaint_id)
   {
     $complaint = $this->complaintModel->getComplaintById($complaint_id);
-    $data = [
-      'complaint' => $complaint
-    ];
 
-    $this->view('admin/complaints/manage', $data);
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST data
+      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $adminNote = trim($_POST['admin_note']);
+      $faultBy = isset($_POST['fault_by']) ? trim($_POST['fault_by']) : '';
+
+      $errors = [];
+
+      // Validate admin note
+      if (empty($adminNote)) {
+        $errors['admin_note'] = 'Admin note is required.';
+      }
+
+      // Validate fault radio
+      if (empty($faultBy)) {
+        $errors['fault_by'] = 'Fault selection is required.';
+      }
+
+      if (empty($errors)) {
+        // No errors, proceed to update complaint in DB
+        $this->complaintModel->resolveComplaint($complaint_id, $adminNote, $faultBy);
+
+        // Redirect or set success message
+        flash('complaint_message', 'Complaint resolved successfully!');
+        redirect('admin/complaints');
+      } else {
+        // Return errors back to the view
+        $data = [
+          'complaint' => $complaint,
+          'errors' => $errors,
+          'admin_note' => $adminNote,
+          'fault_by' => $faultBy
+        ];
+        $this->view('admin/complaints/manage', $data);
+      }
+    } else {
+      // If GET request, just load the complaint page
+      $data = [
+        'complaint' => $complaint,
+        'errors' => [],
+        'admin_note' => '',
+        'fault_by' => ''
+      ];
+      $this->view('admin/complaints/manage', $data);
+    }
   }
+
 
 
   public function show($id)
@@ -94,42 +137,64 @@ class Admins extends Controller
   }
 
   public function resolve($complaint_id)
-  {
+{
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-      $faultBy = $_POST['fault_by'];
-      $adminNotes = trim($_POST['admin_notes']);
+        $faultBy = isset($_POST['fault_by']) ? trim($_POST['fault_by']) : '';
+        $adminNotes = isset($_POST['admin_notes']) ? trim($_POST['admin_notes']) : '';
 
-      // Sanitize inputs (basic level, can enhance as needed)
-      $faultBy = htmlspecialchars($faultBy);
-      $adminNotes = htmlspecialchars($adminNotes);
+        // Sanitize inputs
+        $faultBy = htmlspecialchars($faultBy);
+        $adminNotes = htmlspecialchars($adminNotes);
 
-      // Load the complaint
-      $complaint = $this->complaintModel->getComplaintById($complaint_id);
+        // Load the complaint
+        $complaint = $this->complaintModel->getComplaintById($complaint_id);
 
-      if (!$complaint) {
-        die("Complaint not found");
-      }
+        if (!$complaint) {
+            die("Complaint not found");
+        }
 
-      $order_id = $complaint->order_id;
+        // Validate inputs
+        $errors = [];
 
-      // Fetch involved users based on order ID
-      $farmer_id = $complaint->farmer_id;
-      $delivery_id = $complaint->delivery_person_id;
+        if (empty($faultBy)) {
+            $errors['fault_by'] = 'You must select who is at fault.';
+        }
 
-      // Update complaint record with decision and notes
-      $this->complaintModel->resolveComplaint($complaint_id, $faultBy, $adminNotes);
+        if (empty($adminNotes)) {
+            $errors['admin_notes'] = 'You must provide admin notes.';
+        }
 
-      // Take action based on decision
-      if ($faultBy === 'farmer') {
-        $this->complaintModel->deductFarmerRating($farmer_id);
-      }
-      flash('complaint_msg', 'Complaint resolved and action taken.');
-      redirect('admins/viewComplaints');
+        if (!empty($errors)) {
+            // If errors exist, reload the form with errors
+            $data = [
+                'complaint' => $complaint,
+                'errors' => $errors,
+                'fault_by' => $faultBy,
+                'admin_notes' => $adminNotes
+            ];
+
+            $this->view('admin/complaints/manage', $data);
+            return;
+        }
+
+        $order_id = $complaint->order_id;
+        $farmer_id = $complaint->farmer_id;
+        $delivery_id = $complaint->delivery_person_id;
+
+        // Update complaint record
+        $this->complaintModel->resolveComplaint($complaint_id, $faultBy, $adminNotes);
+
+        // Take action based on decision
+        if ($faultBy === 'farmer') {
+            $this->complaintModel->deductFarmerRating($farmer_id);
+        }
+
+        flash('complaint_msg', 'Complaint resolved and action taken.');
+        redirect('admins/viewComplaints');
     } else {
-      redirect('admins/viewComplaints');
+        redirect('admins/viewComplaints');
     }
-  }
-
+}
 
   public function filterComplaints()
   {
@@ -196,19 +261,19 @@ class Admins extends Controller
     $this->view('admin/reports', $data);
   }
 
-//   public function viewMonthlyRevenue($userId, $role = null)
-// {
-//     if ($role === null) {
-//         die('Role is missing!'); // Don't proceed if role is missing
-//     }
+  //   public function viewMonthlyRevenue($userId, $role = null)
+  // {
+  //     if ($role === null) {
+  //         die('Role is missing!'); // Don't proceed if role is missing
+  //     }
 
-//     $monthlyRevenue = $this->adminModel->getMonthlyRevenue($userId, $role);
+  //     $monthlyRevenue = $this->adminModel->getMonthlyRevenue($userId, $role);
 
-//     $this->view('admin/monthly_revenue', [
-//         'monthlyRevenue' => $monthlyRevenue,
-//         'role' => $role
-//     ]);
-// }
+  //     $this->view('admin/monthly_revenue', [
+  //         'monthlyRevenue' => $monthlyRevenue,
+  //         'role' => $role
+  //     ]);
+  // }
 
   public function viewProducts()
   {
