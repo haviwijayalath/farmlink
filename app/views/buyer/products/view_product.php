@@ -5,36 +5,36 @@
 <div class="container">
   <div class="row">
     <div class="col-md-6">
-      <img src="<?= URLROOT ?>/public/uploads/farmer/products/<?= !empty(htmlspecialchars($data['pImage'])) && file_exists(APPROOT . '/../public/uploads/farmer/products/' . htmlspecialchars($data['pImage'])) ? htmlspecialchars($data['pImage']) : 'Farmer-bro.jpg' ?>"  alt="<?php echo htmlspecialchars($data['pName']); ?>" class="product_picture">
+      <img src="<?= URLROOT ?>/public/uploads/farmer/products/<?= !empty(htmlspecialchars($data['pImage'])) && file_exists(APPROOT . '/../public/uploads/farmer/products/' . htmlspecialchars($data['pImage'])) ? htmlspecialchars($data['pImage']) : 'Farmer-bro.jpg' ?>" alt="<?php echo htmlspecialchars($data['pName']); ?>" class="product_picture">
 
       <div class="reviews-section">
         <h4>Reviews</h4>
         <?php if (!empty($data['reviews'])): ?>
           <?php foreach ($data['reviews'] as $review): ?>
             <div class="review">
-  <div class="review-rating">
-    <?= str_repeat('⭐', htmlspecialchars($review->rating)) ?>
-  </div>
+              <div class="review-rating">
+                <?= str_repeat('⭐', htmlspecialchars($review->rating)) ?>
+              </div>
 
-  <div class="review-date">
-    <?= date('jS M, Y', strtotime($review->created_at)) ?>
-  </div>
+              <div class="review-date">
+                <?= date('jS M, Y', strtotime($review->created_at)) ?>
+              </div>
 
-  <?php if (!empty($review->description)): ?>
-    <p class="review-text"><?= htmlspecialchars($review->description) ?></p>
-  <?php endif; ?>
+              <?php if (!empty($review->description)): ?>
+                <p class="review-text"><?= htmlspecialchars($review->description) ?></p>
+              <?php endif; ?>
 
-  <?php if (!empty($review->reviewImage)): ?>
+              <?php if (!empty($review->reviewImage)): ?>
                 <img src="<?= URLROOT ?>/public/public/uploads/<?= htmlspecialchars($review->reviewImage) ?>" alt="Review Image" class="product_picture">
-  <?php endif; ?>
+              <?php endif; ?>
 
-  <div class="reviewer-profile">
-      <div class="reviewer-info">
-      <strong><?= htmlspecialchars($review->buyerName) ?></strong>
-      <span>Verified Buyer</span>
-    </div>
-  </div>
-</div>
+              <div class="reviewer-profile">
+                <div class="reviewer-info">
+                  <strong><?= htmlspecialchars($review->buyerName) ?></strong>
+                  <span>Verified Buyer</span>
+                </div>
+              </div>
+            </div>
 
           <?php endforeach; ?>
         <?php else: ?>
@@ -67,6 +67,6 @@
       </form>
     </div>
   </div>
-  
 
-<?php require APPROOT . '/views/inc/footer.php'; ?>
+
+  <?php require APPROOT . '/views/inc/footer.php'; ?>
