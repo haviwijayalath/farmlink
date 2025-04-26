@@ -207,14 +207,26 @@ class Appointments extends Controller {
   // farmer’s list
   public function index() {
     if (!isLoggedIn()) redirect('users/login');
-    $appts = $this->appointmentModel->getAppointmentsByFarmer($_SESSION['user_id']);
+    $status = isset($_GET['status']) ? trim($_GET['status']) : '';
+
+    if (!empty($status)) {
+        $appts = $this->appointmentModel->getAppointmentsByFarmerAndStatus($_SESSION['user_id'], $status);
+    } else {
+        $appts = $this->appointmentModel->getAppointmentsByFarmer($_SESSION['user_id']);
+    }
     $this->view('appointment/index', ['appointments'=>$appts]);
   }
 
   // consultant’s list
   public function consultantAppointments() {
     if (!isLoggedIn()) redirect('users/login');
-    $appts = $this->appointmentModel->getAppointmentsByConsultant($_SESSION['user_id']);
+    $status = isset($_GET['status']) ? trim($_GET['status']) : '';
+
+    if (!empty($status)) {
+        $appts = $this->appointmentModel->getAppointmentsByConsultantAndStatus($_SESSION['user_id'], $status);
+    } else {
+        $appts = $this->appointmentModel->getAppointmentsByConsultant($_SESSION['user_id']);
+    }
     $this->view('appointment/consultantAppointments', ['appointments'=>$appts]);
   }
 }

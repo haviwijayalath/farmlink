@@ -9,6 +9,18 @@
   <?php if (empty($data['appointments'])): ?>
     <p>You have no appointments at the moment.</p>
   <?php else: ?>
+    <form method="get" action="">
+      <label for="status">Filter by Status:</label>
+      <select name="status" id="status" onchange="this.form.submit()">
+        <option value="">All</option>
+        <option value="Pending" <?= (isset($_GET['status']) && $_GET['status'] == 'Pending') ? 'selected' : '' ?>>Pending</option>
+        <option value="Accepted" <?= (isset($_GET['status']) && $_GET['status'] == 'Accepted') ? 'selected' : '' ?>>Accepted</option>
+        <option value="Cancelled" <?= (isset($_GET['status']) && $_GET['status'] == 'Cancelled') ? 'selected' : '' ?>>Cancelled</option>
+        <option value="Declined" <?= (isset($_GET['status']) && $_GET['status'] == 'Declined') ? 'selected' : '' ?>>Declined</option>
+      </select>
+    </form>
+    <br>
+
     <table class="appointment-table">
       <thead>
         <tr>

@@ -78,6 +78,44 @@ class Appointment {
     return $this->db->single();
   }
 
+  // Farmer with status filter
+public function getAppointmentsByFarmerAndStatus($farmer_id, $status) {
+  $this->db->query("SELECT 
+      a.*, 
+      c.name AS consultant_name, 
+      a.appointment_date AS date, 
+      a.appointment_time AS time,
+      a.status, 
+      a.notes AS message 
+    FROM appointments a
+    JOIN consultants c ON a.consultant_id = c.id
+    WHERE a.farmer_id = :farmer_id 
+      AND a.status = :status
+    ORDER BY a.appointment_date DESC");
+  $this->db->bind(':farmer_id', $farmer_id);
+  $this->db->bind(':status', $status);
+  return $this->db->resultSet();
+}
+
+// Consultant with status filter
+public function getAppointmentsByConsultantAndStatus($consultant_id, $status) {
+  $this->db->query("SELECT 
+      a.appointment_id AS id, 
+      a.appointment_date AS date, 
+      a.appointment_time AS time, 
+      a.notes AS message,
+      a.status AS status,
+      f.name AS farmer_name
+    FROM appointments a
+    JOIN farmers f ON a.farmer_id = f.id
+    WHERE a.consultant_id = :consultant_id 
+      AND a.status = :status
+    ORDER BY a.appointment_date DESC");
+  $this->db->bind(':consultant_id', $consultant_id);
+  $this->db->bind(':status', $status);
+  return $this->db->resultSet();
+}
+
   public function getLastInsertId() {
     return $this->db->lastInsertId();
   }
