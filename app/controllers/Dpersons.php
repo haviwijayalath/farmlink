@@ -227,7 +227,7 @@ class Dpersons extends Controller {
                         'Your order' . $orderId .' for product' . $product. ' has been picked up by the delivery ', '/farmlink/buyercontrollers/buyerOrders', 'info');
                     
                     $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'f', $farmerId, 'Order has picked up', 
-                        'The order' . $orderId .' for product ' . $product. ' has been picked up by the delivery ', '/farmlink/farmers/index', 'info');
+                        'The order' . $orderId .' for product ' . $product. ' has been picked up by the delivery ', '/farmlink/farmers/manageorders', 'info');
 
                     redirect('dpersons/ongoingDeliveries');
 
@@ -263,10 +263,10 @@ class Dpersons extends Controller {
     
             // Now trigger notifications to buyer and farmer
             $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'b', $buyerId, 'Order id delivered', 
-                'Your order' . $orderId .' for product' . $product. ' is delivered successfully by the delivery person', '/farmlink/buyercontrollers/buyerOrders', 'info');
+                'Your order ' . $orderId .' for ' . $product. ' is delivered successfully by the delivery person', '/farmlink/buyercontrollers/buyerOrders', 'info');
                     
             $this->notificationHelper->send_notification('d', $_SESSION['user_id'], 'f', $farmerId, 'Order id delivered', 
-                'The order' . $orderId .' for product ' . $product. ' is delivered successfully by the delivery person ', '/farmlink/farmers/index', 'info');
+                'The order ' . $orderId .' for ' . $product. ' is delivered successfully by the delivery person ', '/farmlink/farmers/manageorders', 'info');
         }
     
         // Clear session values
