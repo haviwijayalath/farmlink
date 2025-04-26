@@ -2,9 +2,10 @@
 class Admin extends Database {
   private $db;
 
-  public function __construct() {
-    $this->db = new Database;
-  }
+    public function __construct()
+    {
+        $this->db = new Database;
+    }
 
   /**
    * Dashboard statistics
@@ -318,7 +319,7 @@ public function getTopSellingProducts($limit = 5) {
     return $this->db->single(); // Fetch only one product
   }
 
-  public function getUsers()
+    public function getUsers()
     {
         $tables = [
             'farmers' => 'Farmer',
@@ -340,6 +341,67 @@ public function getTopSellingProducts($limit = 5) {
 
         return $users;
     }
+
+    public function getTotalRevenue($farmerId = null, $deliveryPersonId = null)
+    {
+        $query = "
+            SELECT 
+                SUM(os.famersFee) AS total_farmer_fee,
+                SUM(di.amount) AS total_delivery_fee
+            FROM order_success os
+            JOIN delivery_info di ON os.orderID = di.order_id
+            JOIN fproducts fp ON os.productID = fp.fproduct_id
+            WHERE 1=1
+        ";
+    
+        $params = [];
+    
+        if ($farmerId !== null) {
+            $query .= " AND fp.farmer_id = :farmerid";
+            $params[':farmerid'] = $farmerId;
+        }
+    
+        if ($deliveryPersonId !== null) {
+            $query .= " AND di.delivery_person_id = :dpersonid";
+            $params[':dpersonid'] = $deliveryPersonId;
+        }
+    
+        $this->db->query($query);
+        foreach ($params as $key => $value) {
+            $this->db->bind($key, $value);
+        }
+    
+        return $this->db->single();
+    }
+    
+    public function getMonthlyRevenue($userId, $role)
+    {
+        $query = "
+            SELECT 
+                DATE_FORMAT(os.orderDate, '%Y-%m') AS month, 
+                SUM(os.famersFee) AS total_farmer_fee,
+                SUM(di.amount) AS total_delivery_fee
+            FROM order_success os
+            JOIN delivery_info di ON os.orderID = di.order_id
+            JOIN fproducts fp ON os.productID = fp.fproduct_id
+            WHERE 1=1
+        ";
+    
+        $params = [];
+    
+        if ($role === 'Farmer') {
+            $query .= " AND fp.farmer_id = :userid";
+        } elseif ($role === 'Delivery_Person') {
+            $query .= " AND di.delivery_person_id = :userid";
+        }
+    
+        $query .= " GROUP BY month ORDER BY month ASC";
+    
+        $this->db->query($query);
+        $this->db->bind(':userid', $userId);
+    
+        return $this->db->resultSet();
+    }    
 
     public function getFilteredReports($role)
     {
