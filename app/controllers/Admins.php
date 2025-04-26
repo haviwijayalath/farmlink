@@ -196,19 +196,19 @@ class Admins extends Controller
     $this->view('admin/reports', $data);
   }
 
-  public function viewMonthlyRevenue($userId, $role = null)
-{
-    if ($role === null) {
-        die('Role is missing!'); // Don't proceed if role is missing
-    }
+//   public function viewMonthlyRevenue($userId, $role = null)
+// {
+//     if ($role === null) {
+//         die('Role is missing!'); // Don't proceed if role is missing
+//     }
 
-    $monthlyRevenue = $this->adminModel->getMonthlyRevenue($userId, $role);
+//     $monthlyRevenue = $this->adminModel->getMonthlyRevenue($userId, $role);
 
-    $this->view('admin/monthly_revenue', [
-        'monthlyRevenue' => $monthlyRevenue,
-        'role' => $role
-    ]);
-}
+//     $this->view('admin/monthly_revenue', [
+//         'monthlyRevenue' => $monthlyRevenue,
+//         'role' => $role
+//     ]);
+// }
 
   public function viewProducts()
   {
