@@ -3,9 +3,11 @@
 class orderControllers extends Controller{
 
   private $orderModel;
+  private $notificationHelper;
 
   public function __construct() {
     $this->orderModel = $this->model('Order');
+    $this->notificationHelper = new NotificationHelper();
   }
 
   public function address($cart_id, $product_id) {
@@ -244,9 +246,20 @@ class orderControllers extends Controller{
     
             // Save complaint to the database
             $this->orderModel->submitComplaint($userId, $role, $orderId, $description);
+
+            $this->notificationHelper->send_notification(
+                'd',                             // sender_role (delivery person)
+                $_SESSION['user_id'],                         // sender_id
+                'a',                         // recipient_role
+                4,                               // recipient_id (assuming admin ID is 1, or adjust as needed)
+                'New Complaint Submitted',       // title
+                'A new complaint is submitted by the delivery person '.'for order ID:'.$orderId ,                        // message
+                '/farmlink/admins/viewComplaints', // link to view
+                'info'                        // type of notification
+            );
     
             // ✅ REDIRECT to avoid form resubmission
-            redirect('orderControllers/showcomplaint');
+            redirect('orderControllers/showcomplaint_sb');
         } else {
             // Optional: prevent direct access via GET
             redirect('orderControllers/showcomplaint');
