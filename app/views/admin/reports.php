@@ -6,7 +6,6 @@
     <header>
         <h1>Reports</h1>
     </header>
-
     <section class="complaint-table">
         <h2>Farmers (Total Revenue: <?= number_format($data['totalFarmerRevenue'], 2) ?> Rs)</h2>
         <table id="farmersTable">
@@ -14,7 +13,6 @@
                 <tr>
                     <th>Name</th>
                     <th>Revenue</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -22,7 +20,6 @@
                     <tr>
                         <td><?= htmlspecialchars($farmer->name) ?></td>
                         <td><?= number_format($farmer->revenues->total_farmer_fee, 2) ?> Rs</td>
-                        <td><a href="<?= URLROOT ?>/admin/viewMonthlyRevenue/<?= $farmer->id ?>/Farmer" class="btn btn-primary">View Monthly Revenue</a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -34,7 +31,6 @@
                 <tr>
                     <th>Name</th>
                     <th>Revenue</th>
-                    <th>Action</th>
                 </tr>
             </thead>
             <tbody>
@@ -42,7 +38,6 @@
                     <tr>
                         <td><?= htmlspecialchars($dp->name) ?></td>
                         <td><?= number_format($dp->revenues->total_delivery_fee, 2) ?> Rs</td>
-                        <td><a href="<?= URLROOT ?>/admins/viewMonthlyRevenue/<?= htmlspecialchars($dp->id)?>/<?= urlencode('Delivery_Person') ?>" class="btn btn-primary">View Monthly Revenue</a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
