@@ -167,6 +167,7 @@ class Dperson extends Database{
           WHERE 
               address.City = :deliveryArea  
               AND  (order_success.status = "ready" OR order_success.status = "pending")
+              AND order_success.dropAddress IS NOT NULL
       ');
       
       $this->db->bind(':deliveryArea', $deliveryArea);
