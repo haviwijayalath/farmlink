@@ -2,6 +2,9 @@
 
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/buyer/browse_products.css">
 
+<?php require APPROOT . '/views/inc/sidebars/buyer_home_sidebar.php'; ?>
+
+
 <!-- Search and the Filter -->
 <div class="search-filter-container">
   <form action="<?= URLROOT ?>/buyercontrollers/browseproducts" method="GET" class="form-inline">
@@ -35,7 +38,7 @@
 </div>
 
 <!-- product cards -->
-<div class="container">
+<div class="container" style="margin-left: 200px;">
   <div class="row">
     <?php foreach($data as $product): ?>
       <a href="<?= URLROOT ?>/buyercontrollers/viewproduct/<?= $product->fproduct_id ?>" >

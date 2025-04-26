@@ -56,6 +56,8 @@ function getUserType() {
           return 'd';
       case 'consultant':
           return 'c';
+      case 'admin':
+          return 'a';
       default:
           return null;
     }

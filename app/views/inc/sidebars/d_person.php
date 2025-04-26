@@ -3,13 +3,13 @@
 
 <div class="sidebar">
   <ul>
-    <li><a href="<?= URLROOT ?>/dpersons/neworder"><i class="fas fa-shopping-cart"></i><span>New Orders</span></a></li>
-    <li><a href="<?= URLROOT ?>/dpaccounts/account"><i class="fas fa-user"></i><span>Account</span></a></li>
-    <li><a href="<?= URLROOT ?>/dpaccounts/vehicleinfo"><i class="fas fa-truck"></i><span>Vehicle</span></a></li>
-    <li><a href="<?= URLROOT ?>/dpersons/history"><i class="fas fa-history"></i><span>Delivery History</span></a></li>
-    <li><a href="<?= URLROOT ?>/orderControllers/showcomplaint"><i class="fa-solid fa-triangle-exclamation"></i><span>Complaints</span></a></li>
-    <li><a href="<?= URLROOT ?>/dpersons/ongoingDeliveries"><i class="fa-solid fa-truck-fast"></i><span>Ongoing</span></a></li>
     <li><a href="<?= URLROOT ?>/dpaccounts/revenueCheck"><i class="fa-solid fa-hand-holding-dollar"></i><span>Revenue</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpersons/neworder"><i class="fas fa-shopping-cart"></i><span>New Orders</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpersons/ongoingDeliveries"><i class="fa-solid fa-truck-fast"></i><span>Ongoing</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpersons/history"><i class="fas fa-history"></i><span>Delivery History</span></a></li>
+    <li><a href="<?= URLROOT ?>/orderControllers/showcomplaint_sb"><i class="fa-solid fa-triangle-exclamation"></i><span>Complaints</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpaccounts/account"><i class="fas fa-user"></i><span>Profile</span></a></li>
+    <li><a href="<?= URLROOT ?>/dpaccounts/vehicleinfo"><i class="fas fa-truck"></i><span>Vehicle</span></a></li>
     <!-- Logout -->
     <li><a href="javascript:void(0)" onclick="showPopup()"><i class="fa-solid fa-right-from-bracket fa-rotate-180"></i><span>Logout</span></a></li>
   </ul>

@@ -1,3 +1,9 @@
+body {
+  background-color: #d4f0d1;
+  margin: 0;
+  padding: 0;
+}
+
 .login-container {
   display: flex;
   height:34.6em;
@@ -353,4 +359,21 @@
   cursor: pointer;
   font-size: 20px; /* Adjust icon size */
   color: #333; /* Icon color */
+}
+
+/* Add to: /public/css/users/login.css */
+.forgot-password {
+    text-align: right;
+    margin-bottom: 15px;
+}
+
+.forgot-password a {
+    color: #666;
+    font-size: 14px;
+    text-decoration: none;
+}
+
+.forgot-password a:hover {
+    color: green;
+    text-decoration: underline;
 }

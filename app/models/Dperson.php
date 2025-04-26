@@ -166,7 +166,8 @@ class Dperson extends Database{
               address ON farmers.address_id = address.address_id
           WHERE 
               address.City = :deliveryArea  
-              AND  (order_success.status = "ready" OR order_success.status = "processing")
+              AND  (order_success.status = "ready" OR order_success.status = "pending")
+              AND order_success.dropAddress IS NOT NULL
       ');
       
       $this->db->bind(':deliveryArea', $deliveryArea);
@@ -184,7 +185,14 @@ class Dperson extends Database{
         $this->db->execute();
     
         // Retrieve buyer_id and product_name after the update
-        $this->db->query('SELECT buyerID, product FROM order_success WHERE orderID = :orderId');
+        $this->db->query('SELECT os.orderID, os.buyerID, os.product, fp.fproduct_id AS product_id, fp.farmer_id
+        FROM 
+            order_success os
+        JOIN 
+            fproducts fp ON os.productID = fp.fproduct_id
+        WHERE 
+            os.orderID = :orderId');
+
         $this->db->bind(':orderId', $orderId);
         return $this->db->single(); // returns an associative array with buyer_id and product_name
     }    
@@ -214,7 +222,7 @@ class Dperson extends Database{
                 address ON farmers.address_id = address.address_id
             WHERE 
                 address.City = :deliveryArea  
-                AND order_success.status = "ongoing"
+                AND (order_success.status = "ongoing" OR order_success.status = "picked_up")
         ');
         
         $this->db->bind(':deliveryArea', $deliveryArea);
@@ -235,6 +243,31 @@ class Dperson extends Database{
             return $this->db->lastInsertId();
         }
         return false;
+    }
+
+    public function updateOrderStatus($orderId){
+        $this->db->query("UPDATE order_success SET status = :status WHERE orderID = :id");
+        $this->db->bind(':status', 'picked_up');
+        $this->db->bind(':id', $orderId);
+
+        return $this->db->execute();
+    }
+
+    public function getOrderById($orderId){
+        $this->db->query("
+            SELECT 
+                os.*, 
+                fp.farmer_id, 
+                fp.fproduct_id AS product_id
+            FROM 
+                order_success os
+            JOIN 
+                fproducts fp ON os.productID = fp.fproduct_id
+            WHERE 
+                os.orderID = :id
+        ");
+        $this->db->bind(':id', $orderId);
+        return $this->db->single();
     }
 
     public function saveDropoffImage($delivery_id, $dropoffImagePath) {
@@ -273,11 +306,27 @@ class Dperson extends Database{
         return false;
     }
 
+    public function getDeliverySummary($deliveryId) {
+        $this->db->query("SELECT os.orderID, os.buyerID, os.product, fp.fproduct_id AS product_id, fp.farmer_id
+        FROM 
+            order_success os
+        JOIN 
+            fproducts fp ON os.productID = fp.fproduct_id
+        WHERE 
+            os.orderID = :orderId");
+    
+        $this->db->bind(':orderId', $deliveryId);
+        
+        return $this->db->single();
+    }
+    
+
         public function deleteAccount($userId)
         {
-        $sql = "DELETE FROM delivery_persons WHERE id = :userId";
+        $sql = "UPDATE delivery_persons SET status = :status WHERE id = :userId";
         $this->db->query($sql);
         $this->db->bind(':userId', $userId);
+        $this->db->bind(':status', 'deactivated');
 
         // Execute the query and return true if successful, false otherwise
         return $this->db->execute();

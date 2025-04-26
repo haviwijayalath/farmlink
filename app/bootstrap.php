@@ -7,6 +7,7 @@
   require_once 'helpers/session_helper.php';
   require_once 'models/Notification.php'; // model required for notification
   require_once 'helpers/notification_helper.php'; // helper for notification
+  require_once 'helpers/mailer_config.php'; // mailer config
 
   // autoload core libraries
   spl_autoload_register(function($className) {

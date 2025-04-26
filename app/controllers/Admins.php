@@ -111,11 +111,8 @@
     
             // Take action based on decision
             if ($faultBy === 'farmer') {
-                $this->complaintModel->deactivateFarmer($farmer_id);
-            } elseif ($faultBy === 'delivery') {
-                $this->complaintModel->deactivateDperson($delivery_id);
+                $this->complaintModel->deductFarmerRating($farmer_id);
             }
-    
             flash('complaint_msg', 'Complaint resolved and action taken.');
             redirect('admins/viewComplaints');
         } else {
@@ -135,11 +132,27 @@
   
       $this->view('admin/complaints/complaints', $data);
   }
+
+    public function filterReports() {
+      $role = $_GET['role'] ?? '';
+
+      $reports = $this->complaintModel->getFilteredReports($role);
+
+      $data = [
+          'users' => $reports,
+          'selected_role' => $role
+      ];
+
+      $this->view('admin/reports', $data);
+    }
   
     
     public function viewReports() { 
+
+      $users = $this->adminModel->getUsers();
+      $data = ['users' => $users];
       
-      $this->view('admin/reports');
+      $this->view('admin/reports', $data);
 
     }
 

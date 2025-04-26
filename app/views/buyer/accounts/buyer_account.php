@@ -5,7 +5,7 @@
 
 <?php require APPROOT . '/views/inc/sidebars/buyer_sidebar.php'; ?>
 
-    <div class="account-container">
+    <div class="account-container" style="margin-top: 170px; margin-left: 250px;">
         <div class="account-content">
             <div class="profile-info">
 
@@ -18,7 +18,7 @@
                         <strong>Name:</strong><?= $data['name'] ?>
                     </div>
                     <div class="detail-item">
-                        <strong>Phone Number:</strong><?= $data['phone_num'] ?>
+                        <strong>Phone:</strong><?= $data['phone_num'] ?>
                     </div>
                     <div class="detail-item">
                         <strong>Email:</strong><?= $data['email'] ?>

@@ -29,14 +29,15 @@ class Buyer extends Database
         $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
 
         // Now, insert the buyer data along with the address ID as a foreign key
-        $this->db->query('INSERT INTO buyers (name, password, email, phone, address_id) 
-                            VALUES (:name, :password, :email, :phone, :address_id)');
+        $this->db->query('INSERT INTO buyers (name, password, email, phone, address_id, status) 
+                            VALUES (:name, :password, :email, :phone, :address_id, :status)');
 
         $this->db->bind(':name', $data['name']);
         $this->db->bind(':email', $data['email']);
         $this->db->bind(':phone', $data['phone']);
         $this->db->bind(':password', $data['password']);
         $this->db->bind(':address_id', $address_id);
+        $this->db->bind(':status', 'approved');
 
         // Execute the delivery person insertion
         return $this->db->execute();
@@ -90,9 +91,10 @@ class Buyer extends Database
     public function deleteAccount($userID)
     {
         $this->db->query('
-            delete from buyers where id = :userID
+            update buyers set status = :status where id = :userID
         ');
         $this->db->bind(':userID', $userID);
+        $this->db->bind(':status', 'deactivated');
 
         // Execute the query and return true if successful, false otherwise
         return $this->db->execute();
@@ -101,7 +103,7 @@ class Buyer extends Database
     public function getCartItems()
     {
         $this->db->query('
-            SELECT c.cart_id, c.quantity, c.price, p.name,  p.price, c.product_id 
+            SELECT c.cart_id, c.quantity, c.price, p.name,  p.price, c.product_id, c.status
             FROM buyer_carts c
             JOIN fproducts p ON c.product_id = p.fproduct_id
             WHERE c.buyer_id = :buyer_id
@@ -137,7 +139,7 @@ class Buyer extends Database
             // If an item exists, update it instead of adding a new one
             $this->db->query('
             UPDATE buyer_carts 
-            SET product_id = :product_id, quantity = :quantity, price = :price 
+            SET product_id = :product_id, quantity = :quantity, price = :price , status = "pending" 
             WHERE buyer_id = :buyer_id
             ');
 
@@ -145,11 +147,12 @@ class Buyer extends Database
             $this->db->bind(':quantity', $data['quantity']);
             $this->db->bind(':buyer_id', $data['buyer_id']);
             $this->db->bind(':price', $product->price);
+
         } else {
             // If no item exists, insert a new one
             $this->db->query('
-            INSERT INTO buyer_carts (buyer_id, product_id, quantity, price) 
-            VALUES (:buyer_id, :product_id, :quantity, :price)
+            INSERT INTO buyer_carts (buyer_id, product_id, quantity, price, status) 
+            VALUES (:buyer_id, :product_id, :quantity, :price , "pending")
             ');
 
             $this->db->bind(':buyer_id', $data['buyer_id']);
@@ -205,7 +208,7 @@ class Buyer extends Database
     public function getProducts($filter_vars)
     {
 
-        $query = 'SELECT * FROM fproducts';
+        $query = 'SELECT * FROM fproducts WHERE exp_date > NOW() AND stock > 0';
         $orderBy = [];
         $whereConditions = [];
 
@@ -235,7 +238,7 @@ class Buyer extends Database
 
             // Add WHERE clause if conditions exist
             if (!empty($whereConditions)) {
-                $query .= ' WHERE ' . implode(' AND ', $whereConditions);
+                $query .= implode(' AND ', $whereConditions);
             }
 
             // Add ORDER BY clause if ordering exists
@@ -253,18 +256,42 @@ class Buyer extends Database
 
     public function getProductById($id)
     {
-        $this->db->query('SELECT p.name as productName, p.description, p.price, p.stock, p.image as productImage, p.exp_date, f.id as farmerId, f.name as farmerName, f.image as farmerImage, f.email FROM fproducts p JOIN farmers f ON f.id = p.farmer_id WHERE fproduct_id = :id');
+        $this->db->query('SELECT p.name as productName, p.description, p.price, p.stock, p.image as productImage, p.exp_date, f.id as farmerId, f.name as farmerName, f.image as farmerImage, f.email, f.rate FROM fproducts p JOIN farmers f ON f.id = p.farmer_id WHERE fproduct_id = :id');
         $this->db->bind(':id', $id);
 
-        $row = $this->db->single();
+        $this->db->bind(':id', $id);
+        $product = $this->db->single();
 
-        return $row;
+        // Step 2: Get reviews for the product
+        $this->db->query('
+        SELECT 
+            r.description, 
+            r.rating, 
+            r.image as reviewImage, 
+            r.created_at, 
+            b.name as buyerName, 
+            fp.farmer_id,
+            r.farmer_id
+        FROM farmer_reviews r 
+        JOIN buyers b ON b.id = r.buyer_id
+        JOIN fproducts fp ON fp.fproduct_id = :id
+        WHERE r.farmer_id = fp.farmer_id 
+        ORDER BY r.created_at DESC
+    ');
+    $this->db->bind(':id', $id);
+    $reviews = $this->db->resultSet();
+
+    // Combine both into one data object/array
+    return (object)[
+        'product' => $product,
+        'reviews' => $reviews
+    ];
     }
 
     public function getWishlistItem()
     {
         $this->db->query('
-            SELECT w.wishlist_id, f.name, f.exp_date, f.price, f.fproduct_id
+            SELECT w.wishlist_id, f.name, f.exp_date, f.price, f.stock, f.fproduct_id
             FROM wishlist w 
             JOIN fproducts f ON w.product_id = f.fproduct_id
             WHERE w.buyer_id = :buyer_id
@@ -408,7 +435,7 @@ class Buyer extends Database
     {
         $this->db->query('
             SELECT op.orderProcessID, op.productId, p.name AS productName, op.quantity, 
-                   op.farmerFee, op.deliveryFee, op.dropAddress
+                   op.farmerFee, op.deliveryFee, op.dropAddress ,op.cartID, p.farmer_id 
             FROM order_process op
             JOIN fproducts p ON op.productId = p.fproduct_id
             WHERE op.orderProcessID = :id
@@ -453,5 +480,17 @@ class Buyer extends Database
 
         // Return the stock value or null if no result is found
         return $row ? $row->stock : null;
+    }
+
+    public function update_cart_status($cartID) {
+        // Prepare the SQL query
+        $this->db->query('UPDATE buyer_carts SET status = :status WHERE cart_id = :id');
+        
+        // Bind values
+        $this->db->bind(':id', $cartID);
+        $this->db->bind(':status', 'success');
+    
+        // Execute the query and return the result
+        return $this->db->execute();
     }
 }
