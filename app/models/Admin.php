@@ -1,5 +1,5 @@
 <?php
-class Admin extends Database{
+class Admin extends Database {
   private $db;
 
     public function __construct()
@@ -331,7 +331,7 @@ public function getTopSellingProducts($limit = 5) {
     return $this->db->single();
   }
 
-    public function getUsers()
+  
     public function getUsers()
     {
         $tables = [
