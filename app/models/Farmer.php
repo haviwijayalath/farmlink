@@ -378,6 +378,19 @@ class Farmer
     }
   }
 
+  public function deliveryRequested($orderID)
+  {
+    $this->db->query('SELECT dropAddress FROM order_success WHERE orderID = :order_id');
+    $this->db->bind(':order_id', $orderID);
+    $row = $this->db->single();
+
+    if ($row) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   // Get delivery person id by orderID
   public function dpersonIdOfOrder($orderID)
   {
