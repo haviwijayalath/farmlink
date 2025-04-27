@@ -1,7 +1,7 @@
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/sidebars/buyer_sidebar.css">
 
 
-<div class="sidebar" style="width: 200px; margin-top: 120px ;">
+<div class="sidebar" style="width: 200px; margin-top: 80px ; padding-top: 100px ">
       <ul>
         <li><a href="<?php echo URLROOT?>"><i class="fa-solid fa-house"></i> <span>Home </span></a></li>
         <li><a href="<?php echo URLROOT?>/Buyercontrollers/viewprofile"><i class="fas fa-user"></i><span> Account</span> </a></li>
