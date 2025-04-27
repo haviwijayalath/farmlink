@@ -64,7 +64,7 @@
 
                         <div class="cell title">Pic-After</div>
                         <div class="cell">
-                            <img src="<?= URLROOT ?>/public/d_uploads/<?= htmlspecialchars($data['orders']->pic_after); ?>" alt="Pic After" class="order-image">
+                        <img src="<?= URLROOT ?>/public/d_uploads/<?= htmlspecialchars($data['orders']->pic_after); ?>" alt="Pic After" class="order-image">
                         </div>
                     </div>
 

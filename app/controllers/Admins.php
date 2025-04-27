@@ -1,20 +1,22 @@
 <?php
-  class Admins extends Controller {
-    private $adminModel;
-    private $complaintModel;
-    
-    public function __construct() {
-      if (!isAdmin()) {
-        redirect('users/login');
+class Admins extends Controller
+{
+  private $adminModel;
+  private $complaintModel;
+
+  public function __construct()
+  {
+    if (!isAdmin()) {
+      redirect('users/login');
     }
 
-    $this->adminModel = $this->model('Admin'); 
+    $this->adminModel = $this->model('Admin');
     $this->complaintModel = $this->model('Complaint');
-    
-    }
+  }
 
   // Dashboard
-  public function index() {
+  public function index()
+  {
     $data = [
       'stats'           => $this->adminModel->getDashboardStats(),
       'salesByLocation' => $this->adminModel->getSalesByLocation(),
@@ -25,12 +27,14 @@
   }
 
   // Users list
-  public function users() {
+  public function users()
+  {
     $users = $this->adminModel->getAllUsers();
     $this->view('admin/users', ['users' => $users]);
   }
 
   // Orders list
+
   public function orders() {
     // grab filters from GET 
     $status    = $_GET['status']     ?? '';
@@ -52,152 +56,273 @@
   }
 
 
-    public function order_details() { 
+  public function order_details() { 
       
-      $this->view('admin/order_detail');
+    $this->view('admin/order_detail');
+  }
 
-    }
+  public function viewComplaints()
+  {
+    $complaints = $this->complaintModel->getComplaints();
 
-    public function viewComplaints() {
-      $complaints = $this->complaintModel->getComplaints();
+    $data = [
+      'complaints' => $complaints
+    ];
 
+    $this->view('admin/complaints/complaints', $data);
+  }
+
+
+  public function manageComplaint($complaint_id)
+  {
+    $complaint = $this->complaintModel->getComplaintById($complaint_id);
+
+    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+      // Sanitize POST data
+      $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
+
+      $adminNote = trim($_POST['admin_note']);
+      $faultBy = isset($_POST['fault_by']) ? trim($_POST['fault_by']) : '';
+
+      $errors = [];
+
+      // Validate admin note
+      if (empty($adminNote)) {
+        $errors['admin_note'] = 'Admin note is required.';
+      }
+
+      // Validate fault radio
+      if (empty($faultBy)) {
+        $errors['fault_by'] = 'Fault selection is required.';
+      }
+
+      if (empty($errors)) {
+        // No errors, proceed to update complaint in DB
+        $this->complaintModel->resolveComplaint($complaint_id, $adminNote, $faultBy);
+
+        // Redirect or set success message
+        flash('complaint_message', 'Complaint resolved successfully!');
+        redirect('admin/complaints');
+      } else {
+        // Return errors back to the view
+        $data = [
+          'complaint' => $complaint,
+          'errors' => $errors,
+          'admin_note' => $adminNote,
+          'fault_by' => $faultBy
+        ];
+        $this->view('admin/complaints/manage', $data);
+      }
+    } else {
+      // If GET request, just load the complaint page
       $data = [
-          'complaints' => $complaints
+        'complaint' => $complaint,
+        'errors' => [],
+        'admin_note' => '',
+        'fault_by' => ''
       ];
-
-      $this->view('admin/complaints/complaints', $data);
-    }
-
-    public function manageComplaint($complaint_id) {
-      $complaint = $this->complaintModel->getComplaintById($complaint_id);
-      $data = [
-          'complaint' => $complaint
-      ];
-
       $this->view('admin/complaints/manage', $data);
     }
+  }
 
-    public function show($id) {
-      // Fetch all complaints using the existing model function
-      $complaints = $this->complaintModel->getComplaints();
-  
-      // Filter the complaint matching the ID
-      $selectedComplaint = null;
-      foreach ($complaints as $complaint) {
-          if ($complaint->complaint_id == $id) {
-              $selectedComplaint = $complaint;
-              break;
-          }
+  public function show($id)
+  {
+    // Fetch all complaints using the existing model function
+    $complaints = $this->complaintModel->getComplaints();
+
+    // Filter the complaint matching the ID
+    $selectedComplaint = null;
+    foreach ($complaints as $complaint) {
+      if ($complaint->complaint_id == $id) {
+        $selectedComplaint = $complaint;
+        break;
       }
-  
-      if (!$selectedComplaint) {
-          flash('complaint_msg', 'Complaint not found');
-          redirect('admin/complaints');
-      }
-  
-      // Send data to the view
-      $this->view('admin/complaints/show', ['complaint' => $selectedComplaint]);
     }
 
-    public function resolve($complaint_id) {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-            $faultBy = $_POST['fault_by'];
-            $adminNotes = trim($_POST['admin_notes']);
-    
-            // Sanitize inputs (basic level, can enhance as needed)
-            $faultBy = htmlspecialchars($faultBy);
-            $adminNotes = htmlspecialchars($adminNotes);
-    
-            // Load the complaint
-            $complaint = $this->complaintModel->getComplaintById($complaint_id);
-    
-            if (!$complaint) {
-                die("Complaint not found");
-            }
-    
-            $order_id = $complaint->order_id;
-    
-            // Fetch involved users based on order ID
-            $farmer_id = $complaint->farmer_id;
-            $delivery_id = $complaint->delivery_person_id;
-    
-            // Update complaint record with decision and notes
-            $this->complaintModel->resolveComplaint($complaint_id, $faultBy, $adminNotes);
-    
-            // Take action based on decision
-            if ($faultBy === 'farmer') {
-                $this->complaintModel->deductFarmerRating($farmer_id);
-            }
-            flash('complaint_msg', 'Complaint resolved and action taken.');
-            redirect('admins/viewComplaints');
-        } else {
-            redirect('admins/viewComplaints');
+    if (!$selectedComplaint) {
+      // Optional: flash message or redirect
+      flash('complaint_msg', 'Complaint not found');
+      redirect('admin/complaints');
+    }
+
+    // Send data to the view
+    $this->view('admin/complaints/show', ['complaint' => $selectedComplaint]);
+  }
+
+  public function resolve($complaint_id)
+{
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        $faultBy = isset($_POST['fault_by']) ? trim($_POST['fault_by']) : '';
+        $adminNotes = isset($_POST['admin_notes']) ? trim($_POST['admin_notes']) : '';
+
+        // Sanitize inputs
+        $faultBy = htmlspecialchars($faultBy);
+        $adminNotes = htmlspecialchars($adminNotes);
+
+        // Load the complaint
+        $complaint = $this->complaintModel->getComplaintById($complaint_id);
+
+        if (!$complaint) {
+            die("Complaint not found");
         }
-    }
 
-    public function filterComplaints() {
-      $role = $_GET['role'] ?? '';
-      $status = $_GET['status'] ?? '';
-  
-      $complaints = $this->complaintModel->getFilteredComplaints($role, $status);
-  
-      $data = [
-          'complaints' => $complaints
-      ];
-  
-      $this->view('admin/complaints/complaints', $data);
+        // Validate inputs
+        $errors = [];
+
+        if (empty($faultBy)) {
+            $errors['fault_by'] = 'You must select who is at fault.';
+        }
+
+        if (empty($adminNotes)) {
+            $errors['admin_notes'] = 'You must provide admin notes.';
+        }
+
+        if (!empty($errors)) {
+            // If errors exist, reload the form with errors
+            $data = [
+                'complaint' => $complaint,
+                'errors' => $errors,
+                'fault_by' => $faultBy,
+                'admin_notes' => $adminNotes
+            ];
+
+            $this->view('admin/complaints/manage', $data);
+            return;
+        }
+
+        $order_id = $complaint->order_id;
+        $farmer_id = $complaint->farmer_id;
+        $delivery_id = $complaint->delivery_person_id;
+
+        // Update complaint record
+        $this->complaintModel->resolveComplaint($complaint_id, $faultBy, $adminNotes);
+
+        // Take action based on decision
+        if ($faultBy === 'farmer') {
+            $this->complaintModel->deductFarmerRating($farmer_id);
+        }
+
+        flash('complaint_msg', 'Complaint resolved and action taken.');
+        redirect('admins/viewComplaints');
+    } else {
+        redirect('admins/viewComplaints');
+    }
+}
+
+  public function filterComplaints()
+  {
+    $role = $_GET['role'] ?? '';
+    $status = $_GET['status'] ?? '';
+
+    $complaints = $this->complaintModel->getFilteredComplaints($role, $status);
+
+    $data = [
+      'complaints' => $complaints
+    ];
+
+    $this->view('admin/complaints/complaints', $data);
   }
 
-    public function filterReports() {
-      $role = $_GET['role'] ?? '';
+  public function filterReports()
+  {
+    $role = $_GET['role'] ?? '';
 
-      $reports = $this->complaintModel->getFilteredReports($role);
+    $reports = $this->complaintModel->getFilteredReports($role);
+    $reports = $this->complaintModel->getFilteredReports($role);
 
-      $data = [
-          'users' => $reports,
-          'selected_role' => $role
-      ];
+    $data = [
+      'users' => $reports,
+      'selected_role' => $role
+    ];
+    $data = [
+      'users' => $reports,
+      'selected_role' => $role
+    ];
 
-      $this->view('admin/reports', $data);
+    $this->view('admin/reports', $data);
+  }
+
+
+  public function viewReports()
+  {
+    $users = $this->adminModel->getUsers();
+
+    $farmers = [];
+    $deliveryPersons = [];
+    $totalFarmerRevenue = 0;
+    $totalDeliveryRevenue = 0;
+
+    foreach ($users as $user) {
+      if ($user->role === 'Farmer') {
+        $user->revenues = $this->adminModel->getTotalRevenue($user->id, null);
+        $farmers[] = $user;
+        $totalFarmerRevenue += $user->revenues->total_farmer_fee ?? 0;
+      } elseif ($user->role === 'Delivery_Person') {
+        $user->revenues = $this->adminModel->getTotalRevenue(null, $user->id);
+        $deliveryPersons[] = $user;
+        $totalDeliveryRevenue += $user->revenues->total_delivery_fee ?? 0;
+      }
     }
-  
-    
-    public function viewReports() { 
 
-      $users = $this->adminModel->getUsers();
-      $data = ['users' => $users];
-      
-      $this->view('admin/reports', $data);
+    $data = [
+      'farmers' => $farmers,
+      'deliveryPersons' => $deliveryPersons,
+      'totalFarmerRevenue' => $totalFarmerRevenue,
+      'totalDeliveryRevenue' => $totalDeliveryRevenue
+    ];
 
-    }
+    $this->view('admin/reports', $data);
+  }
 
-  // Products list
-  public function products() {
+  //   public function viewMonthlyRevenue($userId, $role = null)
+  // {
+  //     if ($role === null) {
+  //         die('Role is missing!'); // Don't proceed if role is missing
+  //     }
+
+  //     $monthlyRevenue = $this->adminModel->getMonthlyRevenue($userId, $role);
+
+  //     $this->view('admin/monthly_revenue', [
+  //         'monthlyRevenue' => $monthlyRevenue,
+  //         'role' => $role
+  //     ]);
+  // }
+
+  public function viewProducts()
+  {
+
     $products = $this->adminModel->getProducts();
-    $this->view('admin/products', ['products' => $products]);
+
+    $data = [
+      'products' => $products
+    ];
+    $this->view('admin/products', $data);
   }
-  public function viewProducts() { $this->products(); }
+
 
   // Single product
-  public function productDetails($id) {
+  public function productDetails($id)
+  {
     $product = $this->adminModel->getProductById($id);
     if (!$product) die("Product not found");
     $this->view('admin/productDetails', ['product' => $product]);
   }
 
   // Show profile
-  public function account() {
+  public function account()
+  {
     $adminId = $_SESSION['admin_id'];
     $admin   = $this->adminModel->getAdminById($adminId);
     if (!$admin) {
-      flash('user_error','Admin not found','alert alert-danger');
+      flash('user_error', 'Admin not found', 'alert alert-danger');
       redirect('users/login');
     }
     $this->view('admin/account', ['admin' => $admin]);
   }
 
   // EDIT PROFILE
-  public function editAccount() {
+  public function editAccount()
+  {
     $adminId = $_SESSION['admin_id'];
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $data = [
@@ -218,7 +343,8 @@
   }
 
   // CHANGE PASSWORD
-  public function changepwrd() {
+  public function changepwrd()
+  {
     $adminId = $_SESSION['admin_id'];
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $current = $_POST['current_password'];
@@ -226,13 +352,13 @@
       $confirm = $_POST['confirm_password'];
 
       if ($new !== $confirm) {
-        return $this->view('admin/changePwrd', ['error'=>'Passwords do not match']);
+        return $this->view('admin/changePwrd', ['error' => 'Passwords do not match']);
       }
 
       if ($this->adminModel->changePassword($adminId, $current, $new)) {
         redirect('admins/account');
       } else {
-        return $this->view('admin/changePwrd', ['error'=>'Current password incorrect']);
+        return $this->view('admin/changePwrd', ['error' => 'Current password incorrect']);
       }
     } else {
       $this->view('admin/changePwrd');
@@ -240,7 +366,8 @@
   }
 
   // Deactivate
-  public function deactivateConfirmation() {
+  public function deactivateConfirmation()
+  {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       $this->adminModel->deactivateAccount($_SESSION['admin_id']);
       session_destroy();

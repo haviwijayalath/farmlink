@@ -238,7 +238,7 @@ class Buyer extends Database
 
             // Add WHERE clause if conditions exist
             if (!empty($whereConditions)) {
-                $query .= implode(' AND ', $whereConditions);
+                $query .= ' AND ' . implode(' AND ', $whereConditions);
             }
 
             // Add ORDER BY clause if ordering exists

@@ -84,13 +84,13 @@ class orderControllers extends Controller{
 
         // Set fee
         $baseFee = 200; // fixed base fee
-        $ratePerKm = 30; // you can adjust this
+        $ratePerKm = 10; // you can adjust this
         $deliveryFee = ($distance !== null) ? $baseFee + ($ratePerKm * $distance) : $baseFee;
 
         $data['delivery_fee'] = round($deliveryFee, 2); // Store it in $data
         $data['drop_addr'] = $dropoffLocation;
 
-        // ✅ DEBUG PRINT BLOCK (Remove these when done)
+        // DEBUG PRINT BLOCK (Remove these when done)
         //echo "<h3>DEBUG INFO:</h3>";
         //echo "<p><strong>Pickup Location:</strong> {$pickupLocation}</p>";
         //echo "<p><strong>Dropoff Location:</strong> {$dropoffLocation}</p>";
@@ -98,7 +98,7 @@ class orderControllers extends Controller{
         //echo "<p><strong>Delivery Fee (Rs):</strong> {$data['delivery_fee']}</p>";
         //echo "<pre>"; print_r($data); echo "</pre>";
         //exit; // stop here so you can view debug output 👈
-        // ✅ END DEBUG BLOCK
+        // END DEBUG BLOCK
 
         // Validate data
         if ($this->validateAddress($data)) {
@@ -258,7 +258,7 @@ class orderControllers extends Controller{
                 'info'                        // type of notification
             );
     
-            // ✅ REDIRECT to avoid form resubmission
+            // REDIRECT to avoid form resubmission
             redirect('orderControllers/showcomplaint_sb');
         } else {
             // Optional: prevent direct access via GET
@@ -276,7 +276,7 @@ class orderControllers extends Controller{
             // Save complaint to the database
             $this->orderModel->submitComplaint($userId, $role, $orderId, $description);
     
-            // ✅ REDIRECT to avoid form resubmission
+            //REDIRECT to avoid form resubmission
             redirect('orderControllers/show_buyer_complaint');
         } else {
             // Optional: prevent direct access via GET

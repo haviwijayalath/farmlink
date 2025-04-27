@@ -1,15 +1,18 @@
 <?php
-class Admin extends Database {
+class Admin extends Database
+{
   private $db;
 
-  public function __construct() {
+  public function __construct()
+  {
     $this->db = new Database;
   }
 
   /**
    * Dashboard statistics
    */
-  public function getDashboardStats() {
+  public function getDashboardStats()
+  {
     // 1) Count each role table
     // We can do it in one SQL with sub‑selects:
     $this->db->query("
@@ -20,28 +23,28 @@ class Admin extends Database {
         (SELECT COUNT(*) FROM consultants)       AS totalConsultants,
         (SELECT COUNT(*) FROM delivery_persons)  AS totalDeliveryPersons
     ");
-    $users = $this->db->single();  
+    $users = $this->db->single();
     // Sum them up
-    $totalUsers = 
-          $users->totalAdmins
-        + $users->totalFarmers
-        + $users->totalBuyers
-        + $users->totalConsultants
-        + $users->totalDeliveryPersons;
-  
+    $totalUsers =
+      $users->totalAdmins
+      + $users->totalFarmers
+      + $users->totalBuyers
+      + $users->totalConsultants
+      + $users->totalDeliveryPersons;
+
     // 2) Total orders — use your order_buyer table (or whatever you name it)
     $this->db->query("SELECT COUNT(*) AS totalOrders FROM order_success");
     $totalOrders = $this->db->single()->totalOrders;
-  
+
     // 3) Total complaints
     $this->db->query("SELECT COUNT(*) AS totalComplaints FROM complaints");
     $totalComplaints = $this->db->single()->totalComplaints;
-  
+
     // 4) Total “reports”
     // If you have a product_reviews table and you want to treat those as “reports”:
     $this->db->query("SELECT COUNT(*) AS totalReports FROM fproducts_reviews");
     $totalReports = $this->db->single()->totalReports;
-  
+
     return [
       'totalUsers'      => $totalUsers,
       'totalOrders'     => $totalOrders,
@@ -50,7 +53,8 @@ class Admin extends Database {
     ];
   }
 
-  public function getSalesByLocation() {
+  public function getSalesByLocation()
+  {
     $this->db->query("
         SELECT oba.city,
                SUM(os.famersFee + os.deliveryFee) AS total
@@ -62,16 +66,17 @@ class Admin extends Database {
     $rows = $this->db->resultSet();
     $out = [];
     foreach ($rows as $r) {
-        $out[$r->city] = (float)$r->total;
+      $out[$r->city] = (float)$r->total;
     }
     return $out;
-}
+  }
 
-/**
- *  Sales by product category
- *  JOIN order_success → fproducts
- */
-public function getSalesByCategory() {
+  /**
+   *  Sales by product category
+   *  JOIN order_success → fproducts
+   */
+  public function getSalesByCategory()
+  {
     $this->db->query("
         SELECT p.type AS category,
                SUM(os.famersFee + os.deliveryFee) AS total
@@ -83,15 +88,16 @@ public function getSalesByCategory() {
     $rows = $this->db->resultSet();
     $out = [];
     foreach ($rows as $r) {
-        $out[$r->category] = (float)$r->total;
+      $out[$r->category] = (float)$r->total;
     }
     return $out;
-}
+  }
 
-/**
- *  Top selling products (by quantity)
- */
-public function getTopSellingProducts($limit = 5) {
+  /**
+   *  Top selling products (by quantity)
+   */
+  public function getTopSellingProducts($limit = 5)
+  {
     $this->db->query("
         SELECT
           p.fproduct_id AS id,
@@ -110,21 +116,22 @@ public function getTopSellingProducts($limit = 5) {
     $rows = $this->db->resultSet();
     $out = [];
     foreach ($rows as $r) {
-        $out[] = [
-          'id'       => $r->id,
-          'name'     => $r->name,
-          'category' => $r->category,
-          'quantity' => (int)$r->quantity,
-          'revenue'  => (float)$r->revenue
-        ];
+      $out[] = [
+        'id'       => $r->id,
+        'name'     => $r->name,
+        'category' => $r->category,
+        'quantity' => (int)$r->quantity,
+        'revenue'  => (float)$r->revenue
+      ];
     }
     return $out;
-}
-  
+  }
+
   /**
    * User management
    */
-  public function getAllUsers() {
+  public function getAllUsers()
+  {
     $this->db->query("
       SELECT id, name, email, 'admin' AS role, status, createdAt FROM admins
       UNION ALL
@@ -139,14 +146,16 @@ public function getTopSellingProducts($limit = 5) {
     ");
     return $this->db->resultSet();
   }
-  
-  public function suspendUser($userId) {
+
+  public function suspendUser($userId)
+  {
     $this->db->query("UPDATE users SET status = 'suspended' WHERE id = :id");
     $this->db->bind(':id', $userId);
     return $this->db->execute();
   }
 
-  public function activateUser($userId) {
+  public function activateUser($userId)
+  {
     $this->db->query("UPDATE users SET status = 'active' WHERE id = :id");
     $this->db->bind(':id', $userId);
     return $this->db->execute();
@@ -155,7 +164,8 @@ public function getTopSellingProducts($limit = 5) {
   /**
    * Order management
    */
-  public function getAllOrders() {
+  public function getAllOrders()
+  {
     $this->db->query("
       SELECT
         os.orderID       AS id,
@@ -172,7 +182,8 @@ public function getTopSellingProducts($limit = 5) {
     return $this->db->resultSet();
   }
 
-  public function getOrderById($orderId) {
+  public function getOrderById($orderId)
+  {
     $this->db->query("
       SELECT
         os.orderID       AS id,
@@ -197,10 +208,11 @@ public function getTopSellingProducts($limit = 5) {
     return $this->db->single();
   }
 
-    /**
+  /**
    * Fetch all line‐items for a given orderID
    */
-  public function getOrderItems($orderId) {
+  public function getOrderItems($orderId)
+  {
     $this->db->query("
       SELECT
         os.productID   AS sku,
@@ -212,13 +224,15 @@ public function getTopSellingProducts($limit = 5) {
       WHERE os.orderID = :id
     ");
     $this->db->bind(':id', $orderId);
+
     return $this->db->resultSet();
   }
 
   /**
    * Complaint management
    */
-  public function getAllComplaints() {
+  public function getAllComplaints()
+  {
     $this->db->query("
       SELECT
         c.id,
@@ -246,7 +260,8 @@ public function getTopSellingProducts($limit = 5) {
     return $this->db->resultSet();
   }
 
-  public function resolveComplaint($complaintId, $faultBy = null, $adminNotes = null) {
+  public function resolveComplaint($complaintId, $faultBy = null, $adminNotes = null)
+  {
     $this->db->query("
       UPDATE complaints
          SET status      = 'resolved',
@@ -262,7 +277,8 @@ public function getTopSellingProducts($limit = 5) {
   /**
    * Report management
    */
-  public function getAllReports() {
+  public function getAllReports()
+  {
     $this->db->query("
       SELECT r.id, r.title, r.description, r.created_at,
              u.name AS userName
@@ -276,9 +292,11 @@ public function getTopSellingProducts($limit = 5) {
   /**
    * Product management
    */
-  public function getProducts() {
+  public function getProducts()
+  {
     $this->db->query("
       SELECT
+
         p.fproduct_id   AS id,
         p.name          AS productName,
         p.price,
@@ -293,7 +311,8 @@ public function getTopSellingProducts($limit = 5) {
     return $this->db->resultSet();
   }
 
-  public function getProductById($productId) {
+  public function getProductById($productId)
+  {
     $this->db->query("
       SELECT
         p.fproduct_id   AS id,
@@ -316,11 +335,12 @@ public function getTopSellingProducts($limit = 5) {
     $this->db->bind(':id', $productId);
     return $this->db->single();
   }
-
+  
   /**
    * Admin account management
    */
-  public function getAdminById($adminId) {
+  public function getAdminById($adminId)
+  {
     $this->db->query("
       SELECT id, name, email, phone, password
       FROM admins
@@ -330,32 +350,60 @@ public function getTopSellingProducts($limit = 5) {
     return $this->db->single();
   }
 
+
+
   public function getUsers()
-    {
-        $tables = [
-            'farmers' => 'Farmer',
-            'delivery_persons' => 'Delivery_Person',
-        ];
+  {
+    $tables = [
+      'farmers' => 'Farmer',
+      'delivery_persons' => 'Delivery_Person',
+    ];
 
-        $users = [];
+    $users = [];
 
-        foreach ($tables as $table => $roleName) {
-            $this->db->query("SELECT id, name FROM $table");
-            $result = $this->db->resultSet();
+    foreach ($tables as $table => $roleName) {
+      $this->db->query("SELECT id, name FROM $table");
+      $result = $this->db->resultSet();
 
-            foreach ($result as $user) {
-                $user->role = $roleName;
-                $user->table = $table;
-                $users[] = $user;
-            }
-        }
-
-        return $users;
+      foreach ($result as $user) {
+        $user->role = $roleName;
+        $user->table = $table;
+        $users[] = $user;
+      }
     }
 
-    /**
- * Fetch orders, optionally filtering by status and date range.
- */
+    return $users;
+  }
+
+  public function getTotalRevenue($farmerId = null, $deliveryPersonId = null)
+  {
+    if ($farmerId !== null) {
+      // Query only for Farmer revenue
+      $query = "
+            SELECT 
+                SUM(os.famersFee) AS total_farmer_fee
+            FROM order_success os
+            JOIN fproducts fp ON os.productID = fp.fproduct_id
+            WHERE fp.farmer_id = :farmerid
+        ";
+
+      $this->db->query($query);
+      $this->db->bind(':farmerid', $farmerId);
+    } elseif ($deliveryPersonId !== null) {
+      // Query only for Delivery Person revenue
+      $query = "
+            SELECT 
+                SUM(di.amount) AS total_delivery_fee
+            FROM delivery_info di
+            WHERE di.delivery_person_id = :dpersonid
+        ";
+
+      $this->db->query($query);
+      $this->db->bind(':dpersonid', $deliveryPersonId);
+    } else {
+      return null; // No id provided
+    }
+
     public function getFilteredOrders($status = null, $from = null, $to = null) {
       $sql = "
         SELECT
@@ -392,58 +440,125 @@ public function getTopSellingProducts($limit = 5) {
       }
       return $this->db->resultSet();
     }
+    return $this->db->single();
+  }
 
+  // public function getMonthlyRevenue($userId, $role)
+  // {
+  //   $query = "
+  //           SELECT 
+  //               DATE_FORMAT(os.orderDate, '%Y-%m') AS month, 
+  //               SUM(os.famersFee) AS total_farmer_fee,
+  //               SUM(di.amount) AS total_delivery_fee
+  //           FROM order_success os
+  //           JOIN delivery_info di ON os.orderID = di.order_id
+  //           JOIN fproducts fp ON os.productID = fp.fproduct_id
+  //           WHERE 1=1
+  //       ";
 
-    public function getFilteredReports($role)
-    {
-        $allowedRoles = ['farmers', 'delivery_persons'];
-        $roleNames = [
-            'farmers' => 'Farmer',
-            'delivery_persons' => 'Delivery_Person',
-        ];
+  //   $params = [];
 
-        $results = [];
+  //   if ($role === 'Farmer') {
+  //     $query .= " AND fp.farmer_id = :userid";
+  //   } elseif ($role === 'Delivery_Person') {
+  //     $query .= " AND di.delivery_person_id = :userid";
+  //   }
 
-        if (!empty($role) && in_array($role, $allowedRoles)) {
-            // Filter by role (table), and maybe also by status
-            if (!empty($role)) {
-                $query = "SELECT id, name, email, phone, status FROM $role ";
-                $this->db->query($query);
-            } else {
-                $query = "SELECT id, name, email, phone, status FROM $role";
-                $this->db->query($query);
-            }
+  //   $query .= " GROUP BY month ORDER BY month ASC";
 
-            $result = $this->db->resultSet();
-            foreach ($result as $user) {
-                $user->role = $roleNames[$role];
-                $user->table = $role;
-                $results[] = $user;
-            }
+  //   $this->db->query($query);
+  //   $this->db->bind(':userid', $userId);
+
+  //   return $this->db->resultSet();
+  // }
+
+  public function getFilteredReports($role)
+  {
+    $allowedRoles = ['farmers', 'delivery_persons'];
+    $roleNames = [
+      'farmers' => 'Farmer',
+      'delivery_persons' => 'Delivery_Person',
+    ];
+
+    $results = [];
+
+    if (!empty($role) && in_array($role, $allowedRoles)) {
+      // Filter by role (table), and maybe also by status
+      if (!empty($role)) {
+        $query = "SELECT id, name, email, phone, status FROM $role ";
+        $this->db->query($query);
+      } else {
+        $query = "SELECT id, name, email, phone, status FROM $role";
+        $this->db->query($query);
+      }
+
+      $result = $this->db->resultSet();
+      foreach ($result as $user) {
+        $user->role = $roleNames[$role];
+        $user->table = $role;
+        $results[] = $user;
+      }
+    } else {
+      // No specific role: check all tables for status (or fetch all if no status)
+      foreach ($allowedRoles as $table) {
+        if (!empty($role)) {
+          $query = "SELECT id, name, email, phone, status FROM $table ";
+          $this->db->query($query);
         } else {
-            // No specific role: check all tables for status (or fetch all if no status)
-            foreach ($allowedRoles as $table) {
-                if (!empty($role)) {
-                    $query = "SELECT id, name, email, phone, status FROM $table ";
-                    $this->db->query($query);
-                } else {
-                    $query = "SELECT id, name, email, phone, status FROM $table";
-                    $this->db->query($query);
-                }
-
-                $res = $this->db->resultSet();
-                foreach ($res as $user) {
-                    $user->role = $roleNames[$table];
-                    $user->table = $table;
-                    $results[] = $user;
-                }
-            }
+          $query = "SELECT id, name, email, phone, status FROM $table";
+          $this->db->query($query);
         }
 
-        return $results;
+        $res = $this->db->resultSet();
+        foreach ($res as $user) {
+          $user->role = $roleNames[$table];
+          $user->table = $table;
+          $results[] = $user;
+        }
+      }
     }
 
-  public function updateAccount($adminId, $data) {
+    return $results;
+  }
+
+  public function getFilteredComplaints($role = '', $status = '')
+{
+    // Build the base query
+    $query = "SELECT complaints.*, 
+                     b.name, 
+                     d.name AS dpname 
+              FROM complaints
+              LEFT JOIN buyers b ON complaints.user_id = b.id
+              LEFT JOIN delivery_persons d ON complaints.user_id = delivery_persons.id
+              WHERE 1";
+
+    // Add filters dynamically
+    $params = [];
+
+    if (!empty($role)) {
+        $query .= " AND complaints.role = :role";
+        $params[':role'] = $role;
+    }
+
+    if (!empty($status)) {
+        $query .= " AND complaints.status = :status";
+        $params[':status'] = $status;
+    }
+
+    $this->db->query($query);
+
+    // Bind parameters
+    foreach ($params as $key => $value) {
+        $this->db->bind($key, $value);
+    }
+
+    // Execute and get result
+    return $this->db->resultSet();
+}
+
+
+  public function updateAccount($adminId, $data)
+  {
     $this->db->query("
       UPDATE admins
       SET name = :name,
@@ -458,7 +573,8 @@ public function getTopSellingProducts($limit = 5) {
     return $this->db->execute();
   }
 
-  public function changePassword($adminId, $currentPwd, $newPwd) {
+  public function changePassword($adminId, $currentPwd, $newPwd)
+  {
     // Fetch current hash
     $this->db->query("SELECT password FROM admins WHERE id = :id");
     $this->db->bind(':id', $adminId);
@@ -475,7 +591,8 @@ public function getTopSellingProducts($limit = 5) {
     return false;
   }
 
-  public function deactivateAccount($adminId) {
+  public function deactivateAccount($adminId)
+  {
     $this->db->query("UPDATE admins SET status = 'inactive' WHERE id = :id");
     $this->db->bind(':id', $adminId);
     return $this->db->execute();
