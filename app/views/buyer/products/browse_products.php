@@ -6,7 +6,7 @@
 
 
 <!-- Search and the Filter -->
-<div class="search-filter-container">
+<div class="search-filter-container" style="position: sticky; top: 0; z-index: 100; ">
   <form action="<?= URLROOT ?>/buyercontrollers/browseproducts" method="GET" class="form-inline">
     <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search products" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>">
     <button type="submit" class="btn btn-primary">Search</button>

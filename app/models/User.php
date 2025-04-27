@@ -40,7 +40,6 @@ class User extends Database
               }
           }
       }
-
       return false; // User not found
   }
 

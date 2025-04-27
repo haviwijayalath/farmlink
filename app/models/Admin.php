@@ -224,6 +224,7 @@ class Admin extends Database
       WHERE os.orderID = :id
     ");
     $this->db->bind(':id', $orderId);
+
     return $this->db->resultSet();
   }
 
@@ -295,6 +296,7 @@ class Admin extends Database
   {
     $this->db->query("
       SELECT
+
         p.fproduct_id   AS id,
         p.name          AS productName,
         p.price,
@@ -333,7 +335,7 @@ class Admin extends Database
     $this->db->bind(':id', $productId);
     return $this->db->single();
   }
-
+  
   /**
    * Admin account management
    */
@@ -347,6 +349,7 @@ class Admin extends Database
     $this->db->bind(':id', $adminId);
     return $this->db->single();
   }
+
 
 
   public function getUsers()

@@ -41,12 +41,12 @@
           <label for="password">Password</label>
           <input type="password" id="password" name="password" placeholder="Enter your password" <?php echo (!empty($data['password_err'])) ? 'is_invalid' : ''; ?> 
             value="<?php echo $data['password']; ?>">
-          <span><?php echo $data['password_err']; ?></span>
+          <span style="color: red;"><?php echo $data['password_err']; ?></span>
 
           <label for="confirm_password">Confirm Password</label>
           <input type="password" id="confirm_password" name="confirm_password" placeholder="Confirm your password" <?php echo (!empty($data['confirm_password_err'])) ? 'is_invalid' : ''; ?> 
             value="<?php echo $data['confirm_password']; ?>">
-          <span><?php echo $data['confirm_password_err']; ?></span>
+          <span style="color: red;"><?php echo $data['confirm_password_err']; ?></span>
 
           <!--get the value for role using the url -->
           <input type="hidden" id="role" name="role" value="<?php echo isset($_GET['role']) ? $_GET['role'] : ''; ?>">
