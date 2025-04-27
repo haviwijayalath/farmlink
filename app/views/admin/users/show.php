@@ -115,6 +115,13 @@
                     </div>
                 <?php endif; ?>
 
+                <?php if (!empty($data['user']->verification_doc)): ?>
+                    <div class="info-row vehicle-image">
+                        <strong>Vehicle Image:</strong><br>
+                        <img src="<?= URLROOT ?>/public/uploads/<?= $data['user']->verification_doc ?>" alt="Vehicle Image">
+                    </div>
+                <?php endif; ?>
+
             </div>
         </div>
     </main>
