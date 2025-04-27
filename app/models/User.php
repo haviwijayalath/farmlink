@@ -17,7 +17,7 @@ class User extends Database
       foreach ($tables as $table) {
           $this->db->query("SELECT * FROM $table WHERE email = :email");
           $this->db->bind(':email', $email);
-
+        
           $row = $this->db->single();
 
           if ($row) {
@@ -40,7 +40,6 @@ class User extends Database
               }
           }
       }
-
       return false; // User not found
   }
 

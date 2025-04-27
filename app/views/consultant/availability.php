@@ -1,7 +1,7 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 <?php require APPROOT . '/views/inc/sidebars/consultant.php'; ?>
 
-<div class="container">
+<div class="container" style="margin-top: 150px;">
   <h1>Set Your Available Dates</h1>
   <!-- Navigation for months -->
   <div id="calendar-header">

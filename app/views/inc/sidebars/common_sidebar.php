@@ -48,7 +48,7 @@
         <li>
           <a href="<?= URLROOT ?>/consultants/viewprofile">
             <i class="fas fa-user"></i>
-            <span>View Profile</span>
+            <span>My Profile</span>
           </a>
         </li>
         <li>
@@ -67,6 +67,12 @@
           <a href="<?= URLROOT ?>/appointments/consultantAppointments">
             <i class="fa-solid fa-calendar-check"></i>
             <span>Appointments</span>
+          </a>
+        </li>
+        <li>
+          <a href="<?= URLROOT ?>/forums/index">
+            <i class="fa-solid fa-comment"></i>
+            <span>Forum</span>
           </a>
         </li>
       <?php endif; ?>

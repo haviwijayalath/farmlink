@@ -8,7 +8,7 @@ body {
 
 /* Search Bar Styling */
 .search-filter-container {
-  position: fixed;
+  
   display: flex;
   justify-content: center;
   align-items: center;

@@ -224,6 +224,7 @@ class Admin extends Database
       WHERE os.orderID = :id
     ");
     $this->db->bind(':id', $orderId);
+
     return $this->db->resultSet();
   }
 
@@ -295,6 +296,7 @@ class Admin extends Database
   {
     $this->db->query("
       SELECT
+
         p.fproduct_id   AS id,
         p.name          AS productName,
         p.price,
@@ -330,10 +332,24 @@ class Admin extends Database
         ON p.farmer_id = f.id
       WHERE p.fproduct_id = :id
     ");
-    $this->db->bind(':id', $id);
-    
-    return $this->db->single(); // Fetch only one product
+    $this->db->bind(':id', $productId);
+    return $this->db->single();
   }
+  
+  /**
+   * Admin account management
+   */
+  public function getAdminById($adminId)
+  {
+    $this->db->query("
+      SELECT id, name, email, phone, password
+      FROM admins
+      WHERE id = :id
+    ");
+    $this->db->bind(':id', $adminId);
+    return $this->db->single();
+  }
+
 
 
   public function getUsers()
@@ -469,5 +485,44 @@ class Admin extends Database
     return $results;
   }
 
+  public function updateAccount($adminId, $data)
+  {
+    $this->db->query("
+      UPDATE admins
+      SET name = :name,
+          email = :email,
+          phone = :phone
+      WHERE id = :id
+    ");
+    $this->db->bind(':name',  $data['name']);
+    $this->db->bind(':email', $data['email']);
+    $this->db->bind(':phone', $data['phone']);
+    $this->db->bind(':id',    $adminId);
+    return $this->db->execute();
+  }
 
+  public function changePassword($adminId, $currentPwd, $newPwd)
+  {
+    // Fetch current hash
+    $this->db->query("SELECT password FROM admins WHERE id = :id");
+    $this->db->bind(':id', $adminId);
+    $row = $this->db->single();
+
+    if ($row && password_verify($currentPwd, $row->password)) {
+      $hash = password_hash($newPwd, PASSWORD_DEFAULT);
+      $this->db->query("UPDATE admins SET password = :pwd WHERE id = :id");
+      $this->db->bind(':pwd', $hash);
+      $this->db->bind(':id',  $adminId);
+      return $this->db->execute();
+    }
+
+    return false;
+  }
+
+  public function deactivateAccount($adminId)
+  {
+    $this->db->query("UPDATE admins SET status = 'inactive' WHERE id = :id");
+    $this->db->bind(':id', $adminId);
+    return $this->db->execute();
+  }
 }

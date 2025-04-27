@@ -1,5 +1,5 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
-<?php require APPROOT . '/views/farmers/inc/farmer_sidebar.php'; ?>
+<?php require APPROOT . '/views/inc/sidebars/common_sidebar.php'; ?>
 
 <div class="content-wrapper">
   <div class="container">
