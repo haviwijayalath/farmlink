@@ -335,7 +335,7 @@ class Admin extends Database
     $this->db->bind(':id', $productId);
     return $this->db->single();
   }
-  
+
   /**
    * Admin account management
    */
@@ -403,9 +403,11 @@ class Admin extends Database
     } else {
       return null; // No id provided
     }
+  }
 
-    public function getFilteredOrders($status = null, $from = null, $to = null) {
-      $sql = "
+  public function getFilteredOrders($status = null, $from = null, $to = null)
+  {
+    $sql = "
         SELECT
           os.orderID   AS id,
           os.orderDate AS created_at,
@@ -416,61 +418,30 @@ class Admin extends Database
         LEFT JOIN buyers b ON os.buyerID = b.id
         WHERE 1=1
       ";
-      // Add filters
-      if ($status) {
-        $sql .= " AND os.status = :status";
-      }
-      if ($from) {
-        $sql .= " AND os.orderDate >= :from";
-      }
-      if ($to) {
-        $sql .= " AND os.orderDate <= :to";
-      }
-      $sql .= " ORDER BY os.orderDate DESC";
-
-      $this->db->query($sql);
-      if ($status) {
-        $this->db->bind(':status', $status);
-      }
-      if ($from) {
-        $this->db->bind(':from', $from . ' 00:00:00');
-      }
-      if ($to) {
-        $this->db->bind(':to', $to . ' 23:59:59');
-      }
-      return $this->db->resultSet();
+    // Add filters
+    if ($status) {
+      $sql .= " AND os.status = :status";
     }
-    return $this->db->single();
+    if ($from) {
+      $sql .= " AND os.orderDate >= :from";
+    }
+    if ($to) {
+      $sql .= " AND os.orderDate <= :to";
+    }
+    $sql .= " ORDER BY os.orderDate DESC";
+
+    $this->db->query($sql);
+    if ($status) {
+      $this->db->bind(':status', $status);
+    }
+    if ($from) {
+      $this->db->bind(':from', $from . ' 00:00:00');
+    }
+    if ($to) {
+      $this->db->bind(':to', $to . ' 23:59:59');
+    }
+    return $this->db->resultSet();
   }
-
-  // public function getMonthlyRevenue($userId, $role)
-  // {
-  //   $query = "
-  //           SELECT 
-  //               DATE_FORMAT(os.orderDate, '%Y-%m') AS month, 
-  //               SUM(os.famersFee) AS total_farmer_fee,
-  //               SUM(di.amount) AS total_delivery_fee
-  //           FROM order_success os
-  //           JOIN delivery_info di ON os.orderID = di.order_id
-  //           JOIN fproducts fp ON os.productID = fp.fproduct_id
-  //           WHERE 1=1
-  //       ";
-
-  //   $params = [];
-
-  //   if ($role === 'Farmer') {
-  //     $query .= " AND fp.farmer_id = :userid";
-  //   } elseif ($role === 'Delivery_Person') {
-  //     $query .= " AND di.delivery_person_id = :userid";
-  //   }
-
-  //   $query .= " GROUP BY month ORDER BY month ASC";
-
-  //   $this->db->query($query);
-  //   $this->db->bind(':userid', $userId);
-
-  //   return $this->db->resultSet();
-  // }
 
   public function getFilteredReports($role)
   {
@@ -522,7 +493,7 @@ class Admin extends Database
   }
 
   public function getFilteredComplaints($role = '', $status = '')
-{
+  {
     // Build the base query
     $query = "SELECT complaints.*, 
                      b.name, 
@@ -536,25 +507,25 @@ class Admin extends Database
     $params = [];
 
     if (!empty($role)) {
-        $query .= " AND complaints.role = :role";
-        $params[':role'] = $role;
+      $query .= " AND complaints.role = :role";
+      $params[':role'] = $role;
     }
 
     if (!empty($status)) {
-        $query .= " AND complaints.status = :status";
-        $params[':status'] = $status;
+      $query .= " AND complaints.status = :status";
+      $params[':status'] = $status;
     }
 
     $this->db->query($query);
 
     // Bind parameters
     foreach ($params as $key => $value) {
-        $this->db->bind($key, $value);
+      $this->db->bind($key, $value);
     }
 
     // Execute and get result
     return $this->db->resultSet();
-}
+  }
 
 
   public function updateAccount($adminId, $data)
