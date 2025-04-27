@@ -485,6 +485,42 @@ class Admin extends Database
     return $results;
   }
 
+  public function getFilteredComplaints($role = '', $status = '')
+{
+    // Build the base query
+    $query = "SELECT complaints.*, 
+                     b.name, 
+                     d.name AS dpname 
+              FROM complaints
+              LEFT JOIN buyers b ON complaints.user_id = b.id
+              LEFT JOIN delivery_persons d ON complaints.user_id = delivery_persons.id
+              WHERE 1";
+
+    // Add filters dynamically
+    $params = [];
+
+    if (!empty($role)) {
+        $query .= " AND complaints.role = :role";
+        $params[':role'] = $role;
+    }
+
+    if (!empty($status)) {
+        $query .= " AND complaints.status = :status";
+        $params[':status'] = $status;
+    }
+
+    $this->db->query($query);
+
+    // Bind parameters
+    foreach ($params as $key => $value) {
+        $this->db->bind($key, $value);
+    }
+
+    // Execute and get result
+    return $this->db->resultSet();
+}
+
+
   public function updateAccount($adminId, $data)
   {
     $this->db->query("

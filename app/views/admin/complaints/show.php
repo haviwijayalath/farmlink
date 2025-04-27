@@ -84,7 +84,7 @@
         </div>
         <div class="image-card">
             <p><strong>After Delivery</strong></p>
-            <img src="<?= URLROOT ?>/<?= htmlspecialchars($data['complaint']->pic_after); ?>" alt="After Delivery">
+            <img src="<?= URLROOT ?>/public/d_uploads/<?= htmlspecialchars($data['complaint']->pic_after); ?>" alt="After Delivery">
         </div>
     </div>
 </section>
