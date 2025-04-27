@@ -232,7 +232,6 @@ class Farmers extends Controller
         'addr_no' => '',
         'addr_street' => '',
         'addr_city' => '',
-        'image' => '',
         'id_card_front' => '',
         'id_card_back' => '',
 
