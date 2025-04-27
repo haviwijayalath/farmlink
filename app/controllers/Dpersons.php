@@ -381,7 +381,7 @@ class Dpersons extends Controller
                 echo "Dropoff Image Path: " . $relativePath;
 
                 // Save the dropoff image path in the database
-                if ($this->userModel->saveDropoffImage($_SESSION['delivery_id'], $relativePath)) {
+                if ($this->userModel->saveDropoffImage($_SESSION['delivery_id'], $dropoffImageName)) {
                     $_SESSION['dropoff_image'] = $relativePath; // Store in session variable
                     redirect('dpersons/proof');
                 } else {
@@ -726,6 +726,14 @@ class Dpersons extends Controller
 
         // Get the order details by ID
         $orderDetails = $this->userModel->getOrderHistoryById($order_id);
+
+    // //     // ======== DEBUGGING START ========
+    //  echo '<pre>';
+    //  echo 'DEBUG: Fetched Order Details:' . PHP_EOL;
+    // var_dump($orderDetails);
+    // echo '</pre>';
+    // exit; // Stop further code execution for now
+    // // // ==
 
         $data = [
             'orders' => $orderDetails ?? [] // Default to empty array if null
