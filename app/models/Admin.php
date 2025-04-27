@@ -400,6 +400,7 @@ class Admin extends Database
 
       $this->db->query($query);
       $this->db->bind(':dpersonid', $deliveryPersonId);
+      return $this->db->single();
     } else {
       return null; // No id provided
     }

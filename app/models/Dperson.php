@@ -1,39 +1,42 @@
 <?php
-class Dperson extends Database{
+class Dperson extends Database
+{
     private $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new Database;
     }
 
-    public function registerDeliveryPerson($data) {
+    public function registerDeliveryPerson($data)
+    {
         // Insert the address data first
         $this->db->query('INSERT INTO address (number, street, city) VALUES (:number, :street, :city)');
         $this->db->bind(':number', $data['addr_no']);
         $this->db->bind(':street', $data['street']);
         $this->db->bind(':city', $data['city']);
-    
+
         // Execute the address insertion and get the last inserted address ID
         if ($this->db->execute()) {
             $addressId = $this->db->lastInsertId(); // Now safely fetch address ID
         } else {
             return false; // Address insertion failed
         }
-    
+
         // Insert the vehicle data
         $this->db->query('INSERT INTO vehicle_info (regno, capacity, type, v_image) VALUES (:regno, :capacity, :vehicle, :v_image)');
         $this->db->bind(':vehicle', $data['vehicle']);
         $this->db->bind(':regno', $data['regno']);
         $this->db->bind(':capacity', $data['capacity']);
         $this->db->bind(':v_image', $data['v_image']);
-    
+
         // Execute the vehicle insertion and get the last inserted vehicle ID
         if ($this->db->execute()) {
             $vehicleId = $this->db->lastInsertId(); // Safely fetch vehicle ID
         } else {
             return false; // Vehicle insertion failed
         }
-    
+
         // Insert the delivery person data
         $this->db->query('INSERT INTO delivery_persons (name, password, email, phone, image, area, address_id, vehicle_id, license_image, status) 
                           VALUES (:name, :password, :email, :phone, :image, :area, :address_id, :vehicle_id, :limage, :status)');
@@ -47,32 +50,34 @@ class Dperson extends Database{
         $this->db->bind(':vehicle_id', $vehicleId); // Use the vehicle ID as a foreign key
         $this->db->bind(':limage', $data['l_image']);
         $this->db->bind(':status', 'pending');
-    
+
         // Execute the delivery person insertion
         return $this->db->execute();
     }
-    
 
-      //Find user by email
-    public function findUserByEmail($email) {
-    // List of tables to check
-    $tables = ['farmers', 'buyers', 'consultants', 'suppliers', 'delivery_persons'];
-  
-    foreach ($tables as $table) {
-        $this->db->query("SELECT * FROM $table WHERE email = :email");
-        $this->db->bind(':email', $email);
-        $row = $this->db->single();
-  
-        // Check if a match is found
-        if ($this->db->rowCount() > 0) {
-            return true;  // Stop iteration and return true immediately if a match is found
+
+    //Find user by email
+    public function findUserByEmail($email)
+    {
+        // List of tables to check
+        $tables = ['farmers', 'buyers', 'consultants', 'suppliers', 'delivery_persons'];
+
+        foreach ($tables as $table) {
+            $this->db->query("SELECT * FROM $table WHERE email = :email");
+            $this->db->bind(':email', $email);
+            $row = $this->db->single();
+
+            // Check if a match is found
+            if ($this->db->rowCount() > 0) {
+                return true;  // Stop iteration and return true immediately if a match is found
+            }
         }
+        return false;  // Return false if no match is found in any table
     }
-    return false;  // Return false if no match is found in any table
-    }
-  
 
-    public function getUserById($id) {
+
+    public function getUserById($id)
+    {
         // Update query to join with the addresses table
         $this->db->query('
             SELECT dp.id, dp.name, dp.email, dp.phone, dp.area, dp.image, dp.address_id, dp.password, dp.vehicle_id,
@@ -87,57 +92,60 @@ class Dperson extends Database{
         return $this->db->single();
     }
 
-    public function updateUser($data) {
+    public function updateUser($data)
+    {
 
-     // Update address details in the address table
-     $this->db->query('
+        // Update address details in the address table
+        $this->db->query('
      UPDATE address 
      SET number = :addr_no, street = :street, city = :city
         WHERE address_id = :address_id
     ');
-    $this->db->bind(':addr_no', $data['addr_no']);
-    $this->db->bind(':street', $data['street']);
-    $this->db->bind(':city', $data['city']);
-    $this->db->bind(':address_id', $data['address_id']);
-    $addressUpdated = $this->db->execute();
+        $this->db->bind(':addr_no', $data['addr_no']);
+        $this->db->bind(':street', $data['street']);
+        $this->db->bind(':city', $data['city']);
+        $this->db->bind(':address_id', $data['address_id']);
+        $addressUpdated = $this->db->execute();
 
-    $this->db->query('UPDATE delivery_persons SET name = :name, email = :email, phone = :phone, address_id = :address_id, 
+        $this->db->query('UPDATE delivery_persons SET name = :name, email = :email, phone = :phone, address_id = :address_id, 
                             area = :area, password = :password, image = :image WHERE id = :id');
-    
-    // Bind values
-    $this->db->bind(':id', $data['id']);
-    $this->db->bind(':name', $data['name']);
-    $this->db->bind(':email', $data['email']);
-    $this->db->bind(':phone', $data['phone']);
-    $this->db->bind(':address_id', $data['address_id']);
-    $this->db->bind(':area', $data['area']);
-    $this->db->bind(':password', $data['password']);
-    $this->db->bind(':image', $data['image']);
-    $userUpdated = $this->db->execute();
-    
-   
 
-    return $userUpdated && $addressUpdated;
-}
+        // Bind values
+        $this->db->bind(':id', $data['id']);
+        $this->db->bind(':name', $data['name']);
+        $this->db->bind(':email', $data['email']);
+        $this->db->bind(':phone', $data['phone']);
+        $this->db->bind(':address_id', $data['address_id']);
+        $this->db->bind(':area', $data['area']);
+        $this->db->bind(':password', $data['password']);
+        $this->db->bind(':image', $data['image']);
+        $userUpdated = $this->db->execute();
 
 
-// Add a new vehicle
-    public function addVehicle($data) {
-    $this->db->query('UPDATE vehicle_info SET type = :type, regno = :regno, capacity = :capacity, v_image = :v_image WHERE vehicle_id = :id');
-    $this->db->bind(':type', $data['type']);
-    $this->db->bind(':regno', $data['regno']);
-    $this->db->bind(':capacity', $data['capacity']);
-    $this->db->bind(':v_image', $data['v_image']);
-    $this->db->bind(':id', $data['id']);
 
-    return $this->db->execute();
+        return $userUpdated && $addressUpdated;
+    }
+
+
+    // Add a new vehicle
+    public function addVehicle($data)
+    {
+        $this->db->query('UPDATE vehicle_info SET type = :type, regno = :regno, capacity = :capacity, v_image = :v_image WHERE vehicle_id = :id');
+        $this->db->bind(':type', $data['type']);
+        $this->db->bind(':regno', $data['regno']);
+        $this->db->bind(':capacity', $data['capacity']);
+        $this->db->bind(':v_image', $data['v_image']);
+        $this->db->bind(':id', $data['id']);
+
+        return $this->db->execute();
     }
 
 
 
     // Fetch new orders filtered by delivery area
-    public function getNewOrdersByArea($deliveryArea) {
-      $this->db->query('
+    public function getNewOrdersByArea($deliveryArea)
+    {
+        $this->db->query('
           SELECT 
               order_success.orderID,
               order_success.status,
@@ -154,36 +162,37 @@ class Dperson extends Database{
 
           FROM 
               order_success
-          INNER JOIN 
+          LEFT JOIN 
               order_buyer ON order_buyer.order_buyerID = order_success.buyerID
-          INNER JOIN
+          LEFT JOIN
               order_buyer_addr ON order_buyer.address_id = order_buyer_addr.address_id
-          INNER JOIN
+          LEFT JOIN
               fproducts ON order_success.productID = fproducts.fproduct_id
-          INNER JOIN 
+          LEFT JOIN 
               farmers ON farmers.id = fproducts.farmer_id
-          INNER JOIN 
+          LEFT JOIN 
               address ON farmers.address_id = address.address_id
           WHERE 
               address.City = :deliveryArea  
               AND  (order_success.status = "ready" OR order_success.status = "pending")
               AND order_success.dropAddress IS NOT NULL
       ');
-      
-      $this->db->bind(':deliveryArea', $deliveryArea);
-  
-      return $this->db->resultSet();
-  }
-  
+
+        $this->db->bind(':deliveryArea', $deliveryArea);
+
+        return $this->db->resultSet();
+    }
+
 
     // Update order status to "ongoing" when confirmed
-    public function confirmOrder($userId, $orderId) {
+    public function confirmOrder($userId, $orderId)
+    {
         // Update the order status
         $this->db->query('UPDATE order_success SET dperson_id = :userId, status = "ongoing" WHERE orderID = :orderId');
         $this->db->bind(':userId', $userId);
         $this->db->bind(':orderId', $orderId);
         $this->db->execute();
-    
+
         // Retrieve buyer_id and product_name after the update
         $this->db->query('SELECT os.orderID, os.buyerID, os.product, fp.fproduct_id AS product_id, fp.farmer_id
         FROM 
@@ -195,10 +204,11 @@ class Dperson extends Database{
 
         $this->db->bind(':orderId', $orderId);
         return $this->db->single(); // returns an associative array with buyer_id and product_name
-    }    
+    }
 
     // Fetch ongoing orders filtered by delivery area
-    public function getOrdersByArea($deliveryArea) {
+    public function getOrdersByArea($deliveryArea)
+    {
         $this->db->query('
             SELECT 
                 order_success.orderID,
@@ -210,27 +220,32 @@ class Dperson extends Database{
                 order_success.deliveryFee AS amount
             FROM 
                 order_success
-            INNER JOIN 
-                order_buyer ON order_buyer.order_buyerID = order_success.buyerID
-            INNER JOIN
+            LEFT JOIN 
+                order_buyer ON order_buyer.buyerId = order_success.buyerID
+            LEFT JOIN
                 order_buyer_addr ON order_buyer.address_id = order_buyer_addr.address_id
-            INNER JOIN
+            LEFT JOIN
                 fproducts ON order_success.productID = fproducts.fproduct_id
-            INNER JOIN 
+            LEFT JOIN 
                 farmers ON farmers.id = fproducts.farmer_id
-            INNER JOIN 
+            LEFT JOIN 
                 address ON farmers.address_id = address.address_id
             WHERE 
                 address.City = :deliveryArea  
                 AND (order_success.status = "ongoing" OR order_success.status = "picked_up")
+            GROUP BY 
+                order_success.orderID
+            ORDER BY
+                order_success.orderID DESC
         ');
-        
+
         $this->db->bind(':deliveryArea', $deliveryArea);
-    
+
         return $this->db->resultSet();
     }
 
-    public function savePickupImages($orderId, $deliveryId,  $pickupAddr, $pickupImagePath) {
+    public function savePickupImages($orderId, $deliveryId,  $pickupAddr, $pickupImagePath)
+    {
         // Insert image paths into the delivery_info table
         $this->db->query('INSERT INTO delivery_info (order_id, delivery_person_id	,pickupAddress, pic_before) VALUES (:orderId, :deliveryId, :pickupaddr, :pic_before)');
         $this->db->bind(':orderId', $orderId);
@@ -245,7 +260,8 @@ class Dperson extends Database{
         return false;
     }
 
-    public function updateOrderStatus($orderId){
+    public function updateOrderStatus($orderId)
+    {
         $this->db->query("UPDATE order_success SET status = :status WHERE orderID = :id");
         $this->db->bind(':status', 'picked_up');
         $this->db->bind(':id', $orderId);
@@ -253,7 +269,8 @@ class Dperson extends Database{
         return $this->db->execute();
     }
 
-    public function getOrderById($orderId){
+    public function getOrderById($orderId)
+    {
         $this->db->query("
             SELECT 
                 os.*, 
@@ -270,13 +287,14 @@ class Dperson extends Database{
         return $this->db->single();
     }
 
-    public function saveDropoffImage($delivery_id, $dropoffImagePath) {
+    public function saveDropoffImage($delivery_id, $dropoffImagePath)
+    {
         // Update pic_after in delivery_info
         $this->db->query('UPDATE delivery_info SET pic_after = :pic_after WHERE delivery_id = :delivery_id');
         $this->db->bind(':pic_after', $dropoffImagePath);
         $this->db->bind(':delivery_id', $delivery_id);
-        
-    
+
+
         // Execute the update for delivery_info
         if ($this->db->execute()) {
             // Update the amount in delivery_info based on deliveryfee from order_success
@@ -285,7 +303,7 @@ class Dperson extends Database{
                                             WHERE orderID = delivery_info.order_id) 
                               WHERE delivery_id = :delivery_id');
             $this->db->bind(':delivery_id', $delivery_id);
-    
+
             if ($this->db->execute()) {
                 // If amount update was successful, update the order status
                 $this->db->query('UPDATE order_success 
@@ -293,20 +311,20 @@ class Dperson extends Database{
                                   WHERE orderID = (SELECT order_id FROM delivery_info WHERE delivery_id = :delivery_id)');
                 $this->db->bind(':status', 'delivered');
                 $this->db->bind(':delivery_id', $delivery_id);
-    
+
                 // Execute the update for order_success
                 return $this->db->execute();
             }
-        }
-        else{
+        } else {
             die("Database Error: Failed to update pic_after field.");
         }
-    
+
         // If any step fails, return false
         return false;
     }
 
-    public function getDeliverySummary($deliveryId) {
+    public function getDeliverySummary($deliveryId)
+    {
         $this->db->query("SELECT os.orderID, os.buyerID, os.product, fp.fproduct_id AS product_id, fp.farmer_id
         FROM 
             order_success os
@@ -314,15 +332,15 @@ class Dperson extends Database{
             fproducts fp ON os.productID = fp.fproduct_id
         WHERE 
             os.orderID = :orderId");
-    
+
         $this->db->bind(':orderId', $deliveryId);
-        
+
         return $this->db->single();
     }
-    
 
-        public function deleteAccount($userId)
-        {
+
+    public function deleteAccount($userId)
+    {
         $sql = "UPDATE delivery_persons SET status = :status WHERE id = :userId";
         $this->db->query($sql);
         $this->db->bind(':userId', $userId);
@@ -330,11 +348,12 @@ class Dperson extends Database{
 
         // Execute the query and return true if successful, false otherwise
         return $this->db->execute();
-        }
+    }
 
 
-        public function getorder($deliveryArea, $order_id) {
-            $this->db->query('
+    public function getorder($deliveryArea, $order_id)
+    {
+        $this->db->query('
                 SELECT 
                     order_success.orderID,
                     order_success.status,
@@ -366,16 +385,17 @@ class Dperson extends Database{
                     AND order_success.status = "ready"
                     AND order_success.orderID = :order_id
             ');
-            
-            $this->db->bind(':deliveryArea', $deliveryArea);
-            $this->db->bind(':order_id', $order_id);
-        
-            return $this->db->single();
-        }
 
-    public function history($id){
+        $this->db->bind(':deliveryArea', $deliveryArea);
+        $this->db->bind(':order_id', $order_id);
+
+        return $this->db->single();
+    }
+
+    public function history($id)
+    {
         $this->db->query('
-            SELECT delivery_info.order_id,
+            SELECT DISTINCT delivery_info.order_id,
                 delivery_info.date,
                 delivery_info.amount,
                 CONCAT(order_buyer.fname, " ", order_buyer.lname) AS buyer,
@@ -394,7 +414,7 @@ class Dperson extends Database{
             INNER JOIN
                 order_success on order_success.orderID = delivery_info.order_id
             INNER JOIN 
-                order_buyer on order_buyer.order_buyerID = order_success.buyerID
+                order_buyer on order_buyer.buyerId = order_success.buyerID
             INNER JOIN
                 fproducts on order_success.productID = fproducts.fproduct_id
             INNER JOIN
@@ -405,15 +425,19 @@ class Dperson extends Database{
                 delivery_info.delivery_person_id = :id
                 AND
                 order_success.status = "delivered"
+            GROUP BY
+                delivery_info.order_id
+            ORDER BY
+                delivery_info.date DESC
             ');
 
         $this->db->bind(':id', $id);
 
         return $this->db->resultSet();
-
     }
 
-    public function getOrderHistoryById($id){
+    public function getOrderHistoryById($id)
+    {
         $this->db->query('
             SELECT 
                 delivery_info.order_id,
@@ -435,7 +459,7 @@ class Dperson extends Database{
             INNER JOIN
                 order_success on order_success.orderID = delivery_info.order_id
             INNER JOIN 
-                order_buyer on order_buyer.order_buyerID = order_success.buyerID
+                order_buyer on order_buyer.buyerId = order_success.buyerID
             INNER JOIN
                 fproducts on order_success.productID = fproducts.fproduct_id
             INNER JOIN
@@ -451,10 +475,10 @@ class Dperson extends Database{
         return $this->db->single(); // This returns a single row as an object
 
     }
-        
+
     public function getongoingbyID($deliveryArea, $id)
     {
-    $this->db->query('
+        $this->db->query('
         SELECT 
             order_success.orderID,
             order_success.status,
@@ -486,22 +510,21 @@ class Dperson extends Database{
             AND order_success.orderID = :order_id
     ');
 
-    $this->db->bind(':deliveryArea', $deliveryArea);
-    $this->db->bind(':order_id', $id);
+        $this->db->bind(':deliveryArea', $deliveryArea);
+        $this->db->bind(':order_id', $id);
 
-    return $this->db->single();
+        return $this->db->single();
     }
 
-        
-    public function getDeliveryEarnings($orderId, $deliveryPersonId) {
+
+    public function getDeliveryEarnings($orderId, $deliveryPersonId)
+    {
         $this->db->query('SELECT amount, (SELECT SUM(amount) FROM delivery_info WHERE delivery_person_id = :deliveryPersonId) as totearnings 
             FROM delivery_info WHERE order_id = :orderId AND delivery_person_id = :deliveryPersonId LIMIT 1');
 
         $this->db->bind(':orderId', $orderId);
         $this->db->bind(':deliveryPersonId', $deliveryPersonId);
-        
+
         return $this->db->single();
     }
-    
-    
 }

@@ -19,7 +19,7 @@
                 <?php foreach ($data['farmers'] as $farmer): ?>
                     <tr>
                         <td><?= htmlspecialchars($farmer->name) ?></td>
-                        <td><?= number_format($farmer->revenues->total_farmer_fee, 2) ?> Rs</td>
+                        <td><?= number_format($farmer->revenues->total_farmer_fee ?? 0, 2) ?> Rs</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -37,7 +37,7 @@
                 <?php foreach ($data['deliveryPersons'] as $dp): ?>
                     <tr>
                         <td><?= htmlspecialchars($dp->name) ?></td>
-                        <td><?= number_format($dp->revenues->total_delivery_fee, 2) ?> Rs</td>
+                        <td><?= number_format($farmer->revenues->total_delivery_fee ?? 0, 2) ?> Rs</td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
