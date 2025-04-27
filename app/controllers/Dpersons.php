@@ -236,10 +236,17 @@ class Dpersons extends Controller
                 redirect('dpersons/ongoing');
             }
 
+            // Check if pickup image is uploaded
+            if (!isset($_SESSION['pickup_image']) || empty($_SESSION['pickup_image'])) {
+                flash('order_error', 'Please upload a pickup image before confirming.');
+                redirect('dpersons/ongoingDeliveries'); // or wherever the user should go
+                return;
+            }
+
             $orderId = $_SESSION['order_id'];
 
             // Update the status in ordersuccess table
-            if ($this->userModel->updateOrderStatus($orderId)) {
+            if ($this->userModel->updateOrderStatus($orderId) ) {
                 // Fetch the order details
                 $orderDetails = $this->userModel->getOrderById($orderId);
 
@@ -289,6 +296,12 @@ class Dpersons extends Controller
     {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
+        }
+
+        if (!isset($_SESSION['dropoff_image']) || empty($_SESSION['dropoff_image'])) {
+            flash('dropoff_error', 'Please upload the dropoff image before ending the delivery.');
+            redirect('dpersons/ongoingDeliveries'); // <-- Replace with your dropoff upload page
+            return;
         }
 
         // Get delivery ID from session
@@ -675,7 +688,6 @@ class Dpersons extends Controller
                 'v_image_err' => '',
                 'l_image_err' => '',
                 'password_err' => '',
-                'confirm_password_err' => '',
                 'confirm_password_err' => ''
             ];
 

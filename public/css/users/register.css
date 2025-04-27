@@ -91,6 +91,15 @@
   background-color: #033a06;
 }
 
+input:invalid {
+  border: 2px solid red;
+}
+
+input:valid {
+  border: 2px solid green;
+}
+
+
 /* Responsive Design */
 @media (max-width: 1024px) {
   .register-container {

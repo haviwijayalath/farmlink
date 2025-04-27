@@ -6,6 +6,8 @@
 
 <div class="ongoingorder-container">
     <h2>Ongoing</h2>
+    <h4 style="color: red;"> <?php flash('order_error'); ?> </h4>
+    <h4 style="color: red;"> <?php flash('dropoff_error'); ?> </h4>
 
     <?php if (!empty($data['orders'])): ?>
 
