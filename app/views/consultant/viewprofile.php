@@ -118,8 +118,20 @@
               <?php endforeach; ?>
             </div>
           <?php endif; ?>
-          <!-- ================================ -->
-
+          <?php if (isset($_SESSION['user_type']) 
+                && $_SESSION['user_type'] === 'consultant' 
+                && $_SESSION['user_id'] === $post->consultant_id): ?>
+            <form 
+              action="<?= URLROOT ?>/consultants/deletePost/<?= $post->post_id ?>" 
+              method="POST" 
+              onsubmit="return confirm('Are you sure you want to delete this post?');"
+              style="display:inline;"
+            >
+              <button type="submit" class="btn delete-post-btn">
+                <i class="fas fa-trash-alt"></i> Delete
+              </button>
+            </form>
+          <?php endif; ?>
         </div>
       <?php endforeach; ?>
     <?php else: ?>

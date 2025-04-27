@@ -27,7 +27,8 @@
 <style>
   /* Adjust the container to leave space for the fixed sidebar */
   .container {
-    margin-left: 220px; /* Adjust this value based on your sidebar width */
+    margin-left: 240px;
+    margin-top: 70px;  
     padding: 20px;
   }
   

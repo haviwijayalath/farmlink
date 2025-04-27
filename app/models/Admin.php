@@ -404,6 +404,42 @@ class Admin extends Database
       return null; // No id provided
     }
 
+    public function getFilteredOrders($status = null, $from = null, $to = null) {
+      $sql = "
+        SELECT
+          os.orderID   AS id,
+          os.orderDate AS created_at,
+          b.name       AS buyerName,
+          (os.famersFee + os.deliveryFee) AS total_amount,
+          os.status
+        FROM order_success os
+        LEFT JOIN buyers b ON os.buyerID = b.id
+        WHERE 1=1
+      ";
+      // Add filters
+      if ($status) {
+        $sql .= " AND os.status = :status";
+      }
+      if ($from) {
+        $sql .= " AND os.orderDate >= :from";
+      }
+      if ($to) {
+        $sql .= " AND os.orderDate <= :to";
+      }
+      $sql .= " ORDER BY os.orderDate DESC";
+
+      $this->db->query($sql);
+      if ($status) {
+        $this->db->bind(':status', $status);
+      }
+      if ($from) {
+        $this->db->bind(':from', $from . ' 00:00:00');
+      }
+      if ($to) {
+        $this->db->bind(':to', $to . ' 23:59:59');
+      }
+      return $this->db->resultSet();
+    }
     return $this->db->single();
   }
 

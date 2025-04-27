@@ -15,7 +15,6 @@ class Forums extends Controller {
       $questions = $this->farmerModel->fetchQuestions();
   
       // For each question, fetch its answers from the Consultant model.
-      // (This will result in one extra query per question—consider a JOIN for heavy traffic.)
       foreach ($questions as $question) {
           $question->answers = $this->consultantModel->fetchAnswers($question->id);
       }
@@ -53,33 +52,49 @@ class Forums extends Controller {
     public function answer() {
       if ($_SERVER['REQUEST_METHOD'] == 'POST') {
           $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
-          // Assume the answer form includes hidden field "question_id"
           $data = [
               'question_id' => trim($_POST['question_id']),
               'answer'      => trim($_POST['answer']),
               'answer_err'  => ''
           ];
-          
+  
           if (empty($data['answer'])) {
               $data['answer_err'] = 'Answer is required';
           }
-          
+  
           if (empty($data['answer_err'])) {
               if ($this->consultantModel->storeAnswer($data)) {
+                  //  AFTER saving the answer, fetch the question to get the farmer ID
+                  $question = $this->farmerModel->getQuestionById($data['question_id']);
+                  if ($question) {
+                      // Send the notification to the farmer
+                      require_once APPROOT . '/helpers/notification_helper.php';
+                      $notificationHelper = new NotificationHelper();
+                      $from_id = getUserId();    // consultant's id
+                      $to_id = $question->farmer_id;  // farmer's id
+                      $from_type = 'c'; // consultant
+                      $to_type = 'f';   // farmer
+                      $subject = 'New Answer to Your Question';
+                      $content = 'A consultant has answered your question: "' . substr($question->question, 0, 50) . '..."';
+                      $url = URLROOT . '/forums/index'; 
+                      $msg_type = 'info';
+  
+                      $notificationHelper->send_notification($from_type, $from_id, $to_type, $to_id, $subject, $content, $url, $msg_type);
+                  }
+  
                   flash('forum_message', 'Answer submitted successfully');
                   redirect('forums/index');
               } else {
                   die('Something went wrong.');
               }
           } else {
-              // If there is an error, re-display the forum.
               $this->index();
           }
       } else {
           redirect('forums/index');
       }
     }
-
+  
     public function editAnswer($ans_id) {
       // Get the answer data for editing.
       $answerData = $this->consultantModel->getAnswerById($ans_id);

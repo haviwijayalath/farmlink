@@ -1,6 +1,6 @@
 <?php require APPROOT . '/views/inc/header.php'; ?>
 <link rel="stylesheet" href="<?= URLROOT ?>/public/css/admin/productDetails.css">
-
+<?php require APPROOT . '/views/inc/sidebars/admin.php'; ?>
 
 <main class="content">
   <h2>Product Details</h2>

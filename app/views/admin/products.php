@@ -18,10 +18,6 @@
         placeholder="Search by Product ID or Name"
       >
       <button class="btn" onclick="filterProducts()">Search</button>
-      <!--
-        <a href="<?= URLROOT ?>/admins/addProduct" class="btn">+ Add Product</a>
-        Uncomment and implement addProduct() when ready
-      -->
     </div>
   </header>
 
@@ -57,20 +53,6 @@
                   href="<?= URLROOT ?>/admins/productDetails/<?= $p->id ?>" 
                   class="btn-sm"
                 >View</a>
-                <form 
-                  action="<?= URLROOT ?>/admins/rejectProduct" 
-                  method="POST" 
-                  style="display:inline;"
-                >
-                  <input 
-                    type="hidden" 
-                    name="product_id" 
-                    value="<?= $p->id ?>"
-                  >
-                  <button type="submit" class="btn-sm btn-danger">
-                    Reject
-                  </button>
-                </form>
               </td>
             </tr>
           <?php endforeach; ?>

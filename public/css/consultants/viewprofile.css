@@ -181,6 +181,18 @@
   margin-top: 20px;
 }
 
+.btn.delete-post-btn {
+  background: transparent;
+  border: none;
+  color: #e74c3c;
+  cursor: pointer;
+  font-size: 0.9rem;
+  margin-top: 0.5rem;
+}
+.btn.delete-post-btn:hover {
+  color: #c0392b;
+}
+
 .profile-rating {
   position: absolute;
   top: 12px;      /* adjust vertical offset */

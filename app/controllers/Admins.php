@@ -34,15 +34,30 @@ class Admins extends Controller
   }
 
   // Orders list
-  public function orders()
-  {
-    $orders = $this->adminModel->getAllOrders();
-    $this->view('admin/orders', ['orders' => $orders]);
+
+  public function orders() {
+    // grab filters from GET 
+    $status    = $_GET['status']     ?? '';
+    $startDate = $_GET['start_date'] ?? '';
+    $endDate   = $_GET['end_date']   ?? '';
+
+    //fetch only the matching orders
+    $orders = $this->adminModel->getFilteredOrders($status, $startDate, $endDate);
+
+    //pass both the orders and the current filter values back to the view
+    $data = [
+      'orders'     => $orders,
+      'status'     => $status,
+      'start_date' => $startDate,
+      'end_date'   => $endDate
+    ];
+
+    $this->view('admin/orders', $data);
   }
 
-  public function order_details()
-  {
 
+  public function order_details() { 
+      
     $this->view('admin/order_detail');
   }
 
@@ -109,8 +124,6 @@ class Admins extends Controller
       $this->view('admin/complaints/manage', $data);
     }
   }
-
-
 
   public function show($id)
   {
