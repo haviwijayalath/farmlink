@@ -223,17 +223,41 @@ public function addPost($data) {
 
     return true;
   }
+  
+  public function deletePost($post_id) {
+    // 1) Delete attachments
+    $this->db->query("DELETE FROM post_attachments WHERE post_id = :pid");
+    $this->db->bind(':pid', $post_id);
+    $this->db->execute();
+
+    // 2) Delete the post itself
+    $this->db->query("DELETE FROM posts WHERE post_id = :pid");
+    $this->db->bind(':pid', $post_id);
+    return $this->db->execute();
+  }
 
 // fetch all posts by this consultant
 public function getPostsByConsultant($consultant_id) {
   $this->db->query("
-    SELECT post_id, content, created_at
+    SELECT post_id, consultant_id, content, created_at
       FROM posts
       WHERE consultant_id = :cid
       ORDER BY created_at DESC
   ");
   $this->db->bind(':cid',$consultant_id);
   return $this->db->resultSet();
+}
+
+public function getPostById($post_id) {
+  $this->db->query("
+    SELECT post_id 
+      FROM posts 
+     WHERE post_id = :pid 
+       AND consultant_id = :cid
+  ");
+  $this->db->bind(':pid', $post_id);
+  $this->db->bind(':cid', $_SESSION['user_id']);
+  return $this->db->single();
 }
 
 // fetch attachments for a given post

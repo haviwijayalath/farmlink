@@ -34,9 +34,9 @@ class Appointments extends Controller {
     $this->view('appointment/book', $data);
   }
 
-  /**
-   * Handle the form POST.  Only allow dates in $availableDates.
-   */
+  
+   //Only allow dates in $availableDates.
+   
   public function create($consultant_id) {
     if (!isLoggedIn()) redirect('users/login');
     if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
@@ -81,11 +81,11 @@ class Appointments extends Controller {
         $lastId = $this->appointmentModel->getLastInsertId();
         $appt   = $this->appointmentModel->getAppointmentById($lastId);
 
-        // 2) fetch farmer name (so we can personalize the notification)
+        // fetch farmer name (so we can personalize the notification)
         $farmer = $this->farmerModel->getFarmerById($_SESSION['user_id']);
         $farmerName = $farmer->name ?? 'Farmer';
 
-        // 3) build & send notification to the consultant
+        // build & send notification to the consultant
         $subject = "New appointment request";
         $content = "{$farmerName} requested ";
         $content .= "a slot on " . date('M d, Y', strtotime($appt->appointment_date))

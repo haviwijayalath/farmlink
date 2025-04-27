@@ -140,7 +140,7 @@
     margin: 0 auto;
     padding: 20px;
     font-family: Arial, sans-serif;
-    background-color: #ffffff;
+    background-color:rgb(197, 253, 178);
   }
   
   h1, h2 {
@@ -228,9 +228,10 @@
   
   textarea {
     width: 100%;
+    max-width: 725px;
     padding: 8px;
     border: 1px solid #ccc;
-    border-radius: 4px;
+    border-radius: 10px;
     font-size: 14px;
     resize: vertical;
   }

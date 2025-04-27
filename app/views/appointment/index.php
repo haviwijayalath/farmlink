@@ -8,7 +8,7 @@
   <?php if(empty($data['appointments'])): ?>
     <p>No appointments found. Please book an appointment.</p>
   <?php else: ?>
-    <form method="get" action="">
+    <form method="get" action="" class="filter-form">
       <label for="status">Filter by Status:</label>
       <select name="status" id="status" onchange="this.form.submit()">
         <option value="">All</option>
@@ -99,6 +99,34 @@
   .btn-warning:hover {
     background-color: #e0a800;
   }
+  .filter-form {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  font-family: Arial, sans-serif;
+}
+
+.filter-form label {
+  font-weight: bold;
+  color: #333;
+  font-size: 0.95rem;
+}
+
+.filter-form select {
+  padding: 6px 10px;
+  font-size: 0.95rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #fff;
+  transition: border-color 0.2s ease;
+}
+
+.filter-form select:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 4px rgba(0, 123, 255, 0.4);
+}
 </style>
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

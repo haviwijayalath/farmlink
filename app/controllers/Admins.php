@@ -32,9 +32,25 @@
 
   // Orders list
   public function orders() {
-    $orders = $this->adminModel->getAllOrders();
-    $this->view('admin/orders', ['orders' => $orders]);
+    // grab filters from GET 
+    $status    = $_GET['status']     ?? '';
+    $startDate = $_GET['start_date'] ?? '';
+    $endDate   = $_GET['end_date']   ?? '';
+
+    //fetch only the matching orders
+    $orders = $this->adminModel->getFilteredOrders($status, $startDate, $endDate);
+
+    //pass both the orders and the current filter values back to the view
+    $data = [
+      'orders'     => $orders,
+      'status'     => $status,
+      'start_date' => $startDate,
+      'end_date'   => $endDate
+    ];
+
+    $this->view('admin/orders', $data);
   }
+
 
     public function order_details() { 
       
@@ -75,7 +91,6 @@
       }
   
       if (!$selectedComplaint) {
-          // Optional: flash message or redirect
           flash('complaint_msg', 'Complaint not found');
           redirect('admin/complaints');
       }
