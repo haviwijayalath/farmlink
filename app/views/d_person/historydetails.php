@@ -54,6 +54,9 @@
                     <div class="row">
                         <div class="cell title">Delivered Date</div>
                         <div class="cell"><?= htmlspecialchars($data['orders']->date); ?></div>
+
+                        <div class="cell title">Products</div>
+                        <div class="cell"><?= htmlspecialchars($data['orders']->productName); ?></div>
                     </div>
 
                     <div class="row">
@@ -66,11 +69,6 @@
                         <div class="cell">
                         <img src="<?= URLROOT ?>/public/d_uploads/<?= htmlspecialchars($data['orders']->pic_after); ?>" alt="Pic After" class="order-image">
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="cell title">Products</div>
-                        <div class="cell"><?= htmlspecialchars($data['orders']->productName); ?></div>
                     </div>
                     
                 </div>
