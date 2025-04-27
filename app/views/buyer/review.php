@@ -30,7 +30,7 @@ $orderID = isset($data['orderID']) ? $data['orderID'] : '';
 
         <div class="form-group">
             <label for="description">Review Description (Optional):</label>
-            <textarea name="description" id="description" rows="4" placeholder="Write your feedback here..."></textarea>
+            <textarea name="description" id="description" rows="4" placeholder="Write your feedback here..." required></textarea>
         </div>
 
         <div class="form-group">

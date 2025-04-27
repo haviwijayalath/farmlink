@@ -7,7 +7,21 @@
         <h1>Complaints</h1>
     </header>
 
-    <?php require APPROOT . '/views/admin/complaints/filtering.php'; ?>
+    <div class="filters">
+
+    <select id="roleFilter" onchange="filterComplaints()">
+        <option value="">All Roles</option>
+        <option value="buyer">Buyer</option>
+        <option value="dperson">Delivery Person</option>
+    </select>
+
+    <select id="statusFilter" onchange="filterComplaints()">
+        <option value="">All Statuses</option>
+        <option value="new">New</option>
+        <option value="resolved">Resolved</option>
+    </select>
+</div>
+
 
     <section class="complaint-table">
         <table id="complaintsTable">
@@ -67,6 +81,31 @@
             row.style.display = row.innerText.toLowerCase().includes(input) ? '' : 'none';
         });
     }
+
+    function filterComplaints() {
+    let searchInput = document.getElementById('complaintSearch').value.toLowerCase();
+    let roleFilter = document.getElementById('roleFilter').value.toLowerCase();
+    let statusFilter = document.getElementById('statusFilter').value.toLowerCase();
+
+    let rows = document.querySelectorAll('#complaintsTable tbody tr');
+
+    rows.forEach(row => {
+        let textMatch = row.innerText.toLowerCase().includes(searchInput);
+
+        let roleCell = row.querySelector('td:nth-child(3)');
+        let statusCell = row.querySelector('td:nth-child(5)');
+
+        let roleMatch = !roleFilter || (roleCell && roleCell.innerText.toLowerCase() === roleFilter);
+        let statusMatch = !statusFilter || (statusCell && statusCell.innerText.toLowerCase() === statusFilter);
+
+        if (textMatch && roleMatch && statusMatch) {
+            row.style.display = '';
+        } else {
+            row.style.display = 'none';
+        }
+    });
+}
 </script>
+
 
 <?php require APPROOT . '/views/inc/footer.php'; ?>

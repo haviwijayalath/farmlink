@@ -22,7 +22,7 @@ class Consultant {
   // Register consultant.
   public function register($data) {
     $address_id = $this->saveAddress($data['addr_no'], $data['addr_street'], $data['addr_city']);
-    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image, specialization, experience, verification_doc) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience, :verification_doc)');
+    $this->db->query('INSERT INTO consultants (name, password, email, address_id, phone, image, specialization, experience, verification_doc, status) VALUES(:name, :password, :email, :address_id, :phone, :image, :specialization, :experience, :verification_doc, :status)');
     $this->db->bind(':name', $data['name']);
     $this->db->bind(':email', $data['email']);
     $this->db->bind(':phone', $data['phone_number']);
@@ -32,6 +32,7 @@ class Consultant {
     $this->db->bind(':specialization', $data['specialization']);
     $this->db->bind(':experience', $data['experience']);
     $this->db->bind(':verification_doc', $data['verification_doc']);
+    $this->db->bind(':status','pending');
     return $this->db->execute();
   }
 
