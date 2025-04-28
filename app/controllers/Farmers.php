@@ -270,6 +270,9 @@ class Farmers extends Controller
     $currentStock = $this->farmerModel->getStocks();
     $currentStockCount = 0;
     foreach ($currentStock as $stock) {
+      if ($stock->farmer_id != $_SESSION['user_id']) {
+        continue;
+      }
       $currentStockCount += $stock->stock;
     }
 
@@ -277,6 +280,9 @@ class Farmers extends Controller
     $expiringStock = $this->farmerModel->getExpiringStocks();
     $expiringStockCount = 0;
     foreach ($expiringStock as $stock) {
+      if ($stock->farmer_id != $_SESSION['user_id']) {
+        continue;
+      }
       $expiringStockCount += $stock->stock;
     }
 
