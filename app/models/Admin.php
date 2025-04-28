@@ -389,6 +389,8 @@ class Admin extends Database
 
       $this->db->query($query);
       $this->db->bind(':farmerid', $farmerId);
+      return $this->db->single();
+      
     } elseif ($deliveryPersonId !== null) {
       // Query only for Delivery Person revenue
       $query = "
