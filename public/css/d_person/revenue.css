@@ -16,7 +16,7 @@
 
 .summary-box {
   flex: 1;
-  background: rgb(102, 159, 108);
+  background: rgb(209, 225, 211);
   padding: 20px;
   border-radius: 12px;
   text-align: center;
@@ -75,7 +75,7 @@
 }
 
 .filter-form button {
-  background: #168f38;
+  background: #042331;
   color: white;
   border: none;
   padding: 8px 12px;
@@ -100,7 +100,7 @@
 }
 
 .earnings-table th {
-  background: #04a030;
+  background: #042331;
   color: white;
 }
 
