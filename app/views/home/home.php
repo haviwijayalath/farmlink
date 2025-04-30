@@ -4,7 +4,7 @@
 
     <!-- Hero Section -->
     <section class="hero">
-    <img src= "<?php echo URLROOT; ?>/public/images/heroimage.jpg" class = "a">
+    <img src= "<?php echo URLROOT; ?>/public/images/hero.jpg" class = "a">
     <div class="hero-content">
         <h1>Welcome to the place where farming meets innovation</h1>
         <p>Empowering farmers and connecting them to markets and expert services.</p>
