@@ -1,12 +1,15 @@
 <?php
-class Dpaccount extends Database {
+class Dpaccount extends Database
+{
     private $db;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->db = new Database; // Assuming there's a Database class for handling PDO connections
     }
 
-    public function getMonthlyEarnings($deliveryPersonId, $monthOffset = 0) {
+    public function getMonthlyEarnings($deliveryPersonId, $monthOffset = 0)
+    {
         // Calculate start and end of the target month in SQL
         $this->db->query("
             SELECT SUM(di.amount) as total
@@ -20,9 +23,10 @@ class Dpaccount extends Database {
         $this->db->bind(':offset', $monthOffset);
         return $this->db->single()->total ?? 0;
     }
-    
 
-    public function getYearlyEarnings($deliveryPersonId) {
+
+    public function getYearlyEarnings($deliveryPersonId)
+    {
         $this->db->query("
             SELECT SUM(di.amount) as total
             FROM delivery_info di
@@ -34,7 +38,8 @@ class Dpaccount extends Database {
         return $this->db->single()->total ?? 0;
     }
 
-    public function getMonthlyTrend($deliveryPersonId) {
+    public function getMonthlyTrend($deliveryPersonId)
+    {
         $this->db->query("
             SELECT 
                 MONTH(os.orderDate) as month,
@@ -49,7 +54,8 @@ class Dpaccount extends Database {
         return $this->db->resultSet();
     }
 
-    public function getFilteredEarnings($deliveryPersonId, $orderId = '', $date = '') {
+    public function getFilteredEarnings($deliveryPersonId, $orderId = '', $date = '')
+    {
         // Base SQL
         $sql = "
             SELECT 
@@ -61,30 +67,40 @@ class Dpaccount extends Database {
         INNER JOIN order_success os ON di.order_id = os.orderID
         WHERE di.delivery_person_id = :dpid
         ";
-    
+
         // Add filters if provided
         if ($orderId) {
             $sql .= " AND di.order_id LIKE :orderId";
         }
-    
+
         if ($date) {
             $sql .= " AND DATE(di.date) = :deliveredDate";
         }
-    
+
         // Prepare and bind
         $this->db->query($sql);
         $this->db->bind(':dpid', $deliveryPersonId);
-    
+
         if ($orderId) {
             $this->db->bind(':orderId', "%$orderId%");
         }
-    
+
         if ($date) {
             $this->db->bind(':deliveredDate', $date);
         }
-    
+
         return $this->db->resultSet();
     }
-    
-    
+
+
+    public function getTotal($deliveryPersonId)
+    {
+        $this->db->query("
+            SELECT SUM(amount) as total
+            FROM delivery_info 
+            WHERE delivery_person_id = :id
+        ");
+        $this->db->bind(':id', $deliveryPersonId);
+        return $this->db->single()->total ?? 0;
+    }
 }

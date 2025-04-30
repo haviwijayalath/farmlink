@@ -78,7 +78,7 @@ class Admins extends Controller
     $complaint = $this->complaintModel->getComplaintById($complaint_id);
 
     if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-      // Sanitize POST data
+      
       $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
       $adminNote = trim($_POST['admin_note']);
@@ -97,10 +97,10 @@ class Admins extends Controller
       }
 
       if (empty($errors)) {
-        // No errors, proceed to update complaint in DB
+       
         $this->complaintModel->resolveComplaint($complaint_id, $adminNote, $faultBy);
 
-        // Redirect or set success message
+        
         flash('complaint_message', 'Complaint resolved successfully!');
         redirect('admin/complaints');
       } else {
@@ -114,7 +114,7 @@ class Admins extends Controller
         $this->view('admin/complaints/manage', $data);
       }
     } else {
-      // If GET request, just load the complaint page
+      
       $data = [
         'complaint' => $complaint,
         'errors' => [],
@@ -127,10 +127,10 @@ class Admins extends Controller
 
   public function show($id)
   {
-    // Fetch all complaints using the existing model function
+    
     $complaints = $this->complaintModel->getComplaints();
 
-    // Filter the complaint matching the ID
+    
     $selectedComplaint = null;
     foreach ($complaints as $complaint) {
       if ($complaint->complaint_id == $id) {
@@ -140,12 +140,12 @@ class Admins extends Controller
     }
 
     if (!$selectedComplaint) {
-      // Optional: flash message or redirect
+      
       flash('complaint_msg', 'Complaint not found');
       redirect('admin/complaints');
     }
 
-    // Send data to the view
+    
     $this->view('admin/complaints/show', ['complaint' => $selectedComplaint]);
   }
 
@@ -155,18 +155,18 @@ class Admins extends Controller
         $faultBy = isset($_POST['fault_by']) ? trim($_POST['fault_by']) : '';
         $adminNotes = isset($_POST['admin_notes']) ? trim($_POST['admin_notes']) : '';
 
-        // Sanitize inputs
+       
         $faultBy = htmlspecialchars($faultBy);
         $adminNotes = htmlspecialchars($adminNotes);
 
-        // Load the complaint
+        
         $complaint = $this->complaintModel->getComplaintById($complaint_id);
 
         if (!$complaint) {
             die("Complaint not found");
         }
 
-        // Validate inputs
+        
         $errors = [];
 
         if (empty($faultBy)) {
@@ -178,7 +178,7 @@ class Admins extends Controller
         }
 
         if (!empty($errors)) {
-            // If errors exist, reload the form with errors
+           
             $data = [
                 'complaint' => $complaint,
                 'errors' => $errors,
@@ -300,7 +300,7 @@ class Admins extends Controller
   }
 
 
-  // Single product
+  
   public function productDetails($id)
   {
     $product = $this->adminModel->getProductById($id);
@@ -308,7 +308,7 @@ class Admins extends Controller
     $this->view('admin/productDetails', ['product' => $product]);
   }
 
-  // Show profile
+  
   public function account()
   {
     $adminId = $_SESSION['admin_id'];
@@ -320,7 +320,7 @@ class Admins extends Controller
     $this->view('admin/account', ['admin' => $admin]);
   }
 
-  // EDIT PROFILE
+  
   public function editAccount()
   {
     $adminId = $_SESSION['admin_id'];
@@ -342,7 +342,7 @@ class Admins extends Controller
     }
   }
 
-  // CHANGE PASSWORD
+  
   public function changepwrd()
   {
     $adminId = $_SESSION['admin_id'];
@@ -365,7 +365,7 @@ class Admins extends Controller
     }
   }
 
-  // Deactivate
+  
   public function deactivateConfirmation()
   {
     if ($_SERVER['REQUEST_METHOD'] === 'POST') {

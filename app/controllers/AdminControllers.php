@@ -57,7 +57,7 @@ class AdminControllers extends Controller
                 flash('user_action', 'Something went wrong', 'alert alert-danger');
             }
 
-            redirect('adminControllers/show/' . $role . '/' . $id); // your route to user list
+            redirect('adminControllers/show/' . $role . '/' . $id);
         }
     }
 

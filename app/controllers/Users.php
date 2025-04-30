@@ -9,7 +9,7 @@ class Users extends Controller {
     }
 
     public function index() {
-        // Check if user is already logged in
+
         if(isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])) {
             redirect('home/home');
         }
@@ -17,13 +17,13 @@ class Users extends Controller {
     }
 
     public function login() {
-        // Check if user is already logged in
+       
         if(isset($_SESSION['user_id']) || isset($_SESSION['admin_id'])) {
             redirect('home/home');
         }
-        // Check for POST
+        
         if($_SERVER['REQUEST_METHOD'] == 'POST'){
-            // Process form
+           
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
     
             $data = [
@@ -42,7 +42,7 @@ class Users extends Controller {
             }
     
             if($this->userModel->findUserByEmail($data['email'])){
-                // User found
+                
             } else {
                 $data['email_err'] = 'No user found';
             }
@@ -81,7 +81,7 @@ class Users extends Controller {
             }
     
         } else {
-            // This part was misaligned earlier
+            
             $data = [
                 'email' => '',
                 'password' => '',
@@ -94,7 +94,7 @@ class Users extends Controller {
     }
     
     public function createUserSession($user){
-        // Redirect based on role, and set extra session variable user_type
+        
         switch ($user->role) {
             case 'admins':
                 $_SESSION['admin_logged_in'] = true;
@@ -102,7 +102,7 @@ class Users extends Controller {
                 $_SESSION['admin_name'] = $user->name;
                 $_SESSION['user_email'] = $user->email;
                 $_SESSION['user_role'] = 'admin';
-                $_SESSION['user_type'] = 'admin'; // Added
+                $_SESSION['user_type'] = 'admin'; 
                 redirect('admins/dashboard');
                 break;
 

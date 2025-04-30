@@ -17,6 +17,8 @@
                     <p><strong style="margin-right: 10px;">Type:</strong> <?= htmlspecialchars($data['type']) ?></p>
                     <p><strong style="margin-right: 10px;">Register No:</strong> <?= htmlspecialchars($data['regno']) ?></p>
                     <p><strong style="margin-right: 10px;">Capacity:</strong> <?= htmlspecialchars($data['capacity']) ?></p>
+                    <p><strong style="margin-right: 10px;">Vehicle structure:</strong> <?= htmlspecialchars($data['v_strcture']) ?></p>
+                
                 </div>
 
                 <!--<a href="<?= URLROOT ?>/dpaccounts/deleteVehicle?id=<?= $data['vehicle']['id'] ?>" class="delete-vehicle-btn" 

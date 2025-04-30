@@ -25,7 +25,7 @@
                     <tr>
                         <td><?= $item->orderID ?></td> <!-- Ensure orderID is present in the $item object -->
                         <td><?= $item->product ?></td>
-                        <td><?= $item->quantity ?></td>
+                        <td><?= $item->quantity ?> KG</td>
                         <td><?= $item->dropAddress ?></td>
                         <td><?= $item->orderDate ?></td>
                         <td><?= $item->status ?></td>

@@ -21,7 +21,7 @@ class orderControllers extends Controller{
 
 
   public function getDistanceInKm($origin, $destination){
-        $apiKey = 'AIzaSyCoF7QYiTVTL-WIAGcIDGJ4eS62voQcCVU'; // Replace with your actual key
+        $apiKey = 'AIzaSyCoF7QYiTVTL-WIAGcIDGJ4eS62voQcCVU'; 
     
         $originEncoded = urlencode($origin);
         $destinationEncoded = urlencode($destination);
@@ -33,7 +33,7 @@ class orderControllers extends Controller{
     
         if ($data->status == 'OK') {
             $distanceText = $data->rows[0]->elements[0]->distance->text;
-            // Example: "123 km"
+           
             $distanceValue = floatval(str_replace(' km', '', $distanceText));
             return $distanceValue;
         } else {
@@ -45,13 +45,13 @@ class orderControllers extends Controller{
 
   public function saveAddress()
     {
-        // Check if form is submitted
+        
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
             $cartId = isset($_POST['cart_id']) ? $_POST['cart_id'] : null;
             $productId = isset($_POST['product_id']) ? $_POST['product_id'] : null;
 
-            // Sanitize and get POST data
+            
             $data = [
                 'title' => trim($_POST['title']),
                 'first_name' => trim($_POST['first_name']),
@@ -59,54 +59,45 @@ class orderControllers extends Controller{
                 'number' => trim($_POST['number']),
                 'street' => trim($_POST['street_address']),
                 'city' => trim($_POST['city']),
-                'country' => 'Sri Lanka',  // Fixed country
+                'country' => 'Sri Lanka',  
                 'mobile' => trim($_POST['mobile']),
                 'email' => trim($_POST['email']),
-                'buyer_id' => $_SESSION['user_id'],  // Assuming the buyer is logged in, and buyer ID is in the session
+                'buyer_id' => $_SESSION['user_id'],  
                 'cartId' => $cartId,
                 'productId' => $productId
             ];
 
-        // Get pickup location from farmer/seller (you must fetch this from DB)
+       
 
         $farmerAddress = $this->orderModel->getFarmerPickupAddressByProduct($data['productId']);
 
         if ($farmerAddress) {
             $pickupLocation = $farmerAddress['number'] . ', ' . $farmerAddress['street'] . ', ' . $farmerAddress['city'] . ', Sri Lanka';
         } else {
-            $pickupLocation = 'Colombo'; // fallback or error handling
+            $pickupLocation = 'Colombo';
         }
-        // Use buyer’s address from form
+        
         $dropoffLocation = $data['number'] . ', ' . $data['street'] . ', ' . $data['city'] . ', Sri Lanka';
 
-        // Get distance in km
+        
         $distance = $this->getDistanceInKm($pickupLocation, $dropoffLocation);
 
-        // Set fee
-        $baseFee = 200; // fixed base fee
-        $ratePerKm = 10; // you can adjust this
+       
+        $baseFee = 200; 
+        $ratePerKm = 10; 
         $deliveryFee = ($distance !== null) ? $baseFee + ($ratePerKm * $distance) : $baseFee;
 
-        $data['delivery_fee'] = round($deliveryFee, 2); // Store it in $data
+        $data['delivery_fee'] = round($deliveryFee, 2); 
         $data['drop_addr'] = $dropoffLocation;
 
-        // DEBUG PRINT BLOCK (Remove these when done)
-        //echo "<h3>DEBUG INFO:</h3>";
-        //echo "<p><strong>Pickup Location:</strong> {$pickupLocation}</p>";
-        //echo "<p><strong>Dropoff Location:</strong> {$dropoffLocation}</p>";
-        //echo "<p><strong>Distance (km):</strong> {$distance}</p>";
-        //echo "<p><strong>Delivery Fee (Rs):</strong> {$data['delivery_fee']}</p>";
-        //echo "<pre>"; print_r($data); echo "</pre>";
-        //exit; // stop here so you can view debug output 👈
-        // END DEBUG BLOCK
-
-        // Validate data
+       
+        
         if ($this->validateAddress($data)) {
-            // Call the model method to save the address
+            
             $data = $this->orderModel->saveOrderBuyer($data);
             $this->view('buyer/cart/payment', $data);
         } else {
-            // If validation fails, reload the form with errors
+           
             $this->view('buyer/cart/address', $data);
         }
 
@@ -114,29 +105,14 @@ class orderControllers extends Controller{
 
     }
 
-    // Simple validation method
+    
     private function validateAddress($data)
     {
         return !empty($data['title']) && !empty($data['first_name']) && !empty($data['last_name']) &&
                !empty($data['street']) && !empty($data['city']) && !empty($data['mobile']);
     }
 
-    // public function getBuyerAddress() {
-        
-    //     if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
-    //         redirect('users/login');
-    //     }
-
-    //     $buyerId = $_SESSION['user_id'];
-
-    //     $buyerData = $this->orderModel->getBuyerAddress($buyerId); // Fetch from DB
-    //     if ($buyerData) {
-    //         echo json_encode($buyerData);
-    //     } else {
-    //         echo json_encode(['error' => 'No address found']);
-    //     }
-    // }
-
+    
     public function getBuyerAddress() {
         if (!isLoggedIn() || $_SESSION['user_role'] != 'buyer') {
             echo json_encode(['error' => 'Unauthorized']);
@@ -144,14 +120,14 @@ class orderControllers extends Controller{
         }
     
         $buyerId = $_SESSION['user_id'];
-        $buyerData = $this->orderModel->getBuyerAddress($buyerId); // Fetch from DB
+        $buyerData = $this->orderModel->getBuyerAddress($buyerId); 
     
         if ($buyerData) {
-            // Format the data for the frontend
+           
             $formattedData = [
-                'title' => 'Mr', // Default title (you can modify this based on your logic)
-                'first_name' => explode(' ', $buyerData->name)[0], // Extract first name
-                'last_name' => explode(' ', $buyerData->name)[1] ?? '', // Extract last name
+                'title' => 'Mr', 
+                'first_name' => explode(' ', $buyerData->name)[0], 
+                'last_name' => explode(' ', $buyerData->name)[1] ?? '', 
                 'number' => $buyerData->number,
                 'street' => $buyerData->Street,
                 'city' => $buyerData->City,
@@ -176,7 +152,7 @@ class orderControllers extends Controller{
 
         $data = [
             'complaints' => $complaints,
-            'selectedOrderID' => $orderID // <-- pass the orderID
+            'selectedOrderID' => $orderID 
         ];
     
     
@@ -194,7 +170,7 @@ class orderControllers extends Controller{
 
         $data = [
             'complaints' => $complaints,
-            'selectedOrderID' => $orderID // <-- pass the orderID
+            'selectedOrderID' => $orderID 
         ];
     
     
@@ -206,14 +182,14 @@ class orderControllers extends Controller{
             redirect('users/login');
         }
 
-        $buyerId = $_SESSION['user_id']; // or however you identify the user
+        $buyerId = $_SESSION['user_id']; 
         $role = $_SESSION['user_role'];
     
         $complaints = $this->orderModel->getComplaints($buyerId, $role);
     
         $data = [
             'complaints' => $complaints,
-            'selectedOrderID' => $orderID // <-- pass the orderID
+            'selectedOrderID' => $orderID 
         ];
     
         $this->view('buyer/complaints', $data);
@@ -224,14 +200,14 @@ class orderControllers extends Controller{
             redirect('users/login');
         }
 
-        $buyerId = $_SESSION['user_id']; // or however you identify the user
+        $buyerId = $_SESSION['user_id']; 
         $role = $_SESSION['user_role'];
     
         $complaints = $this->orderModel->getComplaints($buyerId, $role);
     
         $data = [
             'complaints' => $complaints,
-            'selectedOrderID' => $orderID // <-- pass the orderID
+            'selectedOrderID' => $orderID 
         ];
     
         $this->view('buyer/complaints_sb', $data);
@@ -244,24 +220,24 @@ class orderControllers extends Controller{
             $orderId = $_POST['order_id'];
             $description = $_POST['description'];
     
-            // Save complaint to the database
+           
             $this->orderModel->submitComplaint($userId, $role, $orderId, $description);
 
             $this->notificationHelper->send_notification(
-                'd',                             // sender_role (delivery person)
-                $_SESSION['user_id'],                         // sender_id
-                'a',                         // recipient_role
-                4,                               // recipient_id (assuming admin ID is 1, or adjust as needed)
-                'New Complaint Submitted',       // title
-                'A new complaint is submitted by the delivery person '.'for order ID:'.$orderId ,                        // message
-                '/farmlink/admins/viewComplaints', // link to view
-                'info'                        // type of notification
+                'd',                            
+                $_SESSION['user_id'],                         
+                'a',                         
+                4,                               
+                'New Complaint Submitted',       
+                'A new complaint is submitted by the delivery person '.'for order ID:'.$orderId ,                       
+                '/farmlink/admins/viewComplaints', 
+                'info'                        
             );
     
-            // REDIRECT to avoid form resubmission
+            
             redirect('orderControllers/showcomplaint_sb');
         } else {
-            // Optional: prevent direct access via GET
+            
             redirect('orderControllers/showcomplaint');
         }
     }
@@ -273,13 +249,13 @@ class orderControllers extends Controller{
             $orderId = $_POST['order_id'];
             $description = $_POST['description'];
     
-            // Save complaint to the database
+            
             $this->orderModel->submitComplaint($userId, $role, $orderId, $description);
     
-            //REDIRECT to avoid form resubmission
+            
             redirect('orderControllers/show_buyer_complaint');
         } else {
-            // Optional: prevent direct access via GET
+            
             redirect('orderControllers/show_buyer_complaint');
         }
     }
@@ -307,11 +283,11 @@ class orderControllers extends Controller{
             $rating = $_POST['rating'] ?? 0;
             $images = [];
     
-            // Handle image upload
+            
             if (!empty($_FILES['images']['name'][0])) {
                 $uploadDir = 'public/uploads/';
 
-                // Create the directory if it doesn't exist
+                
                 if (!is_dir($uploadDir)) {
                     mkdir($uploadDir, 0755, true);
                 }
@@ -324,7 +300,7 @@ class orderControllers extends Controller{
                 }
             }
     
-            // Get buyerID and farmerID from DB
+           
             $orderDetails = $this->orderModel->getOrderDetailsWithFarmer($orderID);
     
             $data = [

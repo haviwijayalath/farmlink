@@ -58,6 +58,14 @@
       </select>
       <span class="error"><?php echo $data['vehicle_err']; ?></span>
 
+      <label for="vehicle">Vehicle Structure*</label>
+      <select id="vehicle_strucutre" name="vehicle_strucutre" placeholder="Select vehicle structure" <?php echo (!empty($data['vehicle_strucutre_err'])) ? 'is_invalid' : ''; ?> required>
+        <option value="Lightweight">-</option>
+        <option value="Lightweight">Light Weight</option>
+        <option value="Heavyweight">Heavy Weight</option>
+      </select>
+      <span class="error"><?php echo $data['vehicle_strucutre_err']; ?></span>
+
       <div class="form-group">
         <label for="area">Delivery Area*</label>
         <select id="area" name="area" required class="<?= !empty($data['area_err']) ? 'is_invalid' : ''; ?>">

@@ -34,3 +34,5 @@
         <?php endif; ?>
     </tbody>
 </table>
+<p><strong style="margin-right: 10px;">Total Delivered Earnings : <strong><?php echo number_format($data['total'], 0); ?></p>
+

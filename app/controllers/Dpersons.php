@@ -18,11 +18,11 @@ class Dpersons extends Controller
         if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
             redirect('users/login');
         }
-        // Default method content here
+        
         redirect('dpersons/neworder');
     }
 
-    // Show new orders page
+    
     public function neworder()
     {
 
@@ -30,11 +30,11 @@ class Dpersons extends Controller
             redirect('users/login');
         }
 
-        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; 
 
 
         if (!$deliveryArea) {
-            // Handle case where delivery area is not set
+           
             $data = ['orders' => []];
             $this->view('d_person/neworders', $data);
             return;
@@ -44,43 +44,14 @@ class Dpersons extends Controller
 
 
         $data = [
-            'orders' => $orders ?? [] // Default to empty array if null
+            'orders' => $orders ?? [] 
         ];
 
 
         $this->view('d_person/neworders', $data);
     }
 
-    // Confirm an order and redirect to new orders page
-    // public function confirm($orderId) {
-
-    //     if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
-    //         redirect('users/login');
-    //       }
-
-    //     $deliveryPersonId = $_SESSION['user_id'];
-    //     $orderId = $_SESSION['order_id'];
-
-    //     // Fetch delivery details
-    //     $deliveryData = $this->userModel->getDeliveryEarnings($orderId, $deliveryPersonId);
-
-    //     if (!$deliveryData) {
-    //         die("Error: Unable to fetch earnings.");
-    //     }
-
-    //     // Store in session for popup display
-    //     $_SESSION['summary'] = [
-    //         'order_id' => $orderId,
-    //         'earnings' => $deliveryData->amount,
-    //         'total_earnings' => $deliveryData->totearnings
-    //     ];
-    //     if ($this->userModel->confirmOrder($orderId)) {
-    //         header('Location: ' . URLROOT . '/dpersons/ongoingDeliveries');
-    //     } else {
-    //         die('Something went wrong.');
-    //     }
-    // }
-
+   
     public function confirmNewOrder($orderId)
     {
 
@@ -119,7 +90,7 @@ class Dpersons extends Controller
         }
     }
 
-    // Display ongoing deliveries
+    
     public function ongoingDeliveries()
     {
 
@@ -134,13 +105,13 @@ class Dpersons extends Controller
             $_SESSION['order_id'] = $orders[0]->orderID;
             $_SESSION['pickup_address'] = $orders[0]->pickup_address;
         } else {
-            // Handle case where no ongoing deliveries are found
+            
             $_SESSION['order_id'] = null;
             $_SESSION['pickup_address'] = null;
         }
 
         $data = [
-            'orders' => $orders ?? []  // If $orders is null, this will set it to an empty array
+            'orders' => $orders ?? []  
         ];
 
 
@@ -154,39 +125,17 @@ class Dpersons extends Controller
             redirect('users/login');
         }
 
-        // Prepare data for the view
+        
         $data = [
             'order_id' => $_SESSION['order_id'] ?? null,
             'pickup_image' => $_SESSION['pickup_image'] ?? null,
-            'dropoff_image' => $_SESSION['dropoff_image'] ?? null, // Ensure dropoff is null initially
+            'dropoff_image' => $_SESSION['dropoff_image'] ?? null, 
         ];
 
         $this->view('d_person/ongoing/d_upload', $data);
     }
 
-    public function getOrderSummary()
-    {
-        if (!isLoggedIn() || $_SESSION['user_role'] != 'dperson') {
-            echo json_encode(["error" => "Unauthorized"]);
-            return;
-        }
-
-        $orderId = $_SESSION['order_id'];
-        $deliveryPersonId = $_SESSION['user_id'];
-
-        $earnings = $this->userModel->getDeliveryEarnings($orderId, $deliveryPersonId);
-
-        if (!$earnings) {
-            echo json_encode(["error" => "Earnings not found"]);
-            return;
-        }
-
-        echo json_encode([
-            "orderId" => $orderId,
-            "earnings" => $earnings->totearnings ?? "0.00",  // Ensure it doesn't crash if null
-            "amount" => $earnings->amount
-        ]);
-    }
+    
 
 
 
@@ -219,7 +168,7 @@ class Dpersons extends Controller
 
                     $_SESSION['delivery_id'] = $deliveryId;
 
-                    // Redirect with success
+                    
                     redirect('dpersons/ongoingDeliveries');
                 }
             }
@@ -230,24 +179,24 @@ class Dpersons extends Controller
     public function confirmpickup()
     {
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // You may need to get order ID from a session or hidden form field
+            
             if (!isset($_SESSION['order_id'])) {
                 flash('order_error', 'Order ID not found in session.');
                 redirect('dpersons/ongoing');
             }
 
-            // Check if pickup image is uploaded
+            
             if (!isset($_SESSION['pickup_image']) || empty($_SESSION['pickup_image'])) {
                 flash('order_error', 'Please upload a pickup image before confirming.');
-                redirect('dpersons/ongoingDeliveries'); // or wherever the user should go
+                redirect('dpersons/ongoingDeliveries'); 
                 return;
             }
 
             $orderId = $_SESSION['order_id'];
 
-            // Update the status in ordersuccess table
+            
             if ($this->userModel->updateOrderStatus($orderId) ) {
-                // Fetch the order details
+                
                 $orderDetails = $this->userModel->getOrderById($orderId);
 
                 if ($orderDetails) {
@@ -300,14 +249,14 @@ class Dpersons extends Controller
 
         if (!isset($_SESSION['dropoff_image']) || empty($_SESSION['dropoff_image'])) {
             flash('dropoff_error', 'Please upload the dropoff image before ending the delivery.');
-            redirect('dpersons/ongoingDeliveries'); // <-- Replace with your dropoff upload page
+            redirect('dpersons/ongoingDeliveries'); 
             return;
         }
 
-        // Get delivery ID from session
+        
         $orderId = $_SESSION['order_id'];
 
-        // Load model and fetch summary
+        
         $summary = $this->userModel->getDeliverySummary($orderId);
 
         if ($summary) {
@@ -316,7 +265,7 @@ class Dpersons extends Controller
             $buyerId = $summary->buyerID;
             $farmerId = $summary->farmer_id;
 
-            // Now trigger notifications to buyer and farmer
+            
             $this->notificationHelper->send_notification(
                 'd',
                 $_SESSION['user_id'],
@@ -340,7 +289,7 @@ class Dpersons extends Controller
             );
         }
 
-        // Clear session values
+       
         unset($_SESSION['pickup_image']);
         unset($_SESSION['dropoff_image']);
         unset($_SESSION['order_id']);
@@ -356,46 +305,46 @@ class Dpersons extends Controller
             redirect('users/login');
         }
 
-        // Check if files are uploaded
+        
         if (isset($_FILES['dropoff_image'])) {
-            // Directory to save uploaded images
+          
             $uploadDir = APPROOT . '/../public/d_uploads/';
 
-            // Create the directory if it doesn't exist
+            
             if (!is_dir($uploadDir)) {
                 mkdir($uploadDir, 0777, true);
             }
 
-            // Handle dropoff image
+            
             $dropoffImage = $_FILES['dropoff_image'];
             $dropoffImageName = time() . '_dropoff_' . basename($dropoffImage['name']);
             $dropoffImagePath = $uploadDir . $dropoffImageName;
 
-            // Move the uploaded file to the directory
+            
             if (move_uploaded_file($dropoffImage['tmp_name'], $dropoffImagePath)) {
-                // Store the relative path in the database
+                
                 $relativePath = 'public/d_uploads/' . $dropoffImageName;
 
-                // Debug: Check if the delivery_id and path are correct
+                
                 echo "Delivery ID: " .  $_SESSION['delivery_id'];
                 echo "Dropoff Image Path: " . $relativePath;
 
-                // Save the dropoff image path in the database
+                
                 if ($this->userModel->saveDropoffImage($_SESSION['delivery_id'], $dropoffImageName)) {
-                    $_SESSION['dropoff_image'] = $relativePath; // Store in session variable
+                    $_SESSION['dropoff_image'] = $relativePath; 
                     redirect('dpersons/proof');
                 } else {
-                    // Error handling if saving image fails
+                    
                     echo "Failed to save the dropoff image in the database.";
                     redirect('dpersons/proof');
                 }
             } else {
-                // Error handling if file upload fails
+                
                 echo "Failed to upload dropoff image.";
                 redirect('dpersons/proof');
             }
         } else {
-            // No image uploaded
+            
             echo "No dropoff image uploaded.";
             redirect('dpersons/proof');
         }
@@ -415,7 +364,7 @@ class Dpersons extends Controller
         $history = $this->userModel->history($id);
 
         $data = [
-            'orders' => $history ?? [] // Default to empty array if null
+            'orders' => $history ?? [] 
         ];
 
 
@@ -429,18 +378,18 @@ class Dpersons extends Controller
         }
 
         $orderId = $_SESSION['order_id'];
-        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; 
 
-        // Fetch order details
-        $order = $this->userModel->getongoingbyID($deliveryArea, $orderId); // You'll need this function in your model
+        
+        $order = $this->userModel->getongoingbyID($deliveryArea, $orderId); 
 
         if (!$order) {
-            // Handle case if no order found
+           
             flash('order_error', 'Order not found');
-            redirect('dpersons/ongoing'); // or wherever fits best
+            redirect('dpersons/ongoing'); 
         }
 
-        // Build data array
+        
         $data = [
             'status' => $order->status,
             'pickup' => $order->pickup_address,
@@ -449,7 +398,7 @@ class Dpersons extends Controller
             'orderId' => $order->orderID
         ];
 
-        // Load view
+        
         $this->view('d_person/ongoing/tracking', $data);
     }
 
@@ -457,13 +406,11 @@ class Dpersons extends Controller
     public function register()
     {
 
-        // Check for POST
+        
         if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-            // Process form
-            // Sanitize POST data
+            
             $_POST = filter_input_array(INPUT_POST, FILTER_SANITIZE_STRING);
 
-            // Init data
             $data = [
                 'name' => trim($_POST['name']),
                 'email' => trim($_POST['email']),
@@ -471,16 +418,17 @@ class Dpersons extends Controller
                 'street' => trim($_POST['street']),
                 'city' => trim($_POST['city']),
                 'phone' => trim($_POST['phone']),
-                'image' => isset($_POST['saved_image']) ? $_POST['saved_image'] : '', // Keep previously uploaded image,
+                'image' => isset($_POST['saved_image']) ? $_POST['saved_image'] : '', 
                 'vehicle' => trim($_POST['vehicle']),
                 'area' => trim($_POST['area']),
                 'regno' => trim($_POST['regno']),
                 'capacity' => trim($_POST['capacity']),
-                'v_image' => isset($_POST['saved_vehicle_image']) ? $_POST['saved_vehicle_image'] : '', // Keep previously uploaded vehicle image
+                'v_image' => isset($_POST['saved_vehicle_image']) ? $_POST['saved_vehicle_image'] : '', 
                 'l_image' => isset($_POST['saved_liscene_image']) ? $_POST['saved_liscene_image'] : '',
                 'password' => trim($_POST['password']),
                 'confirm_password' => trim($_POST['confirm_password']),
-                'role' => trim($_POST['role']), // Pass role to view
+                'role' => trim($_POST['role']), 
+                'vehicle_strucutre' => trim($_POST['vehicle_strucutre']),
 
                 'name_err' => '',
                 'email_err' => '',
@@ -496,15 +444,20 @@ class Dpersons extends Controller
                 'v_image_err' => '',
                 'l_image_err' => '',
                 'password_err' => '',
-                'confirm_password_err' => ''
+                'confirm_password_err' => '',
+                'vehicle_strucutre_err' => ''
             ];
 
-            // Validate name
+            
             if (empty($data['name'])) {
                 $data['name_err'] = 'Please enter name';
             }
 
-            // Validate email
+            if (empty($data['vehicle_strucutre'])) {
+                $data['vehicle_strucutre_err'] = 'Please enter structure';
+            }
+
+            
             if (empty($data['email'])) {
                 $data['email_err'] = 'Please enter email';
             } else {
@@ -514,7 +467,7 @@ class Dpersons extends Controller
                 }
             }
 
-            // Validate phone number
+           
             if (empty($data['phone'])) {
                 $data['phone_err'] = 'Please enter a phone number';
             } elseif (!preg_match('/^\d{10}$/', $data['phone'])) {
@@ -522,12 +475,12 @@ class Dpersons extends Controller
             }
 
 
-            //validate address
+            
             if (empty($data['street'] && empty($data['city']))) {
                 $data['addr_no_err'] = 'Please enter your address';
             }
 
-            // Validate password
+            
             if (empty($data['password'])) {
                 $data['password_err'] = 'Please enter a password';
             } elseif (strlen($data['password']) < 6) {
@@ -538,7 +491,7 @@ class Dpersons extends Controller
                 $data['password_err'] = 'Password must include at least one number';
             }
 
-            // Validate confirm password
+            
             if (empty($data['confirm_password'])) {
                 $data['confirm_password_err'] = 'Please confirm your password';
             } else {
@@ -547,39 +500,39 @@ class Dpersons extends Controller
                 }
             }
 
-            // Make sure there are no errors before uploading the image
+           
             if (
                 empty($data['name_err']) && empty($data['email_err']) && empty($data['phone_err']) &&
                 empty($data['password_err']) && empty($data['confirm_password_err'])
             ) {
 
-                // Now handle the image upload (if no errors from above)
+                
                 $image = $_FILES["image"]['name'];
-                $v_image = $_FILES["v_image"]['name']; // Handle vehicle image upload
+                $v_image = $_FILES["v_image"]['name']; 
                 $l_image = $_FILES["l_image"]['name'];
                 $_picuploaded = 0;
                 $upload_dir = APPROOT . '/../public/uploads/';
 
-                // Ensure the upload directory exists
+                
                 if (!is_dir($upload_dir)) {
                     mkdir($upload_dir, 0777, true);
                 }
 
-                // Validate and move the uploaded image
+                
                 if (!empty($image)) {
                     if (move_uploaded_file($_FILES['image']['tmp_name'], $upload_dir . $image)) {
                         $_target_file = $upload_dir . $image;
                         $imageFileType = strtolower(pathinfo($_target_file, PATHINFO_EXTENSION));
                         $photo = time() . basename($_FILES['image']['name']);
 
-                        // Validate image extension
+                        
                         if ($imageFileType != "jpg" && $imageFileType != "jpeg" && $imageFileType != "png") {
                             $data['image_err'] = 'Please upload a photo with extension .jpg, .jpeg, or .png';
-                        } elseif ($_FILES["image"]["size"] > 2000000) { // Check if image exceeds 2MB
+                        } elseif ($_FILES["image"]["size"] > 2000000) { 
                             $data['image_err'] = 'Your photo exceeds the size limit of 2MB';
                         } else {
-                            $data['image'] = $image; // Save the profile image name to data
-                            $_picuploaded = 1; // Mark that image was uploaded successfully
+                            $data['image'] = $image; 
+                            $_picuploaded = 1; 
                         }
                     } else {
                         $data['image_err'] = 'Failed to upload image';
@@ -588,20 +541,20 @@ class Dpersons extends Controller
                     $data['image_err'] = 'Please upload an image';
                 }
 
-                // Validate and move the vehicle image
+                
                 if (!empty($v_image)) {
                     if (move_uploaded_file($_FILES['v_image']['tmp_name'], $upload_dir . $v_image)) {
                         $_target_file = $upload_dir . $v_image;
                         $v_imageFileType = strtolower(pathinfo($_target_file, PATHINFO_EXTENSION));
 
-                        // Validate image extension for vehicle image
+                        
                         if ($v_imageFileType != "jpg" && $v_imageFileType != "jpeg" && $v_imageFileType != "png") {
                             $data['v_image_err'] = 'Please upload a vehicle image with extension .jpg, .jpeg, or .png';
-                        } elseif ($_FILES["v_image"]["size"] > 2000000) { // Check if image exceeds 2MB
+                        } elseif ($_FILES["v_image"]["size"] > 2000000) { 
                             $data['v_image_err'] = 'Your vehicle image exceeds the size limit of 2MB';
                         } else {
-                            $data['v_image'] = $v_image; // Save the vehicle image name to data
-                            $_picuploaded = 1; // Mark that vehicle image was uploaded successfully
+                            $data['v_image'] = $v_image; 
+                            $_picuploaded = 1; 
                         }
                     } else {
                         $data['v_image_err'] = 'Failed to upload vehicle image';
@@ -610,20 +563,20 @@ class Dpersons extends Controller
                     $data['v_image_err'] = 'Please upload a vehicle image';
                 }
 
-                // Validate and move the license image
+                
                 if (!empty($l_image)) {
                     if (move_uploaded_file($_FILES['l_image']['tmp_name'], $upload_dir . $l_image)) {
                         $_target_file = $upload_dir . $l_image;
                         $l_imageFileType = strtolower(pathinfo($_target_file, PATHINFO_EXTENSION));
 
-                        // Validate image extension for license image
+                        
                         if ($l_imageFileType != "jpg" && $l_imageFileType != "jpeg" && $l_imageFileType != "png") {
                             $data['l_image_err'] = 'Please upload a license image with extension .jpg, .jpeg, or .png';
-                        } elseif ($_FILES["l_image"]["size"] > 2000000) { // Check if image exceeds 2MB
+                        } elseif ($_FILES["l_image"]["size"] > 2000000) {
                             $data['l_image_err'] = 'Your license image exceeds the size limit of 2MB';
                         } else {
-                            $data['l_image'] = $l_image; // Save the license image name to data
-                            $_picuploaded = 1; // Mark that license image was uploaded successfully
+                            $data['l_image'] = $l_image; 
+                            $_picuploaded = 1; 
                         }
                     } else {
                         $data['l_image_err'] = 'Failed to upload license image';
@@ -633,12 +586,12 @@ class Dpersons extends Controller
                 }
 
 
-                // If the image is uploaded successfully, proceed with registration
+                
                 if ($_picuploaded) {
-                    //hash password
+                    
                     $data['password'] = password_hash($data['password'], PASSWORD_DEFAULT);
 
-                    //register user
+                    
                     if ($this->userModel->registerDeliveryPerson($data)) {
                         flash('register_success', 'You are successfully registered! Log in now');
                         flash('register_success', 'You are successfully registered! Log in now');
@@ -647,15 +600,15 @@ class Dpersons extends Controller
                         die('Something went wrong');
                     }
                 } else {
-                    // Load view with errors (if there are validation errors)
+                   
                     $this->view('users/dpersonregister', $data);
                 }
             } else {
-                // Load view with errors (if there are validation errors)
+               
                 $this->view('users/dpersonregister', $data);
             }
         } else {
-            // Init data (for GET request)
+           
             $data = [
                 'name' => '',
                 'email' => '',
@@ -673,6 +626,7 @@ class Dpersons extends Controller
                 'password' => '',
                 'confirm_password' => '',
                 'role' => '',
+                'vehicle_strucutre' => '',
 
                 'name_err' => '',
                 'email_err' => '',
@@ -688,10 +642,11 @@ class Dpersons extends Controller
                 'v_image_err' => '',
                 'l_image_err' => '',
                 'password_err' => '',
-                'confirm_password_err' => ''
+                'confirm_password_err' => '',
+                'vehicle_strucutre_err' => ''
             ];
 
-            // Load view
+           
             $this->view('users/dpersonregister', $data);
         }
     }
@@ -703,13 +658,13 @@ class Dpersons extends Controller
             redirect('users/login');
         }
 
-        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; 
 
         $orders = $this->userModel->getorder($deliveryArea, $order_id);
 
 
         $data = [
-            'orders' => $orders ?? [] // Default to empty array if null
+            'orders' => $orders ?? [] 
         ];
 
 
@@ -724,19 +679,13 @@ class Dpersons extends Controller
             redirect('users/login');
         }
 
-        // Get the order details by ID
+       
         $orderDetails = $this->userModel->getOrderHistoryById($order_id);
 
-    // //     // ======== DEBUGGING START ========
-    //  echo '<pre>';
-    //  echo 'DEBUG: Fetched Order Details:' . PHP_EOL;
-    // var_dump($orderDetails);
-    // echo '</pre>';
-    // exit; // Stop further code execution for now
-    // // // ==
+    
 
         $data = [
-            'orders' => $orderDetails ?? [] // Default to empty array if null
+            'orders' => $orderDetails ?? [] 
         ];
 
         $this->view('d_person/historydetails', $data);
@@ -748,14 +697,13 @@ class Dpersons extends Controller
             redirect('users/login');
         }
 
-        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; // Ensure it's set
-
-        // Get the order details by ID
+        $deliveryArea = $_SESSION['user_delivery_area'] ?? null; 
+       
         $orderDetails = $this->userModel->getongoingbyID($deliveryArea, $order_id);
 
 
         $data = [
-            'orders' => $orderDetails ?? [] // Default to empty array if null
+            'orders' => $orderDetails ?? [] 
         ];
 
         $this->view('d_person/ongoing/ongoing_details', $data);
